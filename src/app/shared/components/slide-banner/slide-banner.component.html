@@ -1,0 +1,65 @@
+<section class="banner-section">
+  @if (hasSlides() && currentSlide(); as slide) {
+    <div class="banner-wrapper"
+         (mouseenter)="onMouseEnter()"
+         (mouseleave)="onMouseLeave()">
+
+      <!-- Slides -->
+      <div class="banner-slides-container">
+        @for (item of slides; track item.id; let i = $index) {
+          <div class="banner-slide" [class.active]="i === currentIndex()">
+            <div class="banner-bg" [style.backgroundImage]="'url(' + item.imageUrl + ')'"></div>
+            <div class="banner-overlay"></div>
+            <div class="banner-content container">
+              <div class="banner-text">
+                <h2 class="banner-title">{{ item.title }}</h2>
+                <p class="banner-summary">{{ item.shortContents }}</p>
+                @if (item.link) {
+                  <a [href]="item.link" target="_blank" rel="noopener noreferrer"
+                     class="btn btn-light banner-btn mt-3">
+                    Chi tiết <i class="fas fa-arrow-right ml-2"></i>
+                  </a>
+                }
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Prev / Next Arrows -->
+      <button class="banner-arrow arrow-prev" (click)="prevSlide()" [class.visible]="isHovered()"
+              aria-label="Slide trước">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <button class="banner-arrow arrow-next" (click)="nextSlide()" [class.visible]="isHovered()"
+              aria-label="Slide tiếp theo">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+
+      <!-- Dots -->
+      <div class="banner-dots">
+        @for (idx of dotIndices(); track idx) {
+          <button class="dot" [class.active]="idx === currentIndex()"
+                  (click)="goToSlideByIndex(idx)"
+                  [attr.aria-label]="'Chuyển đến slide ' + (idx + 1)">
+          </button>
+        }
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="banner-progress">
+        <div class="progress-fill" [style.animationDuration.ms]="5000"></div>
+      </div>
+    </div>
+  } @else {
+    <!-- Fallback when no slides -->
+    <div class="banner-default">
+      <div class="banner-bg banner-bg-default"></div>
+      <div class="banner-overlay"></div>
+      <div class="banner-content container">
+        <h2 class="banner-title">BA GPS - Hệ thống quản lý GPS</h2>
+        <p class="banner-summary">Theo dõi và giám sát phương tiện trực tuyến 24/7</p>
+      </div>
+    </div>
+  }
+</section>

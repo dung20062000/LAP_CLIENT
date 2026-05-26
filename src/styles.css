@@ -1,1 +1,195 @@
-/* You can add global styles to this file, and also import other style files */
+/* BA GPS Color Variables */
+:root {
+  --bagps-primary: #0066ff;
+  --bagps-secondary: #00d2ff;
+  --bagps-dark: #1a1a2e;
+  --bagps-darker: #0d0d1a;
+  --bagps-accent: #ffd700;
+  --bagps-success: #28a745;
+  --bagps-danger: #dc3545;
+  --bagps-warning: #ffc107;
+
+  /* Header primary color */
+  --primary-color: #11aec7;
+  --primary-color-darker: #0e94a8;
+}
+
+/* Reset & Base */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #f4f6f9;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  line-height: 1.3;
+  margin-top: 0;
+  color: #1a1a2e;
+}
+
+p {
+  margin-top: 0;
+}
+
+a {
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+/* Selection */
+::selection {
+  background-color: rgba(0, 102, 255, 0.2);
+  color: #1a1a2e;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #adb5bd;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #868e96;
+}
+
+/* Focus Visible */
+:focus-visible {
+  outline: 2px solid #0066ff;
+  outline-offset: 2px;
+}
+
+/* BA GPS Primary Color */
+.bg-primary,
+.btn-primary {
+  background: linear-gradient(135deg, #0066ff, #003399) !important;
+  border-color: #0052cc !important;
+}
+
+.text-primary {
+  color: #0066ff !important;
+}
+
+/* BA GPS Header Navbar Theme */
+.bg-primary {
+  background: linear-gradient(135deg, #0052cc, #003399) !important;
+}
+
+/* BA GPS Navbar Text */
+.navbar-dark .navbar-nav .nav-link {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.navbar-dark .navbar-nav .nav-link:hover,
+.navbar-dark .navbar-nav .nav-link.active {
+  color: #fff !important;
+}
+
+/* BA GPS Dropdowns */
+.bg-primary .dropdown-menu {
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  border: none;
+}
+
+/* Card Styling */
+.card {
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+/* BA GPS Form Controls */
+.form-control:focus {
+  border-color: #0066ff;
+  box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.12);
+}
+
+/* Badge */
+.badge-primary {
+  background: linear-gradient(135deg, #0066ff, #003399) !important;
+  border: none !important;
+}
+
+/* Utilities */
+.font-weight-semibold {
+  font-weight: 600;
+}
+
+.min-vh-100 {
+  min-height: 100vh;
+}
+
+/* Quick Action Links */
+.quick-action-link:focus .quick-action-item {
+  box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.25);
+}
+
+/* Animation Utilities */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+/* Responsive Helpers */
+@media (max-width: 768px) {
+  body {
+    font-size: 15px;
+  }
+}
+
+/* Navbar Customization */
+.navbar {
+  padding: 0.6rem 0;
+}
+
+.navbar-brand {
+  font-weight: 700;
+}
+
+/* Prevent horizontal scroll on mobile */
+html, body {
+  overflow-x: hidden;
+}
+
+/* Footer text color overrides */
+.footer .text-muted {
+  color: #6c757d !important;
+}

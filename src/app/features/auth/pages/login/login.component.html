@@ -1,0 +1,114 @@
+<!-- Header -->
+<app-header />
+
+<!-- Main Content: Slide Banner + Login Form -->
+<main class="login-layout">
+  <div class="container-fluid h-100">
+    <div class="row h-100 no-gutters">
+
+      <!-- Left: Slide Banner -->
+      <div class="col-lg-7 col-md-6 banner-section">
+        <app-slide-banner [slides]="banners" />
+      </div>
+
+      <!-- Right: Login Form -->
+      <div class="col-lg-5 col-md-6 form-section">
+        <div class="login-card-wrapper">
+
+          <!-- Login Card -->
+          <div class="login-card">
+
+            <!-- Error Alert -->
+            @if (errorMessage()) {
+              <div class="alert alert-danger" role="alert">
+                <i class="fas fa-exclamation-circle mr-2"></i>
+                {{ errorMessage() }}
+                <button type="button" class="close" (click)="errorMessage.set('')" aria-label="Đóng">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+            }
+
+            <!-- Login Form -->
+            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
+
+              <!-- Username -->
+              <div class="form-group">
+                <label for="username">Tên đăng nhập</label>
+                <input
+                  type="text"
+                  id="username"
+                  class="form-control"
+                  [class.is-invalid]="isFieldInvalid('username')"
+                  formControlName="username"
+                  placeholder="Tên đăng nhập"
+                  autocomplete="username"
+                >
+                @if (isFieldInvalid('username')) {
+                  <div class="invalid-feedback d-block">
+                    {{ getFieldError('username') }}
+                  </div>
+                }
+              </div>
+
+              <!-- Password -->
+              <div class="form-group">
+                <label for="password">Mật khẩu</label>
+                <div class="input-group">
+                  <input
+                    [type]="showPassword() ? 'text' : 'password'"
+                    id="password"
+                    class="form-control"
+                    [class.is-invalid]="isFieldInvalid('password')"
+                    formControlName="password"
+                    placeholder="Mật khẩu"
+                    autocomplete="current-password"
+                  >
+                  <div class="input-group-append">
+                    <button type="button" class="btn btn-outline-secondary toggle-btn"
+                      (click)="showPassword.set(!showPassword())"
+                      [attr.aria-label]="showPassword() ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'">
+                      <i class="fas" [class.fa-eye]="!showPassword()" [class.fa-eye-slash]="showPassword()"></i>
+                    </button>
+                  </div>
+                </div>
+                @if (isFieldInvalid('password')) {
+                  <div class="invalid-feedback d-block">
+                    {{ getFieldError('password') }}
+                  </div>
+                }
+              </div>
+
+              <!-- Remember Me -->
+              <div class="form-group form-check">
+                <input type="checkbox" class="form-check-input" id="rememberMe" formControlName="rememberMe">
+                <label class="form-check-label" for="rememberMe">Ghi nhớ đăng nhập</label>
+              </div>
+
+              <!-- Submit Button -->
+              <button
+                type="submit"
+                class="btn btn-primary btn-block"
+                [disabled]="isLoading()"
+              >
+                @if (isLoading()) {
+                  <span class="spinner-border spinner-border-sm mr-2"></span>
+                  Đang đăng nhập...
+                } @else {
+                  Đăng nhập
+                }
+              </button>
+
+            </form>
+
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<!-- Footer -->
+<app-footer />

@@ -1,0 +1,292 @@
+:host {
+  display: block;
+}
+
+.site-header {
+  background: #ffffff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.header-container {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0 70px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+// ─── LOGO ────────────────────────────────────────────────────────────────────
+
+.header-logo {
+  flex-shrink: 0;
+
+  img {
+    height: 40px;
+    width: auto;
+    display: block;
+  }
+}
+
+// ─── NAV ─────────────────────────────────────────────────────────────────────
+
+.header-nav {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.nav-list {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-item {
+  // placeholder for future dropdown support
+}
+
+.nav-link {
+  display: block;
+  padding: 8px 14px;
+  color: var(--primary-color);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 6px;
+  white-space: nowrap;
+  transition: background 0.2s, color 0.2s;
+
+  &:hover {
+    background: rgba(17, 174, 199, 0.08);
+    color: var(--primary-color-darker);
+  }
+}
+
+// ─── RIGHT ACTIONS ──────────────────────────────────────────────────────────
+
+.header-right {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+// Zalo button
+.zalo-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border: 1.5px solid var(--primary-color);
+  border-radius: 20px;
+  color: var(--primary-color);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  transition: background 0.2s, color 0.2s;
+  white-space: nowrap;
+
+  img {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+  }
+
+  .btn-text {
+    color: var(--primary-color);
+  }
+
+  &:hover {
+    background: var(--primary-color);
+    color: #fff;
+
+    .btn-text {
+      color: #fff;
+    }
+  }
+}
+
+// Hotline
+.hotline-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border: 1.5px solid var(--primary-color);
+  border-radius: 20px;
+  color: var(--primary-color);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  transition: background 0.2s, color 0.2s;
+  white-space: nowrap;
+
+  svg {
+    flex-shrink: 0;
+  }
+
+  span {
+    color: var(--primary-color);
+  }
+
+  &:hover {
+    background: var(--primary-color);
+    color: #fff;
+
+    span {
+      color: #fff;
+    }
+  }
+}
+
+// Language selector
+.lang-selector {
+  position: relative;
+  user-select: none;
+}
+
+.lang-current {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 10px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  font-size: 13px;
+  font-weight: 500;
+  color: #333;
+
+  &:hover {
+    border-color: var(--primary-color);
+    background: rgba(17, 174, 199, 0.04);
+  }
+}
+
+.lang-flag-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &.round {
+    border-radius: 50%;
+  }
+}
+
+.lang-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #555;
+}
+
+.lang-arrow {
+  display: flex;
+  align-items: center;
+  color: #888;
+}
+
+.lang-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+  min-width: 140px;
+  z-index: 200;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.15s;
+    color: #333;
+
+    &:hover {
+      background: rgba(17, 174, 199, 0.06);
+    }
+
+    &.active {
+      color: var(--primary-color);
+      font-weight: 600;
+      background: rgba(17, 174, 199, 0.08);
+    }
+  }
+}
+
+// ─── RESPONSIVE ─────────────────────────────────────────────────────────────
+
+@media (max-width: 900px) {
+  .header-container {
+    padding: 0 16px;
+    gap: 12px;
+  }
+
+  .header-nav {
+    display: none;
+  }
+
+  .hotline-btn span,
+  .zalo-btn .btn-text {
+    display: none;
+  }
+
+  .hotline-btn {
+    padding: 7px 10px;
+  }
+
+  .zalo-btn {
+    padding: 7px 10px;
+  }
+
+  .lang-label {
+    display: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .header-container {
+    height: 56px;
+    padding: 0 12px;
+  }
+
+  .header-logo img {
+    height: 32px;
+  }
+
+  .zalo-btn {
+    width: 32px;
+    height: 32px;
+    padding: 6px 8px;
+    font-size: 12px;
+  }
+
+  .hotline-btn {
+    padding: 6px 8px;
+    font-size: 12px;
+  }
+}

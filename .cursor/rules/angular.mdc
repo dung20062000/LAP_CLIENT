@@ -1,0 +1,127 @@
+---
+description: Angular 21 coding standards for LAP_CLIENT
+alwaysApply: true
+---
+
+# Angular 21 Coding Standards
+
+## TypeScript
+
+- Use strict mode (`strict: true` in tsconfig)
+- Avoid `any` — use `unknown` when type is uncertain
+- Prefer type inference for obvious types
+- Use explicit return types on public methods
+
+## Components (Angular 21)
+
+- **Standalone components only** — no NgModules
+- Use `input()` and `output()` functions, not decorators
+- Use `computed()` for derived state from signals
+- Use `signal()` for local component state
+- Set `changeDetection: ChangeDetectionStrategy.OnPush`
+- Prefer inline templates for small, focused components
+- Keep components small — single responsibility
+
+## State Management
+
+- **Signals** for local component state
+- **RxJS** for async streams, HTTP, and cross-component communication
+- Keep state transformations pure
+- Use `update` or `set` on signals — never `mutate`
+
+## Forms
+
+- **Reactive forms** over template-driven forms
+- Validate before API calls
+- Use built-in validators + custom validators
+
+## Templates
+
+- Use native control flow: `@if`, `@for`, `@switch` (not `*ngIf`, `*ngFor`)
+- Use the `async` pipe to handle observables
+- Never use `innerHTML` with untrusted content
+- Use `class` bindings — not `ngClass`
+- Use `style` bindings — not `ngStyle`
+- Avoid complex logic in templates — push to component
+
+## Styling
+
+- **Bootstrap 4** for layout and base components
+- SCSS for component-specific styles
+- **No Tailwind** — Bootstrap only
+- Responsive via Bootstrap grid (`col-`, `col-md-`, `col-lg-`)
+- Semantic HTML over div-soup
+
+## Services
+
+- Use `providedIn: 'root'` for singleton services
+- Use `inject()` function instead of constructor injection
+- Single responsibility per service
+
+## Routing
+
+- Lazy load feature routes
+- Use `CanActivateFn` guards (not class-based guards)
+
+## Accessibility
+
+- Pass AXE checks
+- WCAG AA minimums — focus management, color contrast, ARIA
+- Semantic HTML (`<button>`, `<nav>`, `<main>`, etc.)
+- `aria-label` on icon-only buttons
+
+## Naming Conventions
+
+| Type | Convention | Example |
+|------|------------|---------|
+| File name | `kebab-case` | `user-profile.component.ts`, `auth.service.ts` |
+| Component class | `PascalCase` | `UserProfileComponent` |
+| Service class | `PascalCase` | `UserService`, `AuthService` |
+| Interface / Type | `PascalCase` | `User`, `CreateUserDto` |
+| Method / Variable | `camelCase` | `getUsers()`, `isLoading` |
+| Constant | `PascalCase` | `MaxPageSize`, `DefaultTimeout` |
+| Signal | `camelCase` | `users`, `loading`, `error` |
+| Template variable | `camelCase` | `#userForm`, `*user of users` |
+| SCSS class | `kebab-case` | `.user-card`, `.nav-header` |
+| CSS custom property | `kebab-case` | `--primary-color`, `--spacing-md` |
+| Route path | `kebab-case` | `/user-profile`, `/dashboard/settings` |
+| Component selector | `kebab-case` with prefix | `app-user-card` |
+
+### Selector Prefix
+
+- Use `app-` as default prefix for component selectors
+- Configure in `angular.json` under `projects.LAP_CLIENT.prefix`
+
+### Interface Naming — No "I" Prefix
+
+```typescript
+// ✅ No 'I' prefix for interfaces (cleaner, follows Angular convention)
+interface User {
+  id: string;
+  name: string;
+}
+
+// ❌ Not used in this project
+interface IUser { ... }
+```
+
+## Code Quality
+
+- Remove unused imports and variables
+- No `console.log` in production code
+- Group imports: Angular → third-party → project
+
+### Import Ordering
+
+```typescript
+// 1. Angular core/modules
+import { Component, inject, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
+
+// 2. Third-party
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+// 3. Project
+import { UserService } from '../services/user.service';
+import { User } from '../models/user';
+```

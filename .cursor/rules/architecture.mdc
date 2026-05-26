@@ -1,0 +1,92 @@
+---
+description: LAP_CLIENT project structure and architecture conventions
+alwaysApply: true
+---
+
+# Project Architecture
+
+## Directory Structure
+
+```
+src/
+└── app/
+    ├── app.ts              # Root — bootstraps the app
+    ├── app.routes.ts       # Route definitions
+    ├── app.config.ts       # Providers and app-wide config
+    ├── app.html            # Root template
+    ├── components/         # Shared reusable components
+    ├── pages/              # Route-level page components
+    ├── services/           # Angular services (providedIn: 'root')
+    ├── models/             # TypeScript interfaces and types
+    ├── guards/             # Route guards
+    ├── pipes/              # Custom pipes
+    ├── directives/         # Custom directives
+    └── utils/              # Helper functions
+```
+
+## Component Conventions
+
+### Naming
+
+| Type | Convention | Example |
+|------|------------|---------|
+| Component file | `kebab-case` | `user-profile.component.ts` |
+| Component class | `PascalCase` | `UserProfileComponent` |
+| Template file | Same as TS + `.html` | `user-profile.component.html` |
+| Style file | Same as TS + `.scss` | `user-profile.component.scss` |
+| Test file | Same as TS + `.spec.ts` | `user-profile.component.spec.ts` |
+
+### Component Structure
+
+```typescript
+@Component({
+  selector: 'app-user-profile',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [...],
+  templateUrl: './user-profile.component.html',
+  styleUrl: './user-profile.component.scss',
+})
+export class UserProfileComponent {
+  // 1. Inputs (public)
+  // 2. Outputs
+  // 3. Public properties
+  // 4. Private properties (signals, state)
+  // 5. Computed values (computed())
+  // 6. Lifecycle hooks
+  // 7. Public methods
+  // 8. Private methods
+}
+```
+
+## Service Conventions
+
+- Place in `services/`
+- Use `inject()` or `providedIn: 'root'`
+- One service = one concern
+- All HTTP calls go through services — never directly in components
+- Services return Observables or Promises
+
+## Model Conventions
+
+- Place in `models/`
+- Use TypeScript interfaces for plain data
+- Use classes for DTOs with methods
+- Export all from `models/index.ts`
+
+## Routing Conventions
+
+```typescript
+// app.routes.ts
+export const routes: Routes = [
+  { path: '', loadComponent: () => import('./pages/home/home.component') },
+  { path: 'users', loadComponent: () => import('./pages/users/users.component'), canActivate: [authGuard] },
+];
+```
+
+## Code Organization
+
+- **Smart (container) components** — fetch data, manage state
+- **Dumb (presentational) components** — accept inputs, emit outputs
+- Extract reusable logic into custom hooks (Angular signals-based) or services
+- Keep business logic out of templates
+- Keep API URLs in environment files

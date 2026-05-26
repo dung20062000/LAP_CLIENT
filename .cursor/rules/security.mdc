@@ -1,0 +1,85 @@
+---
+description: Security checklist for LAP_CLIENT Angular frontend
+alwaysApply: true
+---
+
+# Security Checklist
+
+## Authentication & Authorization
+
+- [ ] All protected routes have a `CanActivateFn` guard
+- [ ] Redirect unauthenticated users to login page
+- [ ] Token stored in `sessionStorage` (not `localStorage` — vulnerable to XSS)
+- [ ] All API calls attach the token via an HTTP interceptor
+- [ ] Handle 401 responses globally — redirect to login
+- [ ] Role/permission checks before showing sensitive UI
+- [ ] Never trust client-side permissions alone — always validate server-side
+
+## XSS Prevention
+
+- [ ] **Never** use `innerHTML` with user-generated content
+- [ ] Use `{{ expression }}` (Angular auto-sanitizes) or `textContent`
+- [ ] If HTML must be rendered, use DOMPurify with explicit allowlist
+- [ ] Validate and escape all user input before rendering
+- [ ] External URLs must be validated before navigation
+
+## External Links
+
+- [ ] All external links have `target="_blank"` with `rel="noopener noreferrer"`
+- [ ] Validate URLs start with `http://` or `https://` before use
+
+## Form Security
+
+- [ ] Validate all form inputs (client-side + server-side)
+- [ ] Prevent double-submission (disable button while loading)
+- [ ] Use Reactive Forms with built-in validators
+- [ ] Never trust form data from the client alone
+
+## File Uploads
+
+- [ ] Validate file type on client (MIME check)
+- [ ] Validate file size limit before upload
+- [ ] Never execute uploaded files on the server
+- [ ] Store uploads outside web root
+
+## Data Exposure
+
+- [ ] No sensitive data in URL query parameters
+- [ ] No sensitive data in `console.log` or error messages
+- [ ] API errors return generic messages to the client — never expose stack traces
+- [ ] Sensitive data masked in UI (e.g., password fields)
+
+## HTTP Security
+
+- [ ] All API calls use HTTPS in production
+- [ ] CORS configured to allow only known origins
+- [ ] API calls go through service layer — never direct HTTP in components
+- [ ] Rate limit sensitive operations (debounce, throttle)
+
+## Common Patterns
+
+```typescript
+// ✅ Safe — Angular sanitizes by default
+<span>{{ userInput }}</span>
+
+// ✅ Safe — external links
+<a [href]="safeUrl" target="_blank" rel="noopener noreferrer">
+
+// ❌ Dangerous — XSS risk
+<div [innerHTML]="userHtml"></div>
+
+// ❌ Dangerous — open redirect
+window.location.href = userProvidedUrl;
+```
+
+```typescript
+// Validate external URL before navigation
+function isSafeRedirect(url: string): boolean {
+  try {
+    const parsed = new URL(url);
+    return ['http:', 'https:'].includes(parsed.protocol);
+  } catch {
+    return false;
+  }
+}
+```

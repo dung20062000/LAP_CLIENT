@@ -24,32 +24,48 @@ export class LoginComponent implements OnInit {
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router
-  ) {}
+  ) { }
 
   readonly banners: BannerSlide[] = [
     {
       id: 1,
       imageUrl: '/images/banners/BANNER_1.jpg',
-      title: 'BA GPS - Hệ thống quản lý GPS thông minh',
-      shortContents: 'Theo dõi và giám sát phương tiện trực tuyến 24/7 với công nghệ GPS tiên tiến nhất.',
-      link: '#',
+      title: 'THIẾT BỊ ĐẦU GHI TÍCH HỢP GIÁM SÁT HÀNH TRÌNH',
+      shortContents: 'Thiết bị đầu ghi giám sát hành trình tích hợp Camera giám sát trên xe ô tô BA-SmartCamera (BA-CAMND10-1) đáp ứng Nghị định 10/2020/NĐ-CP, Nghị định 47/2022/NĐ-CP, hợp chuẩn TCVN 13396:2021',
+      link: 'https://bagps.vn/ba-smartcamera-chuan-nghi-dinh-10-p38',
       order: 1,
     },
     {
       id: 2,
       imageUrl: '/images/banners/driver_check_vehicle_Ba.jpg',
-      title: 'An toàn - Chính xác - Hiệu quả',
-      shortContents: 'Giải pháp quản lý xe toàn diện cho doanh nghiệp vận tải và cá nhân.',
-      link: '#',
+      title: 'Giải pháp Giám sát Hành trình Toàn diện',
+      shortContents: 'Thiết bị giám sát hành trình chất lượng cao của BA GPS giúp doanh nghiệp tối ưu chi phí vận hành và quản lý đội xe hiệu quả trực tuyến 24/7.',
+      link: 'https://bagps.vn/giam-sat-hanh-trinh-p2',
       order: 2,
     },
     {
       id: 3,
       imageUrl: '/images/banners/baexpress.jpg',
-      title: 'Kết nối mọi hành trình',
-      shortContents: 'Hệ thống chi nhánh rộng khắp 6 tỉnh thành, hỗ trợ khách hàng mọi lúc.',
-      link: '#',
+      title: 'BA Express - Chuyển phát nhanh tài liệu & hàng hóa',
+      shortContents: 'Dịch vụ chuyển phát chuyên nghiệp, nhanh chóng và tin cậy trên toàn quốc với mạng lưới phủ khắp các tỉnh thành.',
+      link: 'https://baexpress.vn',
       order: 3,
+    },
+    {
+      id: 4,
+      imageUrl: '/images/banners/ba_zalo_2023.jpg',
+      title: 'Kết nối qua kênh Zalo Official Account',
+      shortContents: 'Hỗ trợ kỹ thuật và chăm sóc khách hàng nhanh chóng tiện lợi trực tiếp trên Zalo OA của BA GPS.',
+      link: 'https://zalo.me/1958838581480438876',
+      order: 4,
+    },
+    {
+      id: 5,
+      imageUrl: '/images/banners/chuc_mung_nam_moi.png',
+      title: 'Đồng hành cùng khách hàng trên mọi nẻo đường',
+      shortContents: 'BA GPS kính chúc Quý khách hàng một năm mới an khang thịnh vượng, vạn sự như ý và có những chuyến đi thượng lộ bình an.',
+      link: 'https://bagps.vn',
+      order: 5,
     },
   ];
 
@@ -109,6 +125,14 @@ export class LoginComponent implements OnInit {
     this.errorMessage.set('');
 
     const { username, password, rememberMe } = this.loginForm.value;
+
+    // Hardcode check directly on Client
+    if (username.trim() !== 'admin' || password !== 'admin@123') {
+      this.isLoading.set(false);
+      this.errorMessage.set('Tài khoản hoặc mật khẩu không đúng');
+      return;
+    }
+
     const credentials: LoginRequest = {
       username: username.trim(),
       password,

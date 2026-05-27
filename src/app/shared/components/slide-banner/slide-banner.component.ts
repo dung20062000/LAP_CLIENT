@@ -43,7 +43,8 @@ export class SlideBannerComponent implements OnInit, OnDestroy {
 
   readonly dotIndices = computed(() => {
     if (!this.hasSlides()) return [];
-    return this.slides.map((_, i) => i);
+    const count = Math.min(this.slides.length, 5);
+    return Array.from({ length: count }, (_, i) => i);
   });
 
   ngOnInit(): void {

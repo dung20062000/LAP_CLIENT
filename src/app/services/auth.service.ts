@@ -75,14 +75,14 @@ export class AuthService {
         localStorage.setItem('remember_me', 'true');
         localStorage.setItem('auth_token', fakeToken);
         localStorage.setItem('auth_user', JSON.stringify(fakeUser));
-        localStorage.removeItem('auth_session_token');
-        localStorage.removeItem('auth_session_user');
+        sessionStorage.removeItem('auth_token');
+        sessionStorage.removeItem('auth_user');
       } else {
         localStorage.removeItem('remember_me');
         localStorage.removeItem('auth_token');
         localStorage.removeItem('auth_user');
-        sessionStorage.setItem('auth_session_token', fakeToken);
-        sessionStorage.setItem('auth_session_user', JSON.stringify(fakeUser));
+        sessionStorage.setItem('auth_token', fakeToken);
+        sessionStorage.setItem('auth_user', JSON.stringify(fakeUser));
       }
       this.tokenSignal.set(fakeToken);
       this.currentUserSignal.set(fakeUser);
@@ -107,8 +107,8 @@ export class AuthService {
     localStorage.removeItem('remember_me');
     localStorage.removeItem('auth_token');
     localStorage.removeItem('auth_user');
-    sessionStorage.removeItem('auth_session_token');
-    sessionStorage.removeItem('auth_session_user');
+    sessionStorage.removeItem('auth_token');
+    sessionStorage.removeItem('auth_user');
   }
 
   getToken(): string | null {

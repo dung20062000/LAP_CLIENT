@@ -3,7 +3,7 @@
 
 <!-- Main Content: Slide Banner + Login Form -->
 <main class="login-layout">
-  <div class="container-fluid h-100">
+  <div class="container-fluid h-100 p-0">
     <div class="row h-100 no-gutters">
 
       <!-- Left: Slide Banner -->
@@ -11,22 +11,27 @@
         <app-slide-banner [slides]="banners" />
       </div>
 
-      <!-- Right: Login Form -->
+      <!-- Right: Login Form Section -->
       <div class="col-lg-5 col-md-6 form-section">
         <div class="login-card-wrapper">
 
           <!-- Login Card -->
           <div class="login-card">
 
+            <!-- Logo BA GPS -->
+            <div class="login-logo text-center">
+              <img src="/images/logos/logo.svg" alt="BA GPS" class="img-fluid logo-img">
+            </div>
+
             <!-- Error Alert -->
             @if (errorMessage()) {
-              <div class="alert alert-danger" role="alert">
-                <i class="fas fa-exclamation-circle mr-2"></i>
-                {{ errorMessage() }}
-                <button type="button" class="close" (click)="errorMessage.set('')" aria-label="Đóng">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
+            <div class="alert alert-danger" role="alert">
+              <i class="fas fa-exclamation-circle mr-2"></i>
+              {{ errorMessage() }}
+              <button type="button" class="close-btn" (click)="errorMessage.set('')" aria-label="Đóng">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
             }
 
             <!-- Login Form -->
@@ -34,72 +39,75 @@
 
               <!-- Username -->
               <div class="form-group">
-                <label for="username">Tên đăng nhập</label>
-                <input
-                  type="text"
-                  id="username"
-                  class="form-control"
-                  [class.is-invalid]="isFieldInvalid('username')"
-                  formControlName="username"
-                  placeholder="Tên đăng nhập"
-                  autocomplete="username"
-                >
+                <div class="input-icon-wrapper"
+                  [class.input-error]="isFieldInvalid('username')"
+                  [class.input-success]="loginForm.get('username')?.valid && loginForm.get('username')?.value">
+                  <span class="input-icon-left">
+                    <i class="fas fa-user text-muted"></i>
+                  </span>
+                  <input type="text" id="username" maxlength="50" class="form-input-pill" formControlName="username"
+                    placeholder="Tên đăng nhập" autocomplete="username">
+                </div>
                 @if (isFieldInvalid('username')) {
-                  <div class="invalid-feedback d-block">
-                    {{ getFieldError('username') }}
-                  </div>
+                <div class="error-text">
+                  {{ getFieldError('username') }}
+                </div>
                 }
               </div>
 
               <!-- Password -->
               <div class="form-group">
-                <label for="password">Mật khẩu</label>
-                <div class="input-group">
-                  <input
-                    [type]="showPassword() ? 'text' : 'password'"
-                    id="password"
-                    class="form-control"
-                    [class.is-invalid]="isFieldInvalid('password')"
-                    formControlName="password"
-                    placeholder="Mật khẩu"
-                    autocomplete="current-password"
-                  >
-                  <div class="input-group-append">
-                    <button type="button" class="btn btn-outline-secondary toggle-btn"
-                      (click)="showPassword.set(!showPassword())"
-                      [attr.aria-label]="showPassword() ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'">
-                      <i class="fas" [class.fa-eye]="!showPassword()" [class.fa-eye-slash]="showPassword()"></i>
-                    </button>
-                  </div>
+                <div class="input-icon-wrapper"
+                  [class.input-error]="isFieldInvalid('password')"
+                  [class.input-success]="loginForm.get('password')?.valid && loginForm.get('password')?.value">
+                  <span class="input-icon-left">
+                    <i class="fas fa-lock text-muted"></i>
+                  </span>
+                  <input [type]="showPassword() ? 'text' : 'password'" id="password" maxlength="200"
+                    class="form-input-pill" formControlName="password" placeholder="Mật khẩu"
+                    autocomplete="current-password">
+                  <button type="button" class="input-icon-right-btn" (click)="showPassword.set(!showPassword())"
+                    [attr.aria-label]="showPassword() ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'">
+                    <i class="fas" [class.fa-eye]="!showPassword()" [class.fa-eye-slash]="showPassword()"></i>
+                  </button>
                 </div>
                 @if (isFieldInvalid('password')) {
-                  <div class="invalid-feedback d-block">
-                    {{ getFieldError('password') }}
-                  </div>
+                <div class="error-text">
+                  {{ getFieldError('password') }}
+                </div>
                 }
               </div>
 
-              <!-- Remember Me -->
-              <div class="form-group form-check">
-                <input type="checkbox" class="form-check-input" id="rememberMe" formControlName="rememberMe">
-                <label class="form-check-label" for="rememberMe">Ghi nhớ đăng nhập</label>
+              <!-- Remember Me & Forgot Password -->
+              <div class="form-options d-flex justify-content-between align-items-center">
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" class="custom-control-input" id="rememberMe" formControlName="rememberMe">
+                  <label class="custom-control-label" for="rememberMe">Ghi nhớ đăng nhập</label>
+                </div>
+                <a href="#" class="forgot-password-link">Quên mật khẩu?</a>
               </div>
 
               <!-- Submit Button -->
-              <button
-                type="submit"
-                class="btn btn-primary btn-block"
-                [disabled]="isLoading()"
-              >
-                @if (isLoading()) {
+              <div class="submit-section">
+                <button type="submit" class="btn btn-login-pill btn-block" [disabled]="isLoading()">
+                  @if (isLoading()) {
                   <span class="spinner-border spinner-border-sm mr-2"></span>
                   Đang đăng nhập...
-                } @else {
-                  Đăng nhập
-                }
-              </button>
+                  } @else {
+                  ĐĂNG NHẬP
+                  }
+                </button>
+              </div>
 
             </form>
+
+            <!-- QR Code Section -->
+            <div class="qr-code-section text-center">
+              <div class="qr-container">
+                <img src="/images/qr/qr-code.svg" alt="Mã QR" class="qr-image">
+              </div>
+              <p class="qr-text">Quét mã QR để cài app</p>
+            </div>
 
           </div>
 

@@ -9,7 +9,7 @@
     <!-- Navigation Menu -->
     <nav class="header-nav">
       <ul class="nav-list">
-        @for (item of menuItems; track item.label) {
+        @for (item of menuItems(); track item.label) {
           <li class="nav-item">
             <a
               class="nav-link"
@@ -41,7 +41,7 @@
           width="22"
           height="22"
         />
-        <span class="btn-text">{{ zaloText }}</span>
+        <span class="btn-text">{{ 'common.zalo' | translate }}</span>
       </a>
 
       <!-- Hotline -->
@@ -53,7 +53,7 @@
       </a>
 
       <!-- Language Selector -->
-      <div class="lang-selector" title="Chọn ngôn ngữ" (clickOutside)="langOpen = false">
+      <div class="lang-selector" [title]="'header.select_language' | translate" (clickOutside)="langOpen = false">
         <div class="lang-current" (click)="langOpen = !langOpen">
           <span class="lang-flag-wrapper">
             <img

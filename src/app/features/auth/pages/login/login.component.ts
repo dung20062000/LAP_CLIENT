@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -7,14 +7,18 @@ import { LoginRequest } from '../../../../models';
 import { HeaderComponent } from '../../../../shared/components/header/header.component';
 import { FooterComponent } from '../../../../shared/components/footer/footer.component';
 import { SlideBannerComponent, BannerSlide } from '../../../../shared/components/slide-banner';
+import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
+import { TranslationService } from '../../../../shared/services/translation.service';
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule, CommonModule, HeaderComponent, FooterComponent, SlideBannerComponent],
+  imports: [ReactiveFormsModule, CommonModule, HeaderComponent, FooterComponent, SlideBannerComponent, TranslatePipe],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
 export class LoginComponent implements OnInit {
+  private translationService = inject(TranslationService);
+
   loginForm!: FormGroup;
   isLoading = signal(false);
   showPassword = signal(false);
@@ -101,16 +105,16 @@ export class LoginComponent implements OnInit {
 
     if (field.errors['required']) {
       return fieldName === 'username'
-        ? 'Vui lòng nhập tên đăng nhập'
-        : 'Vui lòng nhập mật khẩu';
+        ? this.translationService.translate('login.err_username_required')
+        : this.translationService.translate('login.err_password_required');
     }
     if (field.errors['pattern']) {
-      return 'Tên đăng nhập chỉ được chứa chữ và số';
+      return this.translationService.translate('login.err_username_pattern');
     }
     if (field.errors['maxlength']) {
       return fieldName === 'username'
-        ? 'Tên đăng nhập tối đa 50 ký tự'
-        : 'Mật khẩu tối đa 200 ký tự';
+        ? this.translationService.translate('login.err_username_maxlength')
+        : this.translationService.translate('login.err_password_maxlength');
     }
     return '';
   }
@@ -129,7 +133,7 @@ export class LoginComponent implements OnInit {
     // Hardcode check directly on Client
     if (username.trim() !== 'admin' || password !== 'admin@123') {
       this.isLoading.set(false);
-      this.errorMessage.set('Tài khoản hoặc mật khẩu không đúng');
+      this.errorMessage.set(this.translationService.translate('login.err_invalid_credentials'));
       return;
     }
 
@@ -144,12 +148,12 @@ export class LoginComponent implements OnInit {
         if (response.success) {
           this.router.navigate(['/home']);
         } else {
-          this.errorMessage.set(response.message || 'Tài khoản hoặc mật khẩu không đúng');
+          this.errorMessage.set(response.message || this.translationService.translate('login.err_invalid_credentials'));
         }
       },
       error: (err) => {
         this.isLoading.set(false);
-        const msg = err?.error?.message || 'Tài khoản hoặc mật khẩu không đúng';
+        const msg = err?.error?.message || this.translationService.translate('login.err_invalid_credentials');
         this.errorMessage.set(msg);
       },
     });

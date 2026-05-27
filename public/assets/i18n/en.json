@@ -1,0 +1,44 @@
+{
+  "header": {
+    "select_language": "Select language"
+  },
+  "nav": {
+    "home": "Home",
+    "products": "Products",
+    "news": "News",
+    "payment": "Payment",
+    "guide": "Guide",
+    "network": "Network",
+    "about": "About us"
+  },
+  "footer": {
+    "city": {
+      "hanoi": "Hanoi",
+      "haiphong": "Hai Phong",
+      "nghean": "Nghe An",
+      "hatinh": "Ha Tinh",
+      "danang": "Da Nang",
+      "hcm": "Ho Chi Minh City"
+    }
+  },
+  "common": {
+    "zalo": "Zalo"
+  },
+  "login": {
+    "username_placeholder": "Username",
+    "password_placeholder": "Password",
+    "password_show": "Show password",
+    "password_hide": "Hide password",
+    "remember_me": "Remember login",
+    "forgot_password": "Forgot password?",
+    "btn_login": "LOGIN",
+    "btn_loading": "Logging in...",
+    "qr_text": "Scan QR code to install app",
+    "err_username_required": "Please enter username",
+    "err_password_required": "Please enter password",
+    "err_username_pattern": "Username can only contain letters and numbers",
+    "err_username_maxlength": "Username cannot exceed 50 characters",
+    "err_password_maxlength": "Password cannot exceed 200 characters",
+    "err_invalid_credentials": "Invalid username or password"
+  }
+}

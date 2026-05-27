@@ -1,0 +1,44 @@
+{
+  "header": {
+    "select_language": "Chọn ngôn ngữ"
+  },
+  "nav": {
+    "home": "Trang chủ",
+    "products": "Sản phẩm",
+    "news": "Tin tức",
+    "payment": "Đóng phí",
+    "guide": "Hướng dẫn",
+    "network": "Mạng lưới",
+    "about": "Về chúng tôi"
+  },
+  "footer": {
+    "city": {
+      "hanoi": "Hà Nội",
+      "haiphong": "Hải Phòng",
+      "nghean": "Nghệ An",
+      "hatinh": "Hà Tĩnh",
+      "danang": "Đà Nẵng",
+      "hcm": "TP. Hồ Chí Minh"
+    }
+  },
+  "common": {
+    "zalo": "Zalo"
+  },
+  "login": {
+    "username_placeholder": "Tên đăng nhập",
+    "password_placeholder": "Mật khẩu",
+    "password_show": "Hiện mật khẩu",
+    "password_hide": "Ẩn mật khẩu",
+    "remember_me": "Ghi nhớ đăng nhập",
+    "forgot_password": "Quên mật khẩu?",
+    "btn_login": "ĐĂNG NHẬP",
+    "btn_loading": "Đang đăng nhập...",
+    "qr_text": "Quét mã QR để cài app",
+    "err_username_required": "Vui lòng nhập tên đăng nhập",
+    "err_password_required": "Vui lòng nhập mật khẩu",
+    "err_username_pattern": "Tên đăng nhập chỉ được chứa chữ và số",
+    "err_username_maxlength": "Tên đăng nhập tối đa 50 ký tự",
+    "err_password_maxlength": "Mật khẩu tối đa 200 ký tự",
+    "err_invalid_credentials": "Tài khoản hoặc mật khẩu không đúng"
+  }
+}

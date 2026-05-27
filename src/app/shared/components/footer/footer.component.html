@@ -8,7 +8,7 @@
         <div class="row no-gutters footer-grid">
           @for (branch of branches; track branch.id) {
           <div class="col-sm-2 footer-col">
-            <h4 class="footer-city">{{ branch.city }}</h4>
+            <h4 class="footer-city">{{ branch.city | translate }}</h4>
             <p class="footer-desc">{{ branch.address }}</p>
           </div>
           }

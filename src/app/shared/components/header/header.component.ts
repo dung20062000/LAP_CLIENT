@@ -53,9 +53,18 @@ export class HeaderComponent {
   }
 
   langOpen = false;
+  isMenuOpen = false;
 
   selectLang(code: string): void {
     this.translationService.changeLanguage(code);
+  }
+
+  toggleMenu(): void {
+    this.isMenuOpen = !this.isMenuOpen;
+  }
+
+  closeMenu(): void {
+    this.isMenuOpen = false;
   }
 
   onLogout(): void {

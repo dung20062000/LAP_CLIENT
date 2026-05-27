@@ -12,7 +12,14 @@ import { TranslationService } from '../../../../shared/services/translation.serv
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule, CommonModule, HeaderComponent, FooterComponent, SlideBannerComponent, TranslatePipe],
+  imports: [
+    ReactiveFormsModule,
+    CommonModule,
+    HeaderComponent,
+    FooterComponent,
+    SlideBannerComponent,
+    TranslatePipe,
+  ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
@@ -27,15 +34,16 @@ export class LoginComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
-  ) { }
+    private router: Router,
+  ) {}
 
   readonly banners: BannerSlide[] = [
     {
       id: 1,
       imageUrl: '/images/banners/BANNER_1.jpg',
       title: 'THIẾT BỊ ĐẦU GHI TÍCH HỢP GIÁM SÁT HÀNH TRÌNH',
-      shortContents: 'Thiết bị đầu ghi giám sát hành trình tích hợp Camera giám sát trên xe ô tô BA-SmartCamera (BA-CAMND10-1) đáp ứng Nghị định 10/2020/NĐ-CP, Nghị định 47/2022/NĐ-CP, hợp chuẩn TCVN 13396:2021',
+      shortContents:
+        'Thiết bị đầu ghi giám sát hành trình tích hợp Camera giám sát trên xe ô tô BA-SmartCamera (BA-CAMND10-1) đáp ứng Nghị định 10/2020/NĐ-CP, Nghị định 47/2022/NĐ-CP, hợp chuẩn TCVN 13396:2021',
       link: 'https://bagps.vn/ba-smartcamera-chuan-nghi-dinh-10-p38',
       order: 1,
     },
@@ -43,15 +51,17 @@ export class LoginComponent implements OnInit {
       id: 2,
       imageUrl: '/images/banners/driver_check_vehicle_Ba.jpg',
       title: 'Giải pháp Giám sát Hành trình Toàn diện',
-      shortContents: 'Thiết bị giám sát hành trình chất lượng cao của BA GPS giúp doanh nghiệp tối ưu chi phí vận hành và quản lý đội xe hiệu quả trực tuyến 24/7.',
-      link: 'https://bagps.vn/giam-sat-hanh-trinh-p2',
+      shortContents:
+        'Thiết bị giám sát hành trình chất lượng cao của BA GPS giúp doanh nghiệp tối ưu chi phí vận hành và quản lý đội xe hiệu quả trực tuyến 24/7.',
+      // link: 'https://bagps.vn/giam-sat-hanh-trinh-p2',
       order: 2,
     },
     {
       id: 3,
       imageUrl: '/images/banners/baexpress.jpg',
       title: 'BA Express - Chuyển phát nhanh tài liệu & hàng hóa',
-      shortContents: 'Dịch vụ chuyển phát chuyên nghiệp, nhanh chóng và tin cậy trên toàn quốc với mạng lưới phủ khắp các tỉnh thành.',
+      shortContents:
+        'Dịch vụ chuyển phát chuyên nghiệp, nhanh chóng và tin cậy trên toàn quốc với mạng lưới phủ khắp các tỉnh thành.',
       link: 'https://baexpress.vn',
       order: 3,
     },
@@ -59,7 +69,8 @@ export class LoginComponent implements OnInit {
       id: 4,
       imageUrl: '/images/banners/ba_zalo_2023.jpg',
       title: 'Kết nối qua kênh Zalo Official Account',
-      shortContents: 'Hỗ trợ kỹ thuật và chăm sóc khách hàng nhanh chóng tiện lợi trực tiếp trên Zalo OA của BA GPS.',
+      shortContents:
+        'Hỗ trợ kỹ thuật và chăm sóc khách hàng nhanh chóng tiện lợi trực tiếp trên Zalo OA của BA GPS.',
       link: 'https://zalo.me/1958838581480438876',
       order: 4,
     },
@@ -67,7 +78,8 @@ export class LoginComponent implements OnInit {
       id: 5,
       imageUrl: '/images/banners/chuc_mung_nam_moi.png',
       title: 'Đồng hành cùng khách hàng trên mọi nẻo đường',
-      shortContents: 'BA GPS kính chúc Quý khách hàng một năm mới an khang thịnh vượng, vạn sự như ý và có những chuyến đi thượng lộ bình an.',
+      shortContents:
+        'BA GPS kính chúc Quý khách hàng một năm mới an khang thịnh vượng, vạn sự như ý và có những chuyến đi thượng lộ bình an.',
       link: 'https://bagps.vn',
       order: 5,
     },
@@ -77,19 +89,9 @@ export class LoginComponent implements OnInit {
     this.loginForm = this.fb.group({
       username: [
         '',
-        [
-          Validators.required,
-          Validators.pattern('^[a-zA-Z0-9]+$'),
-          Validators.maxLength(50),
-        ],
+        [Validators.required, Validators.pattern('^[a-zA-Z0-9]+$'), Validators.maxLength(50)],
       ],
-      password: [
-        '',
-        [
-          Validators.required,
-          Validators.maxLength(200),
-        ],
-      ],
+      password: ['', [Validators.required, Validators.maxLength(200)]],
       rememberMe: [true],
     });
   }
@@ -148,12 +150,15 @@ export class LoginComponent implements OnInit {
         if (response.success) {
           this.router.navigate(['/home']);
         } else {
-          this.errorMessage.set(response.message || this.translationService.translate('login.err_invalid_credentials'));
+          this.errorMessage.set(
+            response.message || this.translationService.translate('login.err_invalid_credentials'),
+          );
         }
       },
       error: (err) => {
         this.isLoading.set(false);
-        const msg = err?.error?.message || this.translationService.translate('login.err_invalid_credentials');
+        const msg =
+          err?.error?.message || this.translationService.translate('login.err_invalid_credentials');
         this.errorMessage.set(msg);
       },
     });

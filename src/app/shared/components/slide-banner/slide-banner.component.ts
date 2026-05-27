@@ -1,11 +1,5 @@
-import {
-  Component,
-  Input,
-  OnInit,
-  OnDestroy,
-  signal,
-  computed,
-} from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, signal, computed, inject } from '@angular/core';
+import { TranslationService } from '../../services/translation.service';
 
 export interface BannerSlide {
   id: string | number;
@@ -26,8 +20,13 @@ export interface BannerSlide {
 export class SlideBannerComponent implements OnInit, OnDestroy {
   @Input() slides: BannerSlide[] = [];
 
+  private translationService = inject(TranslationService);
+
   readonly currentIndex = signal(0);
   readonly isHovered = signal(false);
+
+  readonly t = (key: string) => this.translationService.translate(key);
+  readonly currentLang = () => this.translationService.currentLang();
 
   private intervalId: ReturnType<typeof setInterval> | null = null;
   private readonly SLIDE_INTERVAL_MS = 5000;

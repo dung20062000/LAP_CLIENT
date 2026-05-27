@@ -42,5 +42,11 @@
     "err_username_maxlength": "Tên đăng nhập tối đa 50 ký tự",
     "err_password_maxlength": "Mật khẩu tối đa 200 ký tự",
     "err_invalid_credentials": "Tài khoản hoặc mật khẩu không đúng"
+  },
+  "banner": {
+    "btn_detail": "Chi tiết",
+    "aria_prev": "Slide trước",
+    "aria_next": "Slide tiếp theo",
+    "aria_slide": "Chuyển đến slide"
   }
 }

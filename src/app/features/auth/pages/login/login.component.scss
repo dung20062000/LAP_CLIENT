@@ -1,11 +1,19 @@
+// Main Wrapper
+.login-page-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
 // Main Layout
 .login-layout {
-  height: 100vh;
-  min-height: 600px;
-  background: #031135 url('/images/banners/BANNER_1.jpg') no-repeat center/cover;
+  flex: 1;
+  background: #031135;
   display: flex;
-  overflow: hidden;
   position: relative;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .row {
@@ -13,12 +21,14 @@
   margin: 0;
 }
 
-// Left side: Slide Banner
-.banner-section {
-  position: relative;
-  overflow: hidden;
+// Background Slide Banner
+.banner-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
   height: 100%;
-  padding: 0;
+  z-index: 1;
 
   app-slide-banner {
     display: block;
@@ -27,15 +37,21 @@
   }
 }
 
-// Right side: Login Form Section
+.form-overlay {
+  position: relative;
+  z-index: 10;
+  pointer-events: none;
+  min-height: 100%;
+}
+
+// Login Form Section
 .form-section {
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 2rem;
   height: 100%;
-  position: relative;
-  z-index: 10;
+  pointer-events: auto;
 }
 
 .login-card-wrapper {
@@ -103,15 +119,17 @@
 .input-icon-wrapper {
   display: flex;
   align-items: center;
-  background: #ffffff;
+  background: var(--bg-white);
   border: 2px solid var(--form-input-border-color);
-  border-left: 4px solid #ff3b30;
+  border-left: 4px solid var(--text-danger);
   border-radius: 30px;
   padding: 6px 16px;
-  transition: border-color 0.25s, box-shadow 0.25s;
+  transition:
+    border-color 0.25s,
+    box-shadow 0.25s;
 
   &.input-success {
-    border-left-color: #28a745;
+    border-left-color: var(--form-input-border-color-success);
   }
 
   &.input-error {
@@ -124,7 +142,7 @@
   }
 
   &:focus-within {
-    border-color: #00a2e8;
+    border-color: var(--form-input-border-color-focus);
     box-shadow: 0 0 0 3px rgba(0, 162, 232, 0.15);
   }
 }
@@ -195,7 +213,7 @@
       }
     }
 
-    .custom-control-input:checked~.custom-control-label::before {
+    .custom-control-input:checked ~ .custom-control-label::before {
       background-color: var(--primary-color);
       border-color: var(--primary-color);
     }
@@ -273,10 +291,6 @@
 @media (max-width: 991px) {
   .login-layout {
     overflow-y: auto;
-  }
-
-  .banner-section {
-    display: none; // Hide slide banner on mobile/tablet as standard
   }
 
   .form-section {

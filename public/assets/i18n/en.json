@@ -42,5 +42,11 @@
     "err_username_maxlength": "Username cannot exceed 50 characters",
     "err_password_maxlength": "Password cannot exceed 200 characters",
     "err_invalid_credentials": "Invalid username or password"
+  },
+  "banner": {
+    "btn_detail": "Details",
+    "aria_prev": "Previous slide",
+    "aria_next": "Next slide",
+    "aria_slide": "Go to slide"
   }
 }

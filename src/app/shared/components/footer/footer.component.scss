@@ -43,8 +43,6 @@
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  gap: 14px;
-  padding-top: 4px;
 }
 
 .footer-app-links-container {
@@ -56,64 +54,40 @@
   padding-left: 16px;
 }
 
-// App block: icon + text side by side
-.footer-app-links {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 6px;
-  border-radius: 8px;
-  border: 1.5px solid #e8eaed;
-  padding: 6px 8px;
-  width: 100%;
-  margin: 0 6px;
-  transition: border-color 0.2s;
-
-  &:hover {
-    border-color: var(--primary-color);
-  }
-
-  a {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    text-decoration: none;
-    flex-shrink: 0;
-  }
-}
-
-.footer-app-links-text {
+.footer-app-stores {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 2px;
-  line-height: 1.2;
+  align-items: center;
+  gap: 8px;
+}
 
-  .footer-app-links-text-description {
-    font-size: 0.55rem;
-    color: #777;
-    margin: 0;
-    letter-spacing: 0.02em;
+.footer-app-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 120px;
+  height: 40px;
+  flex-shrink: 0;
+  transition: transform 0.2s;
+
+  &:hover {
+    transform: scale(1.05);
   }
 
-  .footer-app-links-text-title {
-    font-size: 0.72rem;
-    font-weight: 700;
-    color: #333;
-    margin: 0;
+  img {
+    display: block;
+    max-width: 100%;
+    height: auto;
   }
 }
 
-// Social icons row
 .footer-app-links-social {
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   width: 100%;
-  justify-content: center;
 
   a {
     display: flex;
@@ -133,15 +107,9 @@
   }
 }
 
-// ─── Social row (tablet/mobile: full width below branches) ───────────────────
-
-.footer-social-row {
-  display: none; // hidden on large screen
-}
-
 // ─── RESPONSIVE ─────────────────────────────────────────────────────────────
 
-// Medium (≤1199px): branches 3 cols, social row below
+// Medium (≤1199px): branches 3 cols, social column wraps below with horizontal layout
 @media (max-width: 1199px) {
   .footer-grid {
     .col-sm-2 {
@@ -151,45 +119,25 @@
   }
 
   .footer-app-col {
-    display: none !important;
+    padding-top: 24px;
   }
 
-  .footer-social-row {
-    display: flex;
-    padding-top: 16px;
-    justify-content: flex-start;
-  }
-
-  .footer-app-links-container--mobile {
+  .footer-app-links-container {
     flex-direction: row;
     align-items: center;
     justify-content: flex-start;
     padding-left: 0;
-    flex-wrap: nowrap;
+    gap: 20px;
+  }
+
+  .footer-app-stores {
+    flex-direction: row;
     gap: 12px;
   }
 
-  .footer-app-links-container--mobile .footer-app-links {
-    flex-direction: column;
-    width: auto;
-    margin: 0;
-    padding: 4px;
-    align-items: center;
-  }
-
-  .footer-app-links-container--mobile .footer-app-links-text {
-    align-items: center;
-  }
-
-  .footer-app-links-container--mobile .footer-app-links-social {
-    flex-direction: row;
-    flex-wrap: nowrap;
-    width: auto;
-    padding-top: 0;
-  }
 }
 
-// Tablet (≤991px): branches 2 cols, social row 1 row
+// Tablet (≤991px): branches 2 cols
 @media (max-width: 991px) {
   .site-footer {
     padding: 28px 0 24px;
@@ -207,46 +155,12 @@
     }
   }
 
-  .footer-app-col {
-    display: none !important;
-  }
-
-  .footer-social-row {
-    display: flex;
-    padding-top: 16px;
+  .footer-app-links-social {
     justify-content: flex-start;
-  }
-
-  .footer-app-links-container--mobile {
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-start;
-    padding-left: 0;
-    flex-wrap: nowrap;
-    gap: 12px;
-  }
-
-  .footer-app-links-container--mobile .footer-app-links {
-    flex-direction: column;
-    width: auto;
-    margin: 0;
-    padding: 4px;
-    align-items: center;
-  }
-
-  .footer-app-links-container--mobile .footer-app-links-text {
-    align-items: center;
-  }
-
-  .footer-app-links-container--mobile .footer-app-links-social {
-    flex-direction: row;
-    flex-wrap: nowrap;
-    width: auto;
-    padding-top: 0;
   }
 }
 
-// Mobile (≤575px): branches 1 col, social row 1 row
+// Mobile (≤575px): branches 1 col, container wraps items if needed
 @media (max-width: 575px) {
   .site-footer {
     padding: 24px 0 20px;
@@ -265,42 +179,19 @@
   }
 
   .footer-app-col {
-    display: none !important;
+    padding-top: 20px;
   }
 
-  .footer-social-row {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    padding-top: 20px;
+  .footer-app-links-container {
+    flex-wrap: wrap;
     gap: 12px;
   }
 
-  .footer-app-links-container--mobile {
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-start;
-    padding-left: 0;
-    flex-wrap: wrap;
+  .footer-app-stores {
     gap: 8px;
   }
 
-  .footer-app-links-container--mobile .footer-app-links {
-    flex-direction: column;
-    width: auto;
-    margin: 0;
-    padding: 4px;
-    align-items: center;
-  }
-
-  .footer-app-links-container--mobile .footer-app-links-text {
-    align-items: center;
-  }
-
-  .footer-app-links-container--mobile .footer-app-links-social {
-    flex-direction: row;
-    flex-wrap: nowrap;
-    width: auto;
-    padding-top: 0;
+  .footer-app-links-social {
+    justify-content: flex-start;
   }
 }

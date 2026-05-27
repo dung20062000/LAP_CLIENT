@@ -13,8 +13,6 @@ interface BranchLocation {
   styleUrl: './footer.component.scss',
 })
 export class FooterComponent {
-  readonly currentYear = new Date().getFullYear();
-
   readonly branches: BranchLocation[] = [
     { id: 1, city: 'Hà Nội', address: 'Lô 14 phố Nguyễn Cảnh Dị, Phường Định Công, Thành phố Hà Nội' },
     { id: 2, city: 'Hải Phòng', address: 'Căn BH 01- 47 KĐT Vinhomes Imperia, Đ. Bạch Đằng, P. Hồng Bàng, TP. Hải Phòng' },

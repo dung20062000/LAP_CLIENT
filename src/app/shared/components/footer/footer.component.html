@@ -1,91 +1,45 @@
 <footer class="site-footer">
   <div class="container-fluid px-70">
 
-    <!-- Row 1: Branches + App/Social (large screen: side by side) -->
     <div class="row no-gutters footer-main">
 
-      <!-- Branches: 11/12 width, split into 6 equal columns -->
-      <div class="col-11">
+      <!-- Branches: 11/12 width on desktop, full width on mobile/tablet -->
+      <div class="col-12 col-xl-11">
         <div class="row no-gutters footer-grid">
           @for (branch of branches; track branch.id) {
-            <div class="col-sm-2 footer-col">
-              <h4 class="footer-city">{{ branch.city }}</h4>
-              <p class="footer-desc">{{ branch.address }}</p>
-            </div>
+          <div class="col-sm-2 footer-col">
+            <h4 class="footer-city">{{ branch.city }}</h4>
+            <p class="footer-desc">{{ branch.address }}</p>
+          </div>
           }
         </div>
       </div>
 
-      <!-- Social / App Links: 1/12 width (large screen only) -->
-      <div class="col-1 footer-app-col">
+      <!-- App and Social Links: 1/12 width on desktop, full width below branches on mobile/tablet -->
+      <div class="col-12 col-xl-1 footer-app-col">
         <div class="footer-app-links-container">
-          <div class="footer-app-links">
-            <a href="#" target="_blank" rel="noopener noreferrer" title="Google Play">
-              <img src="https://img.icons8.com/fluency/48/google-play.png" alt="Google Play" width="28" height="28">
+          <div class="footer-app-stores">
+            <a class="footer-app-link" href="https://play.google.com/store/apps/details?id=vn.bagps.gpsmobile" target="_blank" rel="noopener noreferrer" title="Google Play">
+              <img src="/images/logos-social/chplay.png" alt="Google Play" width="120" height="40">
             </a>
-            <div class="footer-app-links-text">
-              <p class="footer-app-links-text-description">GET IT ON</p>
-              <p class="footer-app-links-text-title">Google Play</p>
-            </div>
-          </div>
-          <div class="footer-app-links">
-            <a href="#" target="_blank" rel="noopener noreferrer" title="App Store">
-              <img src="https://img.icons8.com/deco/48/mac-os.png" alt="App Store" width="28" height="28">
+            <a class="footer-app-link" href="https://itunes.apple.com/us/app/ba-gps/id1466206178?ls=1&mt=8" target="_blank" rel="noopener noreferrer" title="App Store">
+              <img src="/images/logos-social/app-store.png" alt="App Store" width="120" height="40">
             </a>
-            <div class="footer-app-links-text">
-              <p class="footer-app-links-text-description">Download on the</p>
-              <p class="footer-app-links-text-title">App Store</p>
-            </div>
           </div>
           <div class="footer-app-links-social">
-            <a href="#" target="_blank" rel="noopener noreferrer" title="Facebook">
+            <a href="https://www.facebook.com/giamsathanhtrinhbinhanh/" target="_blank" rel="noopener noreferrer" title="Facebook">
               <img src="https://img.icons8.com/fluency/48/facebook-new.png" alt="Facebook" width="28" height="28">
             </a>
-            <a href="#" target="_blank" rel="noopener noreferrer" title="Zalo">
+            <a href="https://zalo.me/1958838581480438876" target="_blank" rel="noopener noreferrer" title="Zalo">
               <img src="https://img.icons8.com/color/48/zalo.png" alt="Zalo" width="28" height="28">
             </a>
-            <a href="#" target="_blank" rel="noopener noreferrer" title="YouTube">
+            <a href="https://www.youtube.com/@BAGPS" target="_blank" rel="noopener noreferrer" title="YouTube">
               <img src="https://img.icons8.com/color/48/youtube-play.png" alt="YouTube" width="28" height="28">
             </a>
           </div>
         </div>
       </div>
 
-    </div>
-
-    <!-- Row 2: App/Social (tablet/mobile: full width below branches) -->
-    <div class="row no-gutters footer-social-row">
-      <div class="footer-app-links-container footer-app-links-container--mobile">
-        <div class="footer-app-links">
-          <a href="#" target="_blank" rel="noopener noreferrer" title="Google Play">
-            <img src="https://img.icons8.com/fluency/48/google-play.png" alt="Google Play" width="28" height="28">
-          </a>
-          <div class="footer-app-links-text">
-            <p class="footer-app-links-text-description">GET IT ON</p>
-            <p class="footer-app-links-text-title">Google Play</p>
-          </div>
-        </div>
-        <div class="footer-app-links">
-          <a href="#" target="_blank" rel="noopener noreferrer" title="App Store">
-            <img src="https://img.icons8.com/deco/48/mac-os.png" alt="App Store" width="28" height="28">
-          </a>
-          <div class="footer-app-links-text">
-            <p class="footer-app-links-text-description">Download on the</p>
-            <p class="footer-app-links-text-title">App Store</p>
-          </div>
-        </div>
-        <div class="footer-app-links-social">
-          <a href="#" target="_blank" rel="noopener noreferrer" title="Facebook">
-            <img src="https://img.icons8.com/fluency/48/facebook-new.png" alt="Facebook" width="28" height="28">
-          </a>
-          <a href="#" target="_blank" rel="noopener noreferrer" title="Zalo">
-            <img src="https://img.icons8.com/color/48/zalo.png" alt="Zalo" width="28" height="28">
-          </a>
-          <a href="#" target="_blank" rel="noopener noreferrer" title="YouTube">
-            <img src="https://img.icons8.com/color/48/youtube-play.png" alt="YouTube" width="28" height="28">
-          </a>
-        </div>
-      </div>
     </div>
 
   </div>

@@ -1,6 +1,8 @@
 {
   "header": {
-    "select_language": "Select language"
+    "select_language": "Select language",
+    "logout": "Logout",
+    "greeting": "Hello,"
   },
   "nav": {
     "home": "Home",

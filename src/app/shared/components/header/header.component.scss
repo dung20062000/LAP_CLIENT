@@ -147,6 +147,53 @@
   }
 }
 
+// User greeting
+.user-greeting {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  background: rgba(17, 174, 199, 0.06);
+  border-radius: 20px;
+  border: 1px solid rgba(17, 174, 199, 0.15);
+
+  strong {
+    color: var(--primary-color);
+    font-weight: 700;
+  }
+}
+
+// Logout button
+.logout-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+
+  i {
+    color: var(--text-danger);
+    font-size: 15px;
+  }
+
+  &:hover {
+    background: var(--text-danger);
+
+    i {
+      color: var(--text-white);
+    }
+  }
+}
+
 // Language selector
 .lang-selector {
   position: relative;
@@ -251,8 +298,13 @@
   }
 
   .hotline-btn span,
-  .zalo-btn .btn-text {
+  .zalo-btn .btn-text,
+  .user-greeting {
     display: none;
+  }
+
+  .user-greeting {
+    display: none; // always hide on tablet
   }
 
   .hotline-btn {

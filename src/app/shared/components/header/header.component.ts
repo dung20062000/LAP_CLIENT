@@ -2,6 +2,7 @@ import { Component, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ClickOutsideDirective } from './click-outside.directive';
 import { TranslationService } from '../../services/translation.service';
+import { AuthService } from '../../../services/auth.service';
 import { TranslatePipe } from '../../pipes/translate.pipe';
 
 interface MenuItem {
@@ -17,6 +18,10 @@ interface MenuItem {
 })
 export class HeaderComponent {
   private translationService = inject(TranslationService);
+  private authService = inject(AuthService);
+
+  readonly isLoggedIn = this.authService.isLoggedIn;
+  readonly currentUser = this.authService.currentUser;
 
   hotline = '19006464';
   zaloUrl = 'https://zalo.me/19006464';
@@ -53,7 +58,7 @@ export class HeaderComponent {
     this.translationService.changeLanguage(code);
   }
 
-  openTab(href: string): void {
-    window.open(href, '_blank');
+  onLogout(): void {
+    this.authService.logout();
   }
 }

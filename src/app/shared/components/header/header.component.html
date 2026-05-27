@@ -52,6 +52,13 @@
         <span>{{ hotline }}</span>
       </a>
 
+      <!-- User greeting -->
+      @if (isLoggedIn() && currentUser()) {
+        <span class="user-greeting">
+          {{ 'header.greeting' | translate }} <strong>{{ currentUser()!.fullName || currentUser()!.username }}</strong>
+        </span>
+      }
+
       <!-- Language Selector -->
       <div class="lang-selector" [title]="'header.select_language' | translate" (clickOutside)="langOpen = false">
         <div class="lang-current" (click)="langOpen = !langOpen">
@@ -88,6 +95,13 @@
           </ul>
         }
       </div>
+
+      <!-- Logout button -->
+      @if (isLoggedIn()) {
+        <button class="logout-btn" (click)="onLogout()" [title]="'header.logout' | translate">
+          <i class="fas fa-sign-out-alt"></i>
+        </button>
+      }
 
     </div>
 

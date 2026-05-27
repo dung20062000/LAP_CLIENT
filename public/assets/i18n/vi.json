@@ -1,6 +1,8 @@
 {
   "header": {
-    "select_language": "Chọn ngôn ngữ"
+    "select_language": "Chọn ngôn ngữ",
+    "logout": "Đăng xuất",
+    "greeting": "Xin chào,"
   },
   "nav": {
     "home": "Trang chủ",

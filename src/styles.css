@@ -27,6 +27,7 @@
   --text-white: #ffffff;
   --text-grey-light: #e2e2e2;
   --text-error: #dc3545;
+  --text-danger: #dc3545;
 
   /* Color gradient */
   --gradient-cyan-primary: linear-gradient(to right, #2d9aff, #0bd3ff);

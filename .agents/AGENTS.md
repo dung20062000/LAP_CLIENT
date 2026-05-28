@@ -46,6 +46,23 @@ src/
     └── main.ts          # Bootstrap
 ```
 
+## Comments & Documentation
+
+- Chỉ dùng `//` cho TypeScript/Angular. **Tuyệt đối không dùng `/* */`**.
+- Viết bằng **Tiếng Việt có dấu** hoặc **Tiếng Anh** xuyên suốt — không trộn lẫn.
+- **Block comment** (bắt buộc đủ 3 phần) cho Class, Method, Properties, Logic phức tạp:
+
+  ```
+  /**
+   * Người tạo: [Tên]
+   * Ngày tạo: DD/MM/YYYY
+   * [Nội dung ghi chú]
+   */
+  ```
+
+- **Inline comment** viết phía trên dòng code, ngắn gọn, tránh lạm dụng gây "code smell".
+- **Đầu mỗi file** nên có header mô tả ngắn.
+
 ## Key Conventions
 
 - **Angular 21** standalone components (no NgModules)

@@ -125,3 +125,60 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UserService } from '../services/user.service';
 import { User } from '../models/user';
 ```
+
+## Comments & Documentation
+
+### Ký hiệu
+
+- Chỉ dùng `//` cho TypeScript/Angular. Tuyệt đối không dùng `/* */`.
+- Viết bằng **Tiếng Việt có dấu** hoặc **Tiếng Anh xuyên suốt** — không trộn lẫn.
+
+### Block Comment cho Class, Method, Properties, Logic phức tạp
+
+Bắt buộc đủ 3 phần:
+
+```
+/**
+ * Người tạo: [Tên]
+ * Ngày tạo: [DD/MM/YYYY]
+ * [Nội dung ghi chú]
+ */
+```
+
+**Áp dụng cho:** Class, Method, Properties, Logic phức tạp.
+
+### Inline Comment cho Logic thường
+
+- Viết `//` phía trên dòng code cần giải thích, không viết cuối dòng.
+- Viết ngắn gọn, đủ hiểu. Tránh lạm dụng gây "code smell".
+
+### Ví dụ chuẩn
+
+```typescript
+/**
+ * Người tạo: DungBT
+ * Ngày tạo: 28/05/2026
+ * Chuyển Observable thành Signal nhờ toSignal.
+ * initialValue đảm bảo component render ngay với mảng rỗng
+ * trước khi HTTP response về, không cần kiểm tra null ở khắp nơi.
+ */
+readonly banners = toSignal(this.bannerService.getBanners(), {
+  initialValue: [] as BannerSlide[],
+});
+
+// Ngày tạo: 28/05/2026
+// Dùng để hiện/ẩn arrows khi hover
+readonly isHovered = signal(false);
+```
+
+### Đầu File (Header)
+
+Mỗi file TypeScript component/service nên có header:
+
+```typescript
+/**
+ * Người tạo: [Tên]
+ * Ngày tạo: [DD/MM/YYYY]
+ * Mô tả: [Chức năng của file]
+ */
+```

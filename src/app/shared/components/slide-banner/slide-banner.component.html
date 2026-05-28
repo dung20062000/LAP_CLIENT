@@ -4,7 +4,7 @@
 
     <!-- Slides -->
     <div class="banner-slides-container">
-      @for (item of slides; track item.id; let i = $index) {
+      @for (item of resolvedSlides(); track item.id; let i = $index) {
       <div class="banner-slide" [class.active]="i === currentIndex()">
         <div class="banner-bg" [style.backgroundImage]="'url(' + item.imageUrl + ')'"></div>
         <div class="banner-overlay"></div>

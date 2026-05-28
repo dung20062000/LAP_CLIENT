@@ -2,21 +2,22 @@
   <!-- Header -->
   <app-header class="login-header" />
 
-  <!-- Main Content: Slide Banner + Login Form -->
+  <!-- Nội dung chính: Slide Banner làm nền + Form đăng nhập -->
   <main class="login-layout">
-  <!-- Slide Banner as Background -->
+  <!-- Banner làm background -->
   <div class="banner-background">
     <app-slide-banner />
   </div>
 
+  <!-- Container chứa form đăng nhập — nằm phía trên banner -->
   <div class="container-fluid h-100 p-0 form-overlay">
     <div class="row h-100 no-gutters justify-content-end align-items-center pr-lg-5">
 
-      <!-- Login Form Section -->
+      <!-- Khu vực form đăng nhập -->
       <div class="col-12 col-sm-10 col-md-8 col-lg-4 form-section">
         <div class="login-card-wrapper mx-auto">
 
-          <!-- Login Card -->
+          <!-- Card chứa form -->
           <div class="login-card">
 
             <!-- Logo BA GPS -->
@@ -24,22 +25,24 @@
               <img src="/images/logos/logo.svg" alt="BA GPS" class="img-fluid logo-img">
             </div>
 
-            <!-- Error Alert -->
+            <!-- Thông báo lỗi — hiện khi có errorMessage -->
             @if (errorMessage()) {
             <div class="alert alert-danger" role="alert">
               <i class="fas fa-exclamation-circle mr-2"></i>
               {{ errorMessage() }}
+              <!-- Nút đóng thông báo lỗi -->
               <button type="button" class="close-btn" (click)="errorMessage.set('')" aria-label="Đóng">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
             }
 
-            <!-- Login Form -->
+            <!-- Form đăng nhập — reactive form với validation -->
             <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
 
-              <!-- Username -->
+              <!-- Trường Username -->
               <div class="form-group">
+                <!-- Wrapper chứa icon + input -->
                 <div class="input-icon-wrapper" [class.input-error]="isFieldInvalid('username')"
                   [class.input-success]="loginForm.get('username')?.valid && loginForm.get('username')?.value">
                   <span class="input-icon-left">
@@ -48,6 +51,7 @@
                   <input type="text" id="username" maxlength="50" class="form-input-pill" formControlName="username"
                     placeholder="{{ 'login.username_placeholder' | translate }}" autocomplete="username">
                 </div>
+                <!-- Hiện lỗi validation khi field invalid và đã touched/dirty -->
                 @if (isFieldInvalid('username')) {
                 <div class="error-text">
                   {{ getFieldError('username') }}
@@ -55,16 +59,18 @@
                 }
               </div>
 
-              <!-- Password -->
+              <!-- Trường Password -->
               <div class="form-group">
                 <div class="input-icon-wrapper" [class.input-error]="isFieldInvalid('password')"
                   [class.input-success]="loginForm.get('password')?.valid && loginForm.get('password')?.value">
                   <span class="input-icon-left">
                     <i class="fas fa-lock text-muted"></i>
                   </span>
+                  <!-- Toggle hiện/ẩn mật khẩu -->
                   <input [type]="showPassword() ? 'text' : 'password'" id="password" maxlength="200"
                     class="form-input-pill" formControlName="password"
                     placeholder="{{ 'login.password_placeholder' | translate }}" autocomplete="current-password">
+                  <!-- Nút toggle hiện/ẩn mật khẩu -->
                   <button type="button" class="input-icon-right-btn" (click)="showPassword.set(!showPassword())"
                     [attr.aria-label]="(showPassword() ? 'login.password_hide' : 'login.password_show') | translate">
                     <i class="fas" [class.fa-eye]="!showPassword()" [class.fa-eye-slash]="showPassword()"></i>
@@ -77,7 +83,7 @@
                 }
               </div>
 
-              <!-- Remember Me & Forgot Password -->
+              <!-- Ghi nhớ đăng nhập + Quên mật khẩu -->
               <div class="form-options d-flex justify-content-between align-items-center">
                 <div class="custom-control custom-checkbox">
                   <input type="checkbox" class="custom-control-input" id="rememberMe" formControlName="rememberMe">
@@ -86,10 +92,11 @@
                 <a href="#" class="forgot-password-link">{{ 'login.forgot_password' | translate }}</a>
               </div>
 
-              <!-- Submit Button -->
+              <!-- Nút đăng nhập — disabled khi đang loading -->
               <div class="submit-section">
                 <button type="submit" class="btn btn-login-pill btn-block" [disabled]="isLoading()">
                   @if (isLoading()) {
+                  <!-- Spinner loading -->
                   <span class="spinner-border spinner-border-sm mr-2"></span>
                   {{ 'login.btn_loading' | translate }}
                   } @else {
@@ -100,7 +107,7 @@
 
             </form>
 
-            <!-- QR Code Section -->
+            <!-- Phần quét mã QR để cài app -->
             <div class="qr-code-section text-center">
               <div class="qr-container">
                 <img src="/images/qr/qr-code.svg" alt="Mã QR" class="qr-image">

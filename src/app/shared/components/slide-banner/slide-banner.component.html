@@ -1,17 +1,24 @@
 <section class="banner-section">
+  <!-- Kiểm tra có slides không — currentSlide guard cho template -->
   @if (hasSlides() && currentSlide(); as slide) {
+  <!-- Wrapper chính — hover để hiện arrows và tạm dừng auto-play -->
   <div class="banner-wrapper" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
 
-    <!-- Slides -->
+    <!-- Container chứa tất cả slides -->
     <div class="banner-slides-container">
+      <!-- Lặp qua resolvedSlides — chỉ slide nào có index = currentIndex mới active -->
       @for (item of resolvedSlides(); track item.id; let i = $index) {
       <div class="banner-slide" [class.active]="i === currentIndex()">
+        <!-- Ảnh banner làm background -->
         <div class="banner-bg" [style.backgroundImage]="'url(' + item.imageUrl + ')'"></div>
+        <!-- Overlay làm mờ ảnh để text dễ đọc -->
         <div class="banner-overlay"></div>
+        <!-- Nội dung text: tiêu đề + mô tả + nút chi tiết -->
         <div class="banner-content">
           <div class="banner-text">
             <h2 class="banner-title">{{ item.title }}</h2>
             <p class="banner-summary">{{ item.shortContents }}</p>
+            <!-- Nút chi tiết — chỉ hiện nếu có link -->
             @if (item.link) {
             <a [href]="item.link" target="_blank" rel="noopener noreferrer" class="btn btn-light banner-btn mt-1">
               {{ t('banner.btn_detail') }} <i class="fas fa-arrow-right ml-2"></i>
@@ -23,7 +30,7 @@
       }
     </div>
 
-    <!-- Prev / Next Arrows -->
+    <!-- Nút mũi tên chuyển slide trước/sau — hiện khi hover -->
     <button class="banner-arrow arrow-prev" (click)="prevSlide()" [class.visible]="isHovered()"
       [attr.aria-label]="t('banner.aria_prev')">
       <i class="fas fa-chevron-left"></i>
@@ -33,7 +40,7 @@
       <i class="fas fa-chevron-right"></i>
     </button>
 
-    <!-- Dots -->
+    <!-- Các chấm tròn chỉ số slide — click để nhảy đến slide tương ứng -->
     <div class="banner-dots">
       @for (idx of dotIndices(); track idx) {
       <button class="dot" [class.active]="idx === currentIndex()" (click)="goToSlideByIndex(idx)"
@@ -43,7 +50,7 @@
     </div>
   </div>
   } @else {
-  <!-- Fallback when no slides -->
+  <!-- Fallback khi không có slides — hiện banner mặc định -->
   <div class="banner-default">
     <div class="banner-bg" style="background-image: url('/images/banners/BANNER_1.jpg')"></div>
   </div>

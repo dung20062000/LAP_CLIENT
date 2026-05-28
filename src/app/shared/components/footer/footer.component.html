@@ -1,23 +1,28 @@
 <footer class="site-footer">
   <div class="container-fluid px-70">
 
+    <!-- Hàng chính: Chi nhánh + App/Social links -->
     <div class="row no-gutters footer-main">
 
-      <!-- Branches: 11/12 width on desktop, full width on mobile/tablet -->
+      <!-- Khu vực chi nhánh: chiếm 11/12 width trên desktop, full width trên mobile -->
       <div class="col-12 col-xl-11">
         <div class="row no-gutters footer-grid">
+          <!-- Lặp qua danh sách chi nhánh -->
           @for (branch of branches; track branch.id) {
           <div class="col-sm-2 footer-col">
+            <!-- Tên thành phố — dùng translate pipe để hiển thị theo ngôn ngữ -->
             <h4 class="footer-city">{{ branch.city | translate }}</h4>
+            <!-- Địa chỉ chi tiết -->
             <p class="footer-desc">{{ branch.address }}</p>
           </div>
           }
         </div>
       </div>
 
-      <!-- App and Social Links: 1/12 width on desktop, full width below branches on mobile/tablet -->
+      <!-- Khu vực app links + social: 1/12 width trên desktop, full width bên dưới branches trên mobile -->
       <div class="col-12 col-xl-1 footer-app-col">
         <div class="footer-app-links-container">
+          <!-- Nút tải app trên Google Play và App Store -->
           <div class="footer-app-stores">
             <a class="footer-app-link" href="https://play.google.com/store/apps/details?id=vn.bagps.gpsmobile" target="_blank" rel="noopener noreferrer" title="Google Play">
               <img src="/images/logos-social/chplay.png" alt="Google Play" width="120" height="40">
@@ -26,6 +31,7 @@
               <img src="/images/logos-social/app-store.png" alt="App Store" width="120" height="40">
             </a>
           </div>
+          <!-- Icon mạng xã hội: Facebook, Zalo, YouTube -->
           <div class="footer-app-links-social">
             <a href="https://www.facebook.com/giamsathanhtrinhbinhanh/" target="_blank" rel="noopener noreferrer" title="Facebook">
               <img src="https://img.icons8.com/fluency/48/facebook-new.png" alt="Facebook" width="28" height="28">

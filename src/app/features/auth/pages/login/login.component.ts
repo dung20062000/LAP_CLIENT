@@ -36,13 +36,11 @@ import { TranslationService } from '../../../../shared/services/translation.serv
 export class LoginComponent implements OnInit {
   private translationService = inject(TranslationService);
 
-  // Form đăng nhập — khởi tạo trong ngOnInit.
+  // Form đăng nhập
   loginForm!: FormGroup;
-  // Trạng thái loading khi submit.
+  // loading khi submit
   isLoading = signal(false);
-  // Toggle hiện/ẩn mật khẩu.
   showPassword = signal(false);
-  // Thông báo lỗi hiển thị trên form.
   errorMessage = signal('');
 
   constructor(

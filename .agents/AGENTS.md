@@ -62,6 +62,7 @@ src/
 
 - **Inline comment** viết phía trên dòng code, ngắn gọn, tránh lạm dụng gây "code smell".
 - **Đầu mỗi file** nên có header mô tả ngắn.
+- **VS Code Snippets** (tham khảo `vscode-snippets-setup.md`): gõ `fileheader` + Tab cho header file, `blockcomment` + Tab cho block comment method/class, `inlinecomment` + Tab cho inline comment, `propcomment` + Tab cho property.
 
 ## Key Conventions
 

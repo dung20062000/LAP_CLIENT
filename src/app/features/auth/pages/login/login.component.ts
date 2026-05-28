@@ -53,7 +53,6 @@ export class LoginComponent implements OnInit {
       title: 'Giải pháp Giám sát Hành trình Toàn diện',
       shortContents:
         'Thiết bị giám sát hành trình chất lượng cao của BA GPS giúp doanh nghiệp tối ưu chi phí vận hành và quản lý đội xe hiệu quả trực tuyến 24/7.',
-      // link: 'https://bagps.vn/giam-sat-hanh-trinh-p2',
       order: 2,
     },
     {

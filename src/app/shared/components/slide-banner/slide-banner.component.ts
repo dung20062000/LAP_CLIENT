@@ -29,7 +29,7 @@ export class SlideBannerComponent implements OnInit, OnDestroy {
   readonly currentLang = () => this.translationService.currentLang();
 
   private intervalId: ReturnType<typeof setInterval> | null = null;
-  private readonly SLIDE_INTERVAL_MS = 5000;
+  private readonly SLIDE_INTERVAL_MS = 100000;
 
   readonly hasSlides = computed(() => this.slides && this.slides.length > 0);
 

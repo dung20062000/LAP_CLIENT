@@ -48,5 +48,9 @@
     "aria_prev": "Previous slide",
     "aria_next": "Next slide",
     "aria_slide": "Go to slide"
+  },
+  "dashboard": {
+    "welcome": "Welcome, {username}",
+    "description": "This is the dashboard"
   }
 }

@@ -48,5 +48,9 @@
     "aria_prev": "Slide trước",
     "aria_next": "Slide tiếp theo",
     "aria_slide": "Chuyển đến slide"
+  },
+  "dashboard": {
+    "welcome": "Chào mừng, {username}",
+    "description": "Đây là trang Dashboard"
   }
 }

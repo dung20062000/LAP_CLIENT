@@ -125,7 +125,6 @@ export class SlideBannerComponent implements OnInit, OnDestroy {
    * Người tạo: DungBT
    * Ngày tạo: 28/05/2026
    * Các chấm tròn chỉ giới hạn 5 cái dù có nhiều slide hơn.
-   * Giữ UI gọn gàng trên mobile, nơi không gian hiển thị hạn chế.
    */
   readonly dotIndices = computed(() => {
     if (!this.hasSlides()) return [];

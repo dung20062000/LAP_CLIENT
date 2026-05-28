@@ -43,7 +43,30 @@ export class AuthService {
   /**
    * Người tạo: DungBT
    * Ngày tạo: 28/05/2026
-   * Khôi phục session từ localStorage (remember me) hoặc sessionStorage.
+   */
+  private setSessionCookie(): void {
+    if (typeof document !== 'undefined') {
+      document.cookie = 'browser_session_active=true; path=/; SameSite=Strict';
+    }
+  }
+
+  private deleteSessionCookie(): void {
+    if (typeof document !== 'undefined') {
+      document.cookie = 'browser_session_active=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Strict';
+    }
+  }
+
+  private hasSessionCookie(): boolean {
+    if (typeof document === 'undefined') {
+      return false;
+    }
+    return document.cookie.split(';').some((item) => item.trim().startsWith('browser_session_active='));
+  }
+
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 28/05/2026
+   * Khôi phục session từ localStorage (remember me hoặc tab mới trong cùng session).
    */
   constructor(private http: HttpClient, private router: Router) {
     this.loadStoredAuth();
@@ -57,20 +80,42 @@ export class AuthService {
    */
   private loadStoredAuth(): void {
     const rememberFlag = localStorage.getItem('remember_me');
-    // Ưu tiên localStorage nếu rememberMe = true, ngược lại dùng sessionStorage.
-    const sessionData = rememberFlag === 'true'
-      ? localStorage.getItem('auth_user')
-      : sessionStorage.getItem('auth_user');
-    if (sessionData) {
-      try {
-        this.currentUserSignal.set(JSON.parse(sessionData));
-        const token = rememberFlag === 'true'
-          ? localStorage.getItem('auth_token')
-          : sessionStorage.getItem('auth_token');
-        this.tokenSignal.set(token);
-      } catch {
+    
+    if (rememberFlag === 'true') {
+      // Ghi nhớ đăng nhập: Đọc từ localStorage
+      const sessionData = localStorage.getItem('auth_user');
+      const token = localStorage.getItem('auth_token');
+      if (sessionData && token) {
+        try {
+          this.currentUserSignal.set(JSON.parse(sessionData));
+          this.tokenSignal.set(token);
+        } catch {
+          this.clearAuth();
+        }
+      } else {
         this.clearAuth();
       }
+    } else if (rememberFlag === 'false') {
+      // Không ghi nhớ đăng nhập: Chỉ khôi phục khi session cookie còn hiệu lực (chưa đóng trình duyệt)
+      if (this.hasSessionCookie()) {
+        const sessionData = localStorage.getItem('auth_user');
+        const token = localStorage.getItem('auth_token');
+        if (sessionData && token) {
+          try {
+            this.currentUserSignal.set(JSON.parse(sessionData));
+            this.tokenSignal.set(token);
+          } catch {
+            this.clearAuth();
+          }
+        } else {
+          this.clearAuth();
+        }
+      } else {
+        // Đóng trình duyệt mở lại -> tự động logout
+        this.clearAuth();
+      }
+    } else {
+      this.clearAuth();
     }
   }
 
@@ -78,8 +123,8 @@ export class AuthService {
    * Người tạo: DungBT
    * Ngày tạo: 28/05/2026
    * Đăng nhập — hiện dùng hardcode tạm thời (admin/admin@123).
-   * Nếu rememberMe = true: lưu vào localStorage.
-   * Ngược lại: lưu vào sessionStorage (mất khi đóng tab).
+   * Nếu rememberMe = true: lưu vào localStorage với flag remember_me = true.
+   * Ngược lại: lưu vào localStorage với flag remember_me = false và set session cookie.
    * Thay bằng gọi API /api/auth khi backend sẵn sàng.
    */
   login(credentials: LoginRequest, rememberMe: boolean): Observable<ApiResponse<LoginResponse>> {
@@ -110,15 +155,17 @@ export class AuthService {
         localStorage.setItem('remember_me', 'true');
         localStorage.setItem('auth_token', fakeToken);
         localStorage.setItem('auth_user', JSON.stringify(fakeUser));
-        sessionStorage.removeItem('auth_token');
-        sessionStorage.removeItem('auth_user');
+        this.deleteSessionCookie();
       } else {
-        localStorage.removeItem('remember_me');
-        localStorage.removeItem('auth_token');
-        localStorage.removeItem('auth_user');
-        sessionStorage.setItem('auth_token', fakeToken);
-        sessionStorage.setItem('auth_user', JSON.stringify(fakeUser));
+        localStorage.setItem('remember_me', 'false');
+        localStorage.setItem('auth_token', fakeToken);
+        localStorage.setItem('auth_user', JSON.stringify(fakeUser));
+        this.setSessionCookie();
       }
+
+      sessionStorage.removeItem('auth_token');
+      sessionStorage.removeItem('auth_user');
+      
       this.tokenSignal.set(fakeToken);
       this.currentUserSignal.set(fakeUser);
       return of(fakeResponse);
@@ -145,7 +192,7 @@ export class AuthService {
   /**
    * Người tạo: DungBT
    * Ngày tạo: 28/05/2026
-   * Xóa toàn bộ auth state: signals, localStorage và sessionStorage.
+   * Xóa toàn bộ auth state: signals, localStorage, sessionStorage và session cookie.
    */
   private clearAuth(): void {
     this.tokenSignal.set(null);
@@ -155,6 +202,7 @@ export class AuthService {
     localStorage.removeItem('auth_user');
     sessionStorage.removeItem('auth_token');
     sessionStorage.removeItem('auth_user');
+    this.deleteSessionCookie();
   }
 
   // Lấy token hiện tại — dùng để attach vào HTTP header.

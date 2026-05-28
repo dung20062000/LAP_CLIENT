@@ -30,7 +30,6 @@ export class DashboardPageComponent implements OnInit {
    * Ngày tạo: 28/05/2026
    * Lấy tên người dùng hiện tại.
    */
-
   getCurrentUserName(): string {
     const user = this.authService.currentUser();
     return user?.fullName || user?.username || 'admin';

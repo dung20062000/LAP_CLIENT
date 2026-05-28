@@ -70,6 +70,7 @@ export class LoginComponent implements OnInit {
   /**
    * Người tạo: DungBT
    * Ngày tạo: 28/05/2026
+   * @param fieldName: tên field
    * Kiểm tra field có lỗi và đã được touch hoặc dirty chưa.
    * Dùng để hiển thị border đỏ và error message.
    */
@@ -81,6 +82,7 @@ export class LoginComponent implements OnInit {
   /**
    * Người tạo: DungBT
    * Ngày tạo: 28/05/2026
+   * @param fieldName: tên field
    * Trả về message lỗi đầu tiên của field dựa trên các validation rule.
    * Message được resolve qua TranslationService theo ngôn ngữ hiện tại.
    */

@@ -129,6 +129,8 @@ export class AuthService {
   /**
    * Người tạo: DungBT
    * Ngày tạo: 28/05/2026
+   * @param credentials: truyền vào username, password
+   * @param rememberMe: true nếu muốn ghi nhớ đăng nhập, false nếu không muốn ghi nhớ
    * Đăng nhập — hiện dùng hardcode tạm thời (admin/admin@123).
    * Nếu rememberMe = true: lưu vào localStorage với flag remember_me = true.
    * Ngược lại: lưu vào localStorage với flag remember_me = false và set session cookie.

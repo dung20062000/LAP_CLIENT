@@ -28,6 +28,7 @@ export class TranslationService {
   /**
    * Người tạo: DungBT
    * Ngày tạo: 28/05/2026
+   * @param http: HttpClient để tải file JSON translation.
    * Khởi tạo: ưu tiên localStorage > browser language > DEFAULT_LANG.
    */
   constructor(private http: HttpClient) {
@@ -51,6 +52,7 @@ export class TranslationService {
   /**
    * Người tạo: DungBT
    * Ngày tạo: 28/05/2026
+   * @param lang: ngôn ngữ chọn
    * Load file JSON translation theo ngôn ngữ từ thư mục /assets/i18n/.
    * catchError trả về {} nếu load thất bại — tránh crash ứng dụng.
    */
@@ -64,6 +66,7 @@ export class TranslationService {
   /**
    * Người tạo: DungBT
    * Ngày tạo: 28/05/2026
+   * @param lang: ngôn ngữ chọn
    * Thay đổi ngôn ngữ: lưu vào localStorage, cập nhật signal, load file mới.
    */
   changeLanguage(lang: string): void {
@@ -75,6 +78,7 @@ export class TranslationService {
   /**
    * Người tạo: DungBT
    * Ngày tạo: 28/05/2026
+   * @param key: key dịch thuật
    * Resolve translation key thành chuỗi hiển thị.
    * Ví dụ: 'nav.home' -> đọc translations()['nav']['home'].
    * Trả về key gốc nếu không tìm thấy (fallback).

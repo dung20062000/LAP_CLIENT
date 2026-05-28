@@ -22,6 +22,8 @@ export class TranslatePipe implements PipeTransform {
   /**
    * Người tạo: DungBT
    * Ngày tạo: 28/05/2026
+   * @param key: key dịch thuật
+   * @param params: params để thay thế trong chuỗi
    * Transform translation key thành chuỗi hiển thị.
    * pure: false kết hợp với việc đọc translations signal tạo reactive dependency,
    * nhờ đó pipe tự re-evaluate mỗi khi ngôn ngữ thay đổi.

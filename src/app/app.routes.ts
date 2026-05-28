@@ -16,7 +16,7 @@ export const routes: Routes = [
     canActivate: [guestGuard],
   },
   {
-    path: 'home',
+    path: 'dashboard',
     loadComponent: () =>
       import('./shared/components/layout/main-layout/main-layout.component').then(
         (m) => m.MainLayoutComponent
@@ -26,8 +26,8 @@ export const routes: Routes = [
       {
         path: '',
         loadComponent: () =>
-          import('./features/home/pages/home-page/home-page.component').then(
-            (m) => m.HomePageComponent
+          import('./features/dashboard/pages/dashboard-page/dashboard-page.component').then(
+            (m) => m.DashboardPageComponent
           ),
       },
     ],

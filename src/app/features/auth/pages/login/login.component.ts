@@ -148,7 +148,7 @@ export class LoginComponent implements OnInit {
       next: (response) => {
         this.isLoading.set(false);
         if (response.success) {
-          this.router.navigate(['/home']);
+          this.router.navigate(['/dashboard']);
         } else {
           this.errorMessage.set(
             response.message || this.translationService.translate('login.err_invalid_credentials'),

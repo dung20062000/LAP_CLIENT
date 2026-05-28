@@ -8,12 +8,7 @@ import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
-import {
-  LoginRequest,
-  LoginResponse,
-  ApiResponse,
-  UserInfo,
-} from '../models';
+import { LoginRequest, LoginResponse, ApiResponse, UserInfo } from '../models';
 
 // Hardcode credentials tạm thời — xóa khi backend API sẵn sàng.
 const HARDCODE_USERNAME = 'admin';
@@ -43,6 +38,7 @@ export class AuthService {
   /**
    * Người tạo: DungBT
    * Ngày tạo: 28/05/2026
+   * Tạo session cookie để đánh dấu session còn hoạt động
    */
   private setSessionCookie(): void {
     if (typeof document !== 'undefined') {
@@ -50,9 +46,15 @@ export class AuthService {
     }
   }
 
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 28/05/2026
+   * Xóa session cookie
+   */
   private deleteSessionCookie(): void {
     if (typeof document !== 'undefined') {
-      document.cookie = 'browser_session_active=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Strict';
+      document.cookie =
+        'browser_session_active=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Strict';
     }
   }
 
@@ -60,7 +62,9 @@ export class AuthService {
     if (typeof document === 'undefined') {
       return false;
     }
-    return document.cookie.split(';').some((item) => item.trim().startsWith('browser_session_active='));
+    return document.cookie
+      .split(';')
+      .some((item) => item.trim().startsWith('browser_session_active='));
   }
 
   /**
@@ -68,7 +72,10 @@ export class AuthService {
    * Ngày tạo: 28/05/2026
    * Khôi phục session từ localStorage (remember me hoặc tab mới trong cùng session).
    */
-  constructor(private http: HttpClient, private router: Router) {
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+  ) {
     this.loadStoredAuth();
   }
 
@@ -80,7 +87,7 @@ export class AuthService {
    */
   private loadStoredAuth(): void {
     const rememberFlag = localStorage.getItem('remember_me');
-    
+
     if (rememberFlag === 'true') {
       // Ghi nhớ đăng nhập: Đọc từ localStorage
       const sessionData = localStorage.getItem('auth_user');
@@ -165,7 +172,7 @@ export class AuthService {
 
       sessionStorage.removeItem('auth_token');
       sessionStorage.removeItem('auth_user');
-      
+
       this.tokenSignal.set(fakeToken);
       this.currentUserSignal.set(fakeUser);
       return of(fakeResponse);

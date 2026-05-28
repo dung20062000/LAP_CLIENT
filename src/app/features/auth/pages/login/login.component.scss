@@ -251,14 +251,17 @@
   box-shadow: 0 4px 12px rgba(0, 162, 232, 0.25);
 
   &:hover:not(:disabled) {
-    background: #008cc9;
+    background: var(--gradient-cyan-primary);
+    filter: brightness(1.08) saturate(1.15);
     color: var(--text-white);
-    box-shadow: 0 6px 16px rgba(0, 162, 232, 0.4);
-    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(0, 162, 232, 0.45);
+    transform: translateY(-2px);
   }
 
   &:active:not(:disabled) {
+    filter: brightness(0.95) saturate(0.9);
     transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(0, 162, 232, 0.3);
   }
 
   &:disabled {

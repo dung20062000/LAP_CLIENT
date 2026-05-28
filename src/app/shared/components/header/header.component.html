@@ -6,21 +6,19 @@
 
   <div class="header-container">
 
-    <!-- Logo BA GPS -->
     <div class="header-logo">
       <img src="/images/logos/logo.svg" alt="BA GPS" />
     </div>
 
     <!-- Menu điều hướng — hiện/ẩn trên mobile qua class open -->
     <nav class="header-nav" [class.open]="isMenuOpen">
-      <!-- Lời chào user trên mobile — chỉ hiện khi đã đăng nhập -->
+
       @if (isLoggedIn() && currentUser()) {
         <div class="mobile-user-greeting">
           {{ 'header.greeting' | translate }} <strong>{{ currentUser()!.fullName || currentUser()!.username }}</strong>
         </div>
       }
 
-      <!-- Danh sách menu — translation key đã resolve trong component -->
       <ul class="nav-list">
         @for (item of menuItems(); track item.label) {
           <li class="nav-item">
@@ -37,9 +35,8 @@
         }
       </ul>
 
-      <!-- Các nút hành động trên mobile: Zalo + Hotline -->
       <div class="mobile-actions">
-        <!-- Nút mở Zalo OA -->
+
         <a
           class="zalo-btn"
           [href]="zaloUrl"
@@ -56,7 +53,6 @@
           <span class="btn-text">{{ 'common.zalo' | translate }}</span>
         </a>
 
-        <!-- Nút gọi Hotline -->
         <a class="hotline-btn" [href]="'tel:' + hotline" title="Hotline">
           <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
             <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
@@ -65,7 +61,6 @@
         </a>
       </div>
 
-      <!-- Nút đăng xuất trên mobile — chỉ hiện khi đã đăng nhập -->
       @if (isLoggedIn()) {
         <button class="mobile-logout-btn" (click)="onLogout(); closeMenu()" [title]="'header.logout' | translate">
           <i class="fas fa-sign-out-alt"></i>
@@ -74,10 +69,7 @@
       }
     </nav>
 
-    <!-- Khu vực bên phải: Zalo, Hotline, Ngôn ngữ, Đăng xuất, Menu toggle -->
     <div class="header-right">
-
-      <!-- Nút Zalo trên desktop -->
       <a
         class="zalo-btn"
         [href]="zaloUrl"
@@ -94,7 +86,6 @@
         <span class="btn-text">{{ 'common.zalo' | translate }}</span>
       </a>
 
-      <!-- Nút gọi Hotline trên desktop -->
       <a class="hotline-btn" [href]="'tel:' + hotline" title="Hotline">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
           <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
@@ -102,16 +93,13 @@
         <span>{{ hotline }}</span>
       </a>
 
-      <!-- Lời chào user trên desktop — chỉ hiện khi đã đăng nhập -->
       @if (isLoggedIn() && currentUser()) {
         <span class="user-greeting">
           {{ 'header.greeting' | translate }} <strong>{{ currentUser()!.fullName || currentUser()!.username }}</strong>
         </span>
       }
 
-      <!-- Bộ chọn ngôn ngữ — click để mở dropdown -->
       <div class="lang-selector" [title]="'header.select_language' | translate" (clickOutside)="langOpen = false">
-        <!-- Ngôn ngữ hiện tại được chọn -->
         <div class="lang-current" (click)="langOpen = !langOpen">
           <span class="lang-flag-wrapper">
             <img
@@ -130,7 +118,7 @@
             </svg>
           </span>
         </div>
-        <!-- Dropdown danh sách ngôn ngữ — hiện khi langOpen = true -->
+
         @if (langOpen) {
           <ul class="lang-dropdown">
             @for (lang of languages; track lang.code) {
@@ -147,23 +135,19 @@
           </ul>
         }
       </div>
-
-      <!-- Nút đăng xuất trên desktop — chỉ hiện khi đã đăng nhập -->
+>
       @if (isLoggedIn()) {
         <button class="logout-btn" (click)="onLogout()" [title]="'header.logout' | translate">
           <i class="fas fa-sign-out-alt"></i>
         </button>
       }
 
-      <!-- Nút hamburger mở menu mobile — chỉ hiện trên mobile -->
       <button class="menu-toggle-btn" (click)="toggleMenu()" [attr.aria-label]="isMenuOpen ? 'Close menu' : 'Open menu'">
         @if (!isMenuOpen) {
-          <!-- Icon hamburger -->
           <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
             <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
           </svg>
         } @else {
-          <!-- Icon X đóng menu -->
           <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
             <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
           </svg>

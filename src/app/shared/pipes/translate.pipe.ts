@@ -26,11 +26,15 @@ export class TranslatePipe implements PipeTransform {
    * pure: false kết hợp với việc đọc translations signal tạo reactive dependency,
    * nhờ đó pipe tự re-evaluate mỗi khi ngôn ngữ thay đổi.
    */
-  transform(key: string): string {
+  transform(key: string, params?: Record<string, string | number>): string {
     const lang = this.translationService.currentLang();
-    // Đọc translations signal để tạo reactive dependency
-    // giúp pipe re-evaluate mỗi khi translations load xong.
     this.translationService.translations();
-    return this.translationService.translate(key);
+    let result = this.translationService.translate(key);
+    if (params) {
+      Object.entries(params).forEach(([k, v]) => {
+        result = result.replace(new RegExp(`\\{${k}\\}`, 'g'), String(v));
+      });
+    }
+    return result;
   }
 }

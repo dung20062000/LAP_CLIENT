@@ -11,7 +11,7 @@ import { AuthService } from '../../services';
  * Người tạo: DungBT
  * Ngày tạo: 28/05/2026
  * Guard bảo vệ route yêu cầu đăng nhập.
- * Cho phép truy cập nếu đã xác thực, ngược lại redirect về /login.
+ * Cho phép truy cập nếu đã xác thực, ngược lại redirect về login.
  */
 export const authGuard: CanActivateFn = () => {
   const authService = inject(AuthService);

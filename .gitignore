@@ -29,6 +29,10 @@ yarn-error.log
 !.vscode/mcp.json
 .history/*
 
+# Cursor Agent configuration — local-only, do not share across teams
+.agents/
+.cursor/
+
 # Miscellaneous
 /.angular/cache
 .sass-cache/

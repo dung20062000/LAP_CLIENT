@@ -1,12 +1,27 @@
+/**
+ * Người tạo: DungBT
+ * Ngày tạo: 28/05/2026
+ * Mô tả: Footer - Thông tin công ty, chi nhánh, hotline và các link social.
+ */
 import { Component } from '@angular/core';
 import { TranslatePipe } from '../../pipes/translate.pipe';
 
+/**
+ * Người tạo: DungBT
+ * Ngày tạo: 28/05/2026
+ * Thông tin địa chỉ một chi nhánh. city là translation key.
+ */
 interface BranchLocation {
   id: string | number;
   city: string;
   address: string;
 }
 
+/**
+ * Người tạo: DungBT
+ * Ngày tạo: 28/05/2026
+ * Component footer chính của ứng dụng.
+ */
 @Component({
   selector: 'app-footer',
   imports: [TranslatePipe],
@@ -14,6 +29,12 @@ interface BranchLocation {
   styleUrl: './footer.component.scss',
 })
 export class FooterComponent {
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 28/05/2026
+   * Danh sách chi nhánh của BA GPS trên toàn quốc.
+   * city dùng làm translation key để hiển thị tên thành phố theo ngôn ngữ.
+   */
   readonly branches: BranchLocation[] = [
     { id: 1, city: 'footer.city.hanoi', address: 'Lô 14 phố Nguyễn Cảnh Dị, Phường Định Công, Thành phố Hà Nội' },
     { id: 2, city: 'footer.city.haiphong', address: 'Căn BH 01- 47 KĐT Vinhomes Imperia, Đ. Bạch Đằng, P. Hồng Bàng, TP. Hải Phòng' },

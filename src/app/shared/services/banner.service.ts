@@ -53,7 +53,7 @@ const MOCK_BANNERS: BannerSlide[] = [
       vi: 'Dịch vụ chuyển phát chuyên nghiệp, nhanh chóng và tin cậy trên toàn quốc với mạng lưới phủ khắp các tỉnh thành.',
       en: 'Professional, fast and reliable delivery service nationwide with a network covering all provinces.',
     },
-    link: 'https://baexpress.vn',
+    link: 'https://bagps.vn/mang-luoi',
     order: 3,
   },
   {

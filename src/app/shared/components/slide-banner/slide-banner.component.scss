@@ -67,6 +67,8 @@
 .banner-overlay {
   position: absolute;
   inset: 0;
+  z-index: 3;
+  pointer-events: none;
 }
 
 .banner-content {
@@ -74,10 +76,11 @@
   inset: 0;
   display: flex;
   align-items: end;
-  z-index: 2;
+  z-index: 4;
   padding-top: 20px;
   padding-bottom: 80px;
   max-width: 50%;
+  pointer-events: none;
 }
 
 .banner-text {
@@ -121,6 +124,7 @@
   font-size: 0.7rem;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
   transition: all 0.3s;
+  pointer-events: auto;
 
   &:hover {
     transform: translateY(-2px);
@@ -153,6 +157,7 @@
     background 0.2s,
     transform 0.2s;
   font-size: 1rem;
+  pointer-events: auto;
 
   &.visible {
     opacity: 1;
@@ -187,6 +192,7 @@
   gap: 8px;
   z-index: 5;
   align-items: center;
+  pointer-events: auto;
 }
 
 .dot {
@@ -286,6 +292,9 @@
   .arrow-next {
     right: 10px;
   }
+  .banner-btn {
+    display: none;
+  }
 }
 
 // ─── Responsive: Tablet 576px–991px ──────────────────────────────────────
@@ -311,5 +320,8 @@
   }
   .arrow-next {
     right: 14px;
+  }
+  .banner-btn {
+    display: none;
   }
 }

@@ -9,8 +9,15 @@
       <!-- Lặp qua resolvedSlides — chỉ slide nào có index = currentIndex mới active -->
       @for (item of resolvedSlides(); track item.id; let i = $index) {
       <div class="banner-slide" [class.active]="i === currentIndex()">
-        <!-- Ảnh banner làm background -->
+        <!-- Ảnh banner làm background — clickable khi có link -->
+        @if (item.link) {
+        <a [href]="item.link" target="_blank" rel="noopener noreferrer" class="banner-link-wrapper"
+          [attr.aria-label]="item.title">
+          <div class="banner-bg" [style.backgroundImage]="'url(' + item.imageUrl + ')'"></div>
+        </a>
+        } @else {
         <div class="banner-bg" [style.backgroundImage]="'url(' + item.imageUrl + ')'"></div>
+        }
         <!-- Overlay làm mờ ảnh để text dễ đọc -->
         <div class="banner-overlay"></div>
         <!-- Nội dung text: tiêu đề + mô tả + nút chi tiết -->
@@ -18,7 +25,7 @@
           <div class="banner-text">
             <h2 class="banner-title">{{ item.title }}</h2>
             <p class="banner-summary">{{ item.shortContents }}</p>
-            <!-- Nút chi tiết — chỉ hiện nếu có link -->
+            <!-- Nút chi tiết — chỉ hiện nếu có link, ẩn trên tablet/mobile -->
             @if (item.link) {
             <a [href]="item.link" target="_blank" rel="noopener noreferrer" class="btn btn-light banner-btn mt-1">
               {{ t('banner.btn_detail') }} <i class="fas fa-arrow-right ml-2"></i>

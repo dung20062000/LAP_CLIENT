@@ -121,7 +121,7 @@ export default [
       '@angular-eslint/template/no-distracting-elements': 'error',
       '@angular-eslint/template/no-duplicate-attributes': 'error',
       '@angular-eslint/template/no-nested-tags': 'error',
-      '@angular-eslint/template/prefer-self-closing-tags': 'warn',
+      '@angular-eslint/template/prefer-self-closing-tags': 'error',
     },
   },
 

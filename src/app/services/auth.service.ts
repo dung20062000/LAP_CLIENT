@@ -35,13 +35,18 @@ export class AuthService {
   readonly isLoggedIn = computed(() => !!this.currentUserSignal());
   readonly token = this.tokenSignal.asReadonly();
 
+  // Kiểm tra môi trường browser để tránh lỗi ReferenceError trên SSR
+  private isBrowser(): boolean {
+    return typeof window !== 'undefined';
+  }
+
   /**
    * Người tạo: DungBT
    * Ngày tạo: 28/05/2026
    * Tạo session cookie để đánh dấu session còn hoạt động
    */
   private setSessionCookie(): void {
-    if (typeof document !== 'undefined') {
+    if (this.isBrowser()) {
       document.cookie = 'browser_session_active=true; path=/; SameSite=Strict';
     }
   }
@@ -52,14 +57,14 @@ export class AuthService {
    * Xóa session cookie
    */
   private deleteSessionCookie(): void {
-    if (typeof document !== 'undefined') {
+    if (this.isBrowser()) {
       document.cookie =
         'browser_session_active=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Strict';
     }
   }
 
   private hasSessionCookie(): boolean {
-    if (typeof document === 'undefined') {
+    if (!this.isBrowser()) {
       return false;
     }
     return document.cookie
@@ -81,42 +86,45 @@ export class AuthService {
 
   /**
    * Người tạo: DungBT
+   * Ngày tạo: 29/05/2026
+   * Thử khôi phục session từ storage và set vào signals.
+   * Nếu parse lỗi hoặc thiếu data thì clearAuth.
+   */
+  private tryRestoreSession(): void {
+    if (!this.isBrowser()) return;
+
+    const sessionData = localStorage.getItem('auth_user');
+    const token = localStorage.getItem('auth_token');
+    if (sessionData && token) {
+      try {
+        this.currentUserSignal.set(JSON.parse(sessionData));
+        this.tokenSignal.set(token);
+      } catch {
+        this.clearAuth();
+      }
+    } else {
+      this.clearAuth();
+    }
+  }
+
+  /**
+   * Người tạo: DungBT
    * Ngày tạo: 28/05/2026
    * Đọc auth data đã lưu, parse và set vào signals.
    * Nếu parse lỗi thì clear hết để tránh state không hợp lệ.
    */
   private loadStoredAuth(): void {
+    if (!this.isBrowser()) return;
+
     const rememberFlag = localStorage.getItem('remember_me');
 
     if (rememberFlag === 'true') {
       // Ghi nhớ đăng nhập: Đọc từ localStorage
-      const sessionData = localStorage.getItem('auth_user');
-      const token = localStorage.getItem('auth_token');
-      if (sessionData && token) {
-        try {
-          this.currentUserSignal.set(JSON.parse(sessionData));
-          this.tokenSignal.set(token);
-        } catch {
-          this.clearAuth();
-        }
-      } else {
-        this.clearAuth();
-      }
+      this.tryRestoreSession();
     } else if (rememberFlag === 'false') {
       // Không ghi nhớ đăng nhập: Chỉ khôi phục khi session cookie còn hiệu lực (chưa đóng trình duyệt)
       if (this.hasSessionCookie()) {
-        const sessionData = localStorage.getItem('auth_user');
-        const token = localStorage.getItem('auth_token');
-        if (sessionData && token) {
-          try {
-            this.currentUserSignal.set(JSON.parse(sessionData));
-            this.tokenSignal.set(token);
-          } catch {
-            this.clearAuth();
-          }
-        } else {
-          this.clearAuth();
-        }
+        this.tryRestoreSession();
       } else {
         // Đóng trình duyệt mở lại -> tự động logout
         this.clearAuth();
@@ -160,20 +168,22 @@ export class AuthService {
         },
       };
 
-      if (rememberMe) {
-        localStorage.setItem('remember_me', 'true');
-        localStorage.setItem('auth_token', fakeToken);
-        localStorage.setItem('auth_user', JSON.stringify(fakeUser));
-        this.deleteSessionCookie();
-      } else {
-        localStorage.setItem('remember_me', 'false');
-        localStorage.setItem('auth_token', fakeToken);
-        localStorage.setItem('auth_user', JSON.stringify(fakeUser));
-        this.setSessionCookie();
-      }
+      if (this.isBrowser()) {
+        if (rememberMe) {
+          localStorage.setItem('remember_me', 'true');
+          localStorage.setItem('auth_token', fakeToken);
+          localStorage.setItem('auth_user', JSON.stringify(fakeUser));
+          this.deleteSessionCookie();
+        } else {
+          localStorage.setItem('remember_me', 'false');
+          localStorage.setItem('auth_token', fakeToken);
+          localStorage.setItem('auth_user', JSON.stringify(fakeUser));
+          this.setSessionCookie();
+        }
 
-      sessionStorage.removeItem('auth_token');
-      sessionStorage.removeItem('auth_user');
+        sessionStorage.removeItem('auth_token');
+        sessionStorage.removeItem('auth_user');
+      }
 
       this.tokenSignal.set(fakeToken);
       this.currentUserSignal.set(fakeUser);
@@ -206,12 +216,15 @@ export class AuthService {
   private clearAuth(): void {
     this.tokenSignal.set(null);
     this.currentUserSignal.set(null);
-    localStorage.removeItem('remember_me');
-    localStorage.removeItem('auth_token');
-    localStorage.removeItem('auth_user');
-    sessionStorage.removeItem('auth_token');
-    sessionStorage.removeItem('auth_user');
-    this.deleteSessionCookie();
+
+    if (this.isBrowser()) {
+      localStorage.removeItem('remember_me');
+      localStorage.removeItem('auth_token');
+      localStorage.removeItem('auth_user');
+      sessionStorage.removeItem('auth_token');
+      sessionStorage.removeItem('auth_user');
+      this.deleteSessionCookie();
+    }
   }
 
   // Lấy token hiện tại — dùng để attach vào HTTP header.

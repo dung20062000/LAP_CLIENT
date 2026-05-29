@@ -5,7 +5,7 @@
  */
 import { Component, OnInit, signal, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../../services';
 import { LoginRequest } from '../../../../models';
@@ -35,27 +35,16 @@ import { TranslationService } from '../../../../shared/services/translation.serv
 })
 export class LoginComponent implements OnInit {
   private translationService = inject(TranslationService);
+  private fb = inject(FormBuilder);
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
-  // Form đăng nhập
   loginForm!: FormGroup;
-  // loading khi submit
   isLoading = signal(false);
   showPassword = signal(false);
   errorMessage = signal('');
 
-  constructor(
-    private fb: FormBuilder,
-    private authService: AuthService,
-    private router: Router,
-  ) {}
-
-  /**
-   * Người tạo: DungBT
-   * Ngày tạo: 28/05/2026
-   * Khởi tạo form với các validation rule.
-   * Username: bắt buộc, chỉ chữ và số, tối đa 50 ký tự.
-   * Password: bắt buộc, tối đa 200 ký tự.
-   */
   ngOnInit(): void {
     this.loginForm = this.fb.group({
       username: [
@@ -111,8 +100,7 @@ export class LoginComponent implements OnInit {
    * Ngày tạo: 28/05/2026
    * Xử lý submit form:
    * - Validate form, markAllAsTouched nếu invalid.
-   * - Hardcode check admin/admin@123 ở client (tạm thời).
-   * - Gọi AuthService.login, điều hướng /dashboard nếu thành công.
+   * - Gọi AuthService.login, điều hướng về returnUrl hoặc /dashboard nếu thành công.
    * - Hiển thị error message nếu thất bại.
    */
   onSubmit(): void {
@@ -126,13 +114,6 @@ export class LoginComponent implements OnInit {
 
     const { username, password, rememberMe } = this.loginForm.value;
 
-    // Hardcode check trực tiếp ở Client (tạm thời — sẽ xóa khi backend sẵn sàng).
-    if (username.trim() !== 'admin' || password !== 'admin@123') {
-      this.isLoading.set(false);
-      this.errorMessage.set(this.translationService.translate('login.err_invalid_credentials'));
-      return;
-    }
-
     const credentials: LoginRequest = {
       username: username.trim(),
       password,
@@ -142,7 +123,8 @@ export class LoginComponent implements OnInit {
       next: (response) => {
         this.isLoading.set(false);
         if (response.success) {
-          this.router.navigate(['/dashboard']);
+          const returnUrl = this.route.snapshot.queryParams['returnUrl'];
+          this.router.navigate([returnUrl || '/dashboard']);
         } else {
           this.errorMessage.set(
             response.message || this.translationService.translate('login.err_invalid_credentials'),

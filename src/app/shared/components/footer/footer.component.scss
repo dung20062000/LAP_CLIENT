@@ -178,6 +178,12 @@
     max-width: 100%;
   }
 
+  .footer-grid {
+    .footer-col:not(:last-child) {
+      margin-bottom: 12px;
+    }
+  }
+
   .footer-app-col {
     padding-top: 20px;
   }

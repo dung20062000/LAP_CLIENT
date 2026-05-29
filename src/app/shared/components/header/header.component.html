@@ -1,7 +1,12 @@
 <header class="site-header">
   <!-- Overlay mờ khi menu mobile đang mở — click để đóng -->
   @if (isMenuOpen) {
-    <div class="menu-overlay" (click)="closeMenu()"></div>
+    <div
+      class="menu-overlay"
+      tabindex="-1"
+      (click)="closeMenu()"
+      (keydown.enter)="closeMenu()"
+    ></div>
   }
 
   <div class="header-container">
@@ -24,9 +29,9 @@
           <li class="nav-item">
             <a
               class="nav-link"
-              [href]="item.href"
               target="_blank"
               rel="noopener noreferrer"
+              [href]="item.href"
               (click)="closeMenu()"
             >
               {{ item.label }}
@@ -39,21 +44,16 @@
 
         <a
           class="zalo-btn"
-          [href]="zaloUrl"
           target="_blank"
           rel="noopener noreferrer"
-          title="Zalo"
+          [href]="zaloUrl"
+          [title]="'common.zalo' | translate"
         >
-          <img
-            src="https://img.icons8.com/color/48/zalo.png"
-            alt="Zalo"
-            width="22"
-            height="22"
-          />
+          <img src="https://img.icons8.com/color/48/zalo.png" alt="Zalo" width="22" height="22" />
           <span class="btn-text">{{ 'common.zalo' | translate }}</span>
         </a>
 
-        <a class="hotline-btn" [href]="'tel:' + hotline" title="Hotline">
+        <a class="hotline-btn" [title]="'common.hotline' | translate" [href]="'tel:' + hotline">
           <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
             <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
           </svg>
@@ -62,7 +62,7 @@
       </div>
 
       @if (isLoggedIn()) {
-        <button class="mobile-logout-btn" (click)="onLogout(); closeMenu()" [title]="'header.logout' | translate">
+        <button class="mobile-logout-btn" [title]="'header.logout' | translate" (click)="onLogout(); closeMenu()">
           <i class="fas fa-sign-out-alt"></i>
           <span>{{ 'header.logout' | translate }}</span>
         </button>
@@ -72,10 +72,10 @@
     <div class="header-right">
       <a
         class="zalo-btn"
-        [href]="zaloUrl"
         target="_blank"
         rel="noopener noreferrer"
         title="Zalo"
+        [href]="zaloUrl"
       >
         <img
           src="https://img.icons8.com/color/48/zalo.png"
@@ -86,7 +86,7 @@
         <span class="btn-text">{{ 'common.zalo' | translate }}</span>
       </a>
 
-      <a class="hotline-btn" [href]="'tel:' + hotline" title="Hotline">
+      <a class="hotline-btn" title="Hotline" [href]="'tel:' + hotline">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
           <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
         </svg>
@@ -100,15 +100,21 @@
       }
 
       <div class="lang-selector" [title]="'header.select_language' | translate" (clickOutside)="langOpen = false">
-        <div class="lang-current" (click)="langOpen = !langOpen">
+        <div
+          class="lang-current"
+          role="button"
+          tabindex="0"
+          (click)="langOpen = !langOpen"
+          (keydown.enter)="langOpen = !langOpen"
+        >
           <span class="lang-flag-wrapper">
             <img
+              width="20"
+              height="20"
               [src]="currentLang === 'vi'
                 ? 'https://img.icons8.com/color/48/vietnam-circular.png'
                 : 'https://img.icons8.com/color/48/usa-circular.png'"
               [alt]="currentLang === 'vi' ? 'Việt Nam' : 'English'"
-              width="20"
-              height="20"
             />
           </span>
           <span class="lang-label">{{ currentLang === 'vi' ? 'Tiếng Việt' : 'English' }}</span>
@@ -123,11 +129,14 @@
           <ul class="lang-dropdown">
             @for (lang of languages; track lang.code) {
               <li
+                role="button"
+                tabindex="0"
                 [class.active]="currentLang === lang.code"
                 (click)="selectLang(lang.code)"
+                (keydown.enter)="selectLang(lang.code)"
               >
                 <span class="lang-flag-wrapper round">
-                  <img [src]="lang.flag" [alt]="lang.label" width="20" height="20" />
+                  <img width="20" height="20" [src]="lang.flag" [alt]="lang.label" />
                 </span>
                 <span>{{ lang.label }}</span>
               </li>
@@ -136,12 +145,12 @@
         }
       </div>
       @if (isLoggedIn()) {
-        <button class="logout-btn" (click)="onLogout()" [title]="'header.logout' | translate">
+        <button class="logout-btn" [title]="'header.logout' | translate" (click)="onLogout()">
           <i class="fas fa-sign-out-alt"></i>
         </button>
       }
 
-      <button class="menu-toggle-btn" (click)="toggleMenu()" [attr.aria-label]="isMenuOpen ? 'Close menu' : 'Open menu'">
+      <button class="menu-toggle-btn" [attr.aria-label]="isMenuOpen ? 'Close menu' : 'Open menu'" (click)="toggleMenu()">
         @if (!isMenuOpen) {
           <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
             <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>

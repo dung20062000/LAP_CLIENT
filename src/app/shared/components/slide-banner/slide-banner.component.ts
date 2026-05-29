@@ -77,10 +77,10 @@ export class SlideBannerComponent implements OnInit, OnDestroy {
   readonly isHovered = signal(false);
 
   // Viết tắt cho TranslationService.translate — dùng trong template.
-  readonly t = (key: string) => this.translationService.translate(key);
+  readonly t = (key: string): string => this.translationService.translate(key);
 
   // Mã ngôn ngữ hiện tại ('vi' | 'en'). resolvedSlides dùng giá trị này.
-  readonly currentLang = () => this.translationService.currentLang();
+  readonly currentLang = (): string => this.translationService.currentLang();
 
   // Handle của timer auto-play — clear trong ngOnDestroy để tránh rò rỉ bộ nhớ.
   private intervalId: ReturnType<typeof setInterval> | null = null;

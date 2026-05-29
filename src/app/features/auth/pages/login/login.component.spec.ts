@@ -5,7 +5,7 @@
  */
 import { TestBed } from '@angular/core/testing';
 import { signal } from '@angular/core';
-import { provideRouter, Router } from '@angular/router';
+import { provideRouter } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { LoginComponent } from './login.component';
 import { HeaderComponent } from '../../../../shared/components/header/header.component';
@@ -71,7 +71,7 @@ describe('LoginComponent', () => {
     }).compileComponents();
   });
 
-  function createComponent() {
+  function createComponent(): { fixture: ReturnType<typeof TestBed.createComponent<LoginComponent>>; component: LoginComponent } {
     const fixture = TestBed.createComponent(LoginComponent);
     fixture.detectChanges();
     return { fixture, component: fixture.componentInstance };

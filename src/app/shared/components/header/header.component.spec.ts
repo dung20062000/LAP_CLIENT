@@ -52,7 +52,7 @@ describe('HeaderComponent', () => {
     }).compileComponents();
   });
 
-  function createComponent() {
+  function createComponent(): { fixture: ReturnType<typeof TestBed.createComponent<HeaderComponent>>; component: HeaderComponent } {
     const fixture = TestBed.createComponent(HeaderComponent);
     fixture.detectChanges();
     return { fixture, component: fixture.componentInstance };
@@ -141,7 +141,7 @@ describe('HeaderComponent', () => {
 
     it('should call changeLanguage on selectLang()', () => {
       const { component } = createComponent();
-      const svc = TestBed.inject(TranslationService) as any;
+      const svc = TestBed.inject(TranslationService);
       component.selectLang('en');
       expect(svc.changeLanguage).toHaveBeenCalledWith('en');
     });

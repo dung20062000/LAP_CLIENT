@@ -1,8 +1,12 @@
 <section class="banner-section">
   <!-- Kiểm tra có slides không — currentSlide guard cho template -->
   @if (hasSlides() && currentSlide(); as slide) {
-  <!-- Wrapper chính — hover để hiện arrows và tạm dừng auto-play -->
-  <div class="banner-wrapper" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
+  <!-- Wrapper chinh — hover de hien arrows va tam dung auto-play -->
+  <div
+    class="banner-wrapper"
+    (mouseenter)="onMouseEnter()"
+    (mouseleave)="onMouseLeave()"
+  >
 
     <!-- Container chứa tất cả slides -->
     <div class="banner-slides-container">
@@ -11,12 +15,17 @@
       <div class="banner-slide" [class.active]="i === currentIndex()">
         <!-- Ảnh banner làm background — clickable khi có link -->
         @if (item.link) {
-        <a [href]="item.link" target="_blank" rel="noopener noreferrer" class="banner-link-wrapper"
-          [attr.aria-label]="item.title">
-          <div class="banner-bg" [style.backgroundImage]="'url(' + item.imageUrl + ')'"></div>
-        </a>
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            class="banner-link-wrapper"
+            [attr.aria-label]="item.title"
+            [href]="item.link"
+          >
+            <div class="banner-bg" [style.backgroundImage]="'url(' + item.imageUrl + ')'"></div>
+          </a>
         } @else {
-        <div class="banner-bg" [style.backgroundImage]="'url(' + item.imageUrl + ')'"></div>
+          <div class="banner-bg" [style.backgroundImage]="'url(' + item.imageUrl + ')'"></div>
         }
         <!-- Overlay làm mờ ảnh để text dễ đọc -->
         <div class="banner-overlay"></div>
@@ -27,9 +36,14 @@
             <p class="banner-summary">{{ item.shortContents }}</p>
             <!-- Nút chi tiết — chỉ hiện nếu có link, ẩn trên tablet/mobile -->
             @if (item.link) {
-            <a [href]="item.link" target="_blank" rel="noopener noreferrer" class="btn btn-light banner-btn mt-1">
-              {{ t('banner.btn_detail') }} <i class="fas fa-arrow-right ml-2"></i>
-            </a>
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn btn-light banner-btn mt-1"
+                [href]="item.link"
+              >
+                {{ t('banner.btn_detail') }} <i class="fas fa-arrow-right ml-2"></i>
+              </a>
             }
           </div>
         </div>
@@ -38,21 +52,32 @@
     </div>
 
     <!-- Nút mũi tên chuyển slide trước/sau — hiện khi hover -->
-    <button class="banner-arrow arrow-prev" (click)="prevSlide()" [class.visible]="isHovered()"
-      [attr.aria-label]="t('banner.aria_prev')">
+    <button
+      class="banner-arrow arrow-prev"
+      [class.visible]="isHovered()"
+      [attr.aria-label]="t('banner.aria_prev')"
+      (click)="prevSlide()"
+    >
       <i class="fas fa-chevron-left"></i>
     </button>
-    <button class="banner-arrow arrow-next" (click)="nextSlide()" [class.visible]="isHovered()"
-      [attr.aria-label]="t('banner.aria_next')">
+    <button
+      class="banner-arrow arrow-next"
+      [class.visible]="isHovered()"
+      [attr.aria-label]="t('banner.aria_next')"
+      (click)="nextSlide()"
+    >
       <i class="fas fa-chevron-right"></i>
     </button>
 
     <!-- Các chấm tròn chỉ số slide — click để nhảy đến slide tương ứng -->
     <div class="banner-dots">
       @for (idx of dotIndices(); track idx) {
-      <button class="dot" [class.active]="idx === currentIndex()" (click)="goToSlideByIndex(idx)"
-        [attr.aria-label]="t('banner.aria_slide') + ' ' + (idx + 1)">
-      </button>
+        <button
+          class="dot"
+          [class.active]="idx === currentIndex()"
+          [attr.aria-label]="t('banner.aria_slide') + ' ' + (idx + 1)"
+          (click)="goToSlideByIndex(idx)"
+        ></button>
       }
     </div>
   </div>

@@ -5,7 +5,7 @@
  */
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
-import { App } from './app';
+import { AppComponent } from './app';
 import { routes } from './app.routes';
 
 /**
@@ -16,7 +16,7 @@ import { routes } from './app.routes';
 describe('App', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [App],
+      imports: [AppComponent],
       providers: [provideRouter(routes)],
     }).compileComponents();
   });
@@ -27,7 +27,7 @@ describe('App', () => {
    * Kiểm tra app được tạo thành công.
    */
   it('should create the app', () => {
-    const fixture = TestBed.createComponent(App);
+    const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
     expect(app).toBeTruthy();
   });
@@ -38,7 +38,7 @@ describe('App', () => {
    * Kiểm tra app render router-outlet.
    */
   it('should render a router-outlet', () => {
-    const fixture = TestBed.createComponent(App);
+    const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('router-outlet')).toBeTruthy();

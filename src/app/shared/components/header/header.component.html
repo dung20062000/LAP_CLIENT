@@ -111,13 +111,11 @@
             <img
               width="20"
               height="20"
-              [src]="currentLang === 'vi'
-                ? 'https://img.icons8.com/color/48/vietnam-circular.png'
-                : 'https://img.icons8.com/color/48/usa-circular.png'"
-              [alt]="currentLang === 'vi' ? 'Việt Nam' : 'English'"
+              [src]="currentLangInfo().flag"
+              [alt]="currentLangInfo().label"
             />
           </span>
-          <span class="lang-label">{{ currentLang === 'vi' ? 'Tiếng Việt' : 'English' }}</span>
+          <span class="lang-label">{{ currentLangInfo().label }}</span>
           <span class="lang-arrow">
             <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
               <path d="M7 10l5 5 5-5z"/>

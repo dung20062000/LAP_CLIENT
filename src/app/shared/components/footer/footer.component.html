@@ -1,15 +1,17 @@
 <footer class="site-footer">
-  <div class="container-fluid px-70">
+  <div class="container-fluid footer-wrapper">
     <div class="row no-gutters footer-main">
       <!-- chi nhánh: chiếm 11/12 width trên desktop, full width trên mobile -->
       <div class="col-12 col-xl-11">
-        <div class="row no-gutters footer-grid">
-          @for (branch of branches; track branch.id) {
-          <div class="col-sm-2 footer-col">
+        <div class="footer-grid">
+          <div class="row no-gutters">
+          @for (branch of branches; track $index) {
+          <div class="col-6 col-md-4 col-xl footer-col">
             <h4 class="footer-city">{{ branch.city | translate }}</h4>
             <p class="footer-desc">{{ branch.address }}</p>
           </div>
           }
+          </div>
         </div>
       </div>
 

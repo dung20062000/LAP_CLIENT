@@ -103,9 +103,7 @@ export class SlideBannerComponent implements OnInit, OnDestroy {
   });
 
   // True khi có ít nhất một banner để hiển thị.
-  readonly hasSlides = computed(
-    () => this.resolvedSlides() !== null && this.resolvedSlides().length > 0,
-  );
+  readonly hasSlides = computed(() => this.resolvedSlides().length > 0);
 
   /**
    * Người tạo: DungBT
@@ -119,7 +117,7 @@ export class SlideBannerComponent implements OnInit, OnDestroy {
   });
 
   // Tổng số slide — dùng cho phép tính modulo trong nextSlide.
-  readonly totalSlides = computed(() => this.resolvedSlides()?.length || 0);
+  readonly totalSlides = computed(() => this.resolvedSlides().length);
 
   /**
    * Người tạo: DungBT

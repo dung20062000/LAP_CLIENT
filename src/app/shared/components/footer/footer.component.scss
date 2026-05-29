@@ -4,7 +4,7 @@
   padding: 40px 0 32px;
 }
 
-.px-70 {
+.footer-wrapper {
   padding-left: 70px;
   padding-right: 70px;
 }
@@ -36,7 +36,7 @@
   line-height: 1.5;
 }
 
-// ─── App / Social sidebar (large screen) ─────────────────────────────────────
+// ─── App / Trang mạng xã hội (màn hình lớn) ─────────────────────────────────────
 
 .footer-app-col {
   display: flex;
@@ -109,13 +109,17 @@
 
 // ─── RESPONSIVE ─────────────────────────────────────────────────────────────
 
-// Medium (≤1199px): branches 3 cols, social column wraps below with horizontal layout
+// Desktop ≥1200px: mỗi chi nhánh chia đều 6 cột (= 6 branches)
+.footer-grid .row > .col-xl {
+  flex: 1;
+  min-width: 0;
+}
+
+// Medium 992-1199px: 3 chi nhánh / hàng
 @media (max-width: 1199px) {
-  .footer-grid {
-    .col-sm-2 {
-      flex: 0 0 33.3333%;
-      max-width: 33.3333%;
-    }
+  .footer-grid .row > .col-xl {
+    flex: 0 0 33.3333%;
+    max-width: 33.3333%;
   }
 
   .footer-app-col {
@@ -137,22 +141,20 @@
 
 }
 
-// Tablet (≤991px): branches 2 cols
+// Tablet (≤991px)
 @media (max-width: 991px) {
   .site-footer {
     padding: 28px 0 24px;
   }
 
-  .px-70 {
+  .footer-wrapper {
     padding-left: 24px;
     padding-right: 24px;
   }
 
-  .footer-grid {
-    .col-sm-2 {
-      flex: 0 0 50%;
-      max-width: 50%;
-    }
+  .footer-grid .row > .col-xl {
+    flex: 0 0 50%;
+    max-width: 50%;
   }
 
   .footer-app-links-social {
@@ -160,22 +162,20 @@
   }
 }
 
-// Mobile (≤575px): branches 1 col, container wraps items if needed
+// Mobile (≤575px)
 @media (max-width: 575px) {
   .site-footer {
     padding: 24px 0 20px;
   }
 
-  .px-70 {
+  .footer-wrapper {
     padding-left: 16px;
     padding-right: 16px;
   }
 
-  .footer-grid {
-    .col-sm-2 {
-      flex: 0 0 100%;
-      max-width: 100%;
-    }
+  .footer-grid .row > .col-xl {
+    flex: 0 0 100%;
+    max-width: 100%;
   }
 
   .footer-app-col {

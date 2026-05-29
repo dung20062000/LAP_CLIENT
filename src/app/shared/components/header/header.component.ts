@@ -84,13 +84,21 @@ export class HeaderComponent {
       label: 'Tiếng Việt',
       flag: 'https://img.icons8.com/color/48/vietnam-circular.png',
     },
-    { code: 'en', label: 'English', flag: 'https://img.icons8.com/color/48/usa-circular.png' },
+    { code: 'en',
+      label: 'English',
+      flag: 'https://img.icons8.com/color/48/usa-circular.png',
+      href: 'https://bagps.vn/en/',
+    },
   ];
 
   // Lấy ngôn ngữ hiện tại từ TranslationService.
   get currentLang(): string {
     return this.translationService.currentLang();
   }
+
+  readonly currentLangInfo = computed(
+    () => this.languages.find((l) => l.code === this.currentLang) ?? this.languages[0],
+  );
 
   // Trạng thái mở dropdown ngôn ngữ.
   langOpen = false;

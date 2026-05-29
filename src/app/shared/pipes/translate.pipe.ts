@@ -29,7 +29,6 @@ export class TranslatePipe implements PipeTransform {
    * nhờ đó pipe tự re-evaluate mỗi khi ngôn ngữ thay đổi.
    */
   transform(key: string, params?: Record<string, string | number>): string {
-    this.translationService.translations();
     let result = this.translationService.translate(key);
     if (params) {
       Object.entries(params).forEach(([k, v]) => {

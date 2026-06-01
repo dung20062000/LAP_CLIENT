@@ -25,6 +25,7 @@
   /* Text color */
   --text-primary: #000000;
   --text-secondary: #383838;
+  --text-blue: #0066cc;
   --text-white: #ffffff;
   --text-grey-light: #e2e2e2;
   --text-error: #dc3545;
@@ -33,10 +34,21 @@
   /* Background color */
   --bg-white: #ffffff;
   --bg-banner-overlay: rgba(0, 20, 60, 0.65);
+  --bg-gray-light-2: #b9b9b9;
 
   /* Color gradient */
   --gradient-cyan-primary: linear-gradient(to right, #2d9aff, #0bd3ff);
+
+  /* ── Dashboard variables ────────────────────────────────────────────── */
+  --dashboard-bg: #f0f2f5;
+  --widget-bg: #ffffff;
+  --widget-border: rgba(0, 0, 0, 0.07);
+  --widget-header-bg: #f8f9fa;
+  --dashboard-card-blue: #0066ff;
+  --dashboard-card-green: #28a745;
+  --dashboard-card-orange: #fd7e14;
 }
+
 
 /* Reset & Base */
 *,

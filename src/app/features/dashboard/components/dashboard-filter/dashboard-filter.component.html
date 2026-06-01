@@ -1,0 +1,94 @@
+<!-- Dashboard Filter – Bộ lọc phương tiện ng-select multi-select -->
+<!-- ESLint attribute order: ATTRIBUTE_BINDING → INPUT_BINDING → TWO_WAY_BINDING → OUTPUT_BINDING -->
+<div class="filter-bar">
+  <div class="filter-select-wrap">
+    <ng-select
+      id="vehicle-filter-select"
+      bindLabel="licensePlate"
+      bindValue="id"
+      notFoundText="Không tìm thấy xe"
+      appendTo="body"
+      placeholder="Chọn phương tiện"
+      [items]="vehicleOptions"
+      [multiple]="true"
+      [closeOnSelect]="false"
+      [searchFn]="searchFn"
+      [clearable]="true"
+      [maxSelectedItems]="1000"
+      [(ngModel)]="selectedIds"
+      (change)="onSelectionChange($event)"
+    >
+      <!-- Header template: ghim cố định "Tất cả (N)" không bị cuộn -->
+      <ng-template ng-header-tmp>
+        <div
+          class="filter-option filter-option--all"
+          role="option"
+          tabindex="0"
+          [attr.aria-selected]="isAllSelected"
+          (click)="toggleAllSelection()"
+          (keydown.enter)="toggleAllSelection()"
+          (keydown.space)="toggleAllSelection()"
+        >
+          <input
+            type="checkbox"
+            class="filter-checkbox"
+            readonly
+            [attr.aria-label]="'Chọn tất cả ' + vehicleOptions.length + ' phương tiện'"
+            [checked]="isAllSelected"
+          />
+          <span class="filter-option-label bold">
+            Tất cả ({{ vehicleOptions.length }})
+          </span>
+        </div>
+      </ng-template>
+
+      <!-- Option template: checkbox cho từng biển số xe -->
+      <ng-template let-item="item" let-index="index" ng-option-tmp>
+        <div class="filter-option">
+          <input
+            type="checkbox"
+            class="filter-checkbox"
+            readonly
+            [attr.aria-label]="'Chọn xe ' + item.licensePlate"
+            [attr.id]="'filter-opt-' + index"
+            [checked]="selectedIds.includes(item.id)"
+          />
+          <label
+            class="filter-option-label"
+            [attr.for]="'filter-opt-' + index"
+          >
+            {{ item.licensePlate }}
+          </label>
+        </div>
+      </ng-template>
+
+      <!-- Label template: hiển thị các tag xe đã chọn -->
+      <ng-template let-items="items" let-clear="clear" ng-multi-label-tmp>
+        @if (items.length > 0) {
+          <div class="filter-tags">
+            @if (items.length <= 3) {
+              @for (item of items; track item.id) {
+                <span class="filter-tag">
+                  {{ item.licensePlate }}
+                  <span
+                    class="filter-tag-remove"
+                    role="button"
+                    tabindex="0"
+                    [attr.aria-label]="'Bỏ chọn xe ' + item.licensePlate"
+                    (click)="clear(item)"
+                    (keydown.enter)="clear(item)"
+                  >×</span>
+                </span>
+              }
+            }
+            @if (items.length > 3) {
+              <span class="filter-tag filter-tag--count">
+                {{ items.length }} xe được chọn
+              </span>
+            }
+          </div>
+        }
+      </ng-template>
+    </ng-select>
+  </div>
+</div>

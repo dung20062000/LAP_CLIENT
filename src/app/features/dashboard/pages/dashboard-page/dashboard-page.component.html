@@ -1,6 +1,106 @@
-<div class="dashboard-container">
-  <div class="dashboard-header">
-    <h1>{{ 'dashboard.welcome' | translate: { username: getCurrentUserName() } }}</h1>
-    <p>{{ 'dashboard.description' | translate }}</p>
+<!-- Dashboard Page – Theo dõi trạng thái xe chở hàng -->
+<div class="dashboard-page">
+
+  <!-- Page Header -->
+  <div class="dashboard-page-header">
+    <div class="page-header-left">
+      <h1 class="page-title">TỔNG QUAN CHUYẾN HÀNG</h1>
+    </div>
+    <div class="page-header-right">
+      <span class="filter-label">XEM THEO</span>
+      <div class="filter-wrap">
+        <app-dashboard-filter
+          [vehicleOptions]="vehicleOptions"
+          (filterChange)="onFilterChange($event)" />
+      </div>
+      <button
+        class="header-refresh-btn"
+        type="button"
+        aria-label="Làm mới dữ liệu"
+        (click)="onPageReload()"
+        (keydown.enter)="onPageReload()"
+      >
+        <i class="fas fa-arrow-rotate-right" aria-hidden="true"></i>
+      </button>
+    </div>
   </div>
+
+  <!-- ── Widget Grid ───────────────────────────────────────────────────── -->
+  <div class="widget-grid row">
+
+    <!-- Row 1: Tổng quan công ty -->
+    <app-widget-container
+      title="TỔNG QUAN CÔNG TY"
+      widgetId="overview"
+      [layoutClass]="getWidgetColClass('overview')"
+      [size]="getWidgetConfig('overview').size"
+      [collapsed]="getWidgetConfig('overview').collapsed"
+      (sizeChange)="onWidgetSizeChange('overview', $event)"
+      (collapsedChange)="onWidgetCollapsedChange('overview', $event)"
+      (reload)="onWidgetReload('overview')">
+      <app-widget-overview [stats]="stats" />
+    </app-widget-container>
+
+    <!-- Row 2: Cửa khẩu | Trên đường | Nhà máy -->
+
+    <!-- Donut: Cửa khẩu -->
+    <app-widget-container
+      title="PHƯƠNG TIỆN TẠI CỬA KHẨU"
+      widgetId="donut-border"
+      [layoutClass]="getWidgetColClass('donut-border')"
+      [size]="getWidgetConfig('donut-border').size"
+      [collapsed]="getWidgetConfig('donut-border').collapsed"
+      (sizeChange)="onWidgetSizeChange('donut-border', $event)"
+      (collapsedChange)="onWidgetCollapsedChange('donut-border', $event)"
+      (reload)="onWidgetReload('donut-border')">
+      <app-widget-donut-border [vehicles]="borderVehicles" />
+    </app-widget-container>
+
+    <!-- Donut: Trên đường -->
+    <app-widget-container
+      title="PHƯƠNG TIỆN ĐANG TRÊN ĐƯỜNG"
+      widgetId="donut-road"
+      [layoutClass]="getWidgetColClass('donut-road')"
+      [size]="getWidgetConfig('donut-road').size"
+      [collapsed]="getWidgetConfig('donut-road').collapsed"
+      (sizeChange)="onWidgetSizeChange('donut-road', $event)"
+      (collapsedChange)="onWidgetCollapsedChange('donut-road', $event)"
+      (reload)="onWidgetReload('donut-road')">
+      <app-widget-donut-road [vehicles]="roadVehicles" />
+    </app-widget-container>
+
+    <!-- Bar Chart: Nhà máy -->
+    <app-widget-container
+      title="PHƯƠNG TIỆN TẠI NHÀ MÁY"
+      widgetId="bar-factory"
+      [layoutClass]="getWidgetColClass('bar-factory')"
+      [size]="getWidgetConfig('bar-factory').size"
+      [collapsed]="getWidgetConfig('bar-factory').collapsed"
+      (sizeChange)="onWidgetSizeChange('bar-factory', $event)"
+      (collapsedChange)="onWidgetCollapsedChange('bar-factory', $event)"
+      (reload)="onWidgetReload('bar-factory')">
+      <app-widget-bar-port
+        barColor="#dc3545"
+        [vehicles]="factoryVehicles"
+        [showZoom]="false" />
+    </app-widget-container>
+
+    <!-- Row 3: Bar Chart Cảng -->
+    <app-widget-container
+      title="PHƯƠNG TIỆN TẠI CẢNG"
+      widgetId="bar-port"
+      [layoutClass]="getWidgetColClass('bar-port')"
+      [size]="getWidgetConfig('bar-port').size"
+      [collapsed]="getWidgetConfig('bar-port').collapsed"
+      (sizeChange)="onWidgetSizeChange('bar-port', $event)"
+      (collapsedChange)="onWidgetCollapsedChange('bar-port', $event)"
+      (reload)="onWidgetReload('bar-port')">
+      <app-widget-bar-port
+        barColor="#00c07f"
+        [vehicles]="portVehicles"
+        [showZoom]="true" />
+    </app-widget-container>
+
+  </div>
+
 </div>

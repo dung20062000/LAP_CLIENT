@@ -1,0 +1,39 @@
+<!-- Widget Overview – 3 Khối Thống Kê Liền Mạch -->
+@if (stats) {
+  <div class="overview-blocks">
+    <!-- Khối 1: Tổng phương tiện (xanh dương) -->
+    <div class="overview-block overview-block--blue">
+      <div class="block-title">Tổng phương tiện của công ty</div>
+      <div class="block-value-wrap">
+        <span class="block-value">{{ stats.totalVehicles }}</span>
+        <span class="block-unit">Phương tiện</span>
+      </div>
+    </div>
+    <!-- Khối 2: Phương tiện có hàng (xanh lục) -->
+    <div class="overview-block overview-block--green">
+      <div class="block-title">Phương tiện có hàng</div>
+      <div class="block-value-wrap">
+        <span class="block-value">{{ stats.loadedVehicles }}</span>
+        <span class="block-unit">Phương tiện</span>
+      </div>
+      <div class="block-subtitle">{{ loadedPercent }}% / Tổng phương tiện</div>
+    </div>
+    <!-- Khối 3: Phương tiện không hàng (cam) -->
+    <div class="overview-block overview-block--orange">
+      <div class="block-title">Phương tiện không hàng</div>
+      <div class="block-value-wrap">
+        <span class="block-value">{{ stats.emptyVehicles }}</span>
+        <span class="block-unit">Phương tiện</span>
+      </div>
+      <div class="block-subtitle">{{ emptyPercent }}% / Tổng phương tiện</div>
+    </div>
+  </div>
+} @else {
+  <div class="overview-blocks">
+    @for (i of [1, 2, 3]; track i) {
+      <div class="overview-block skeleton-block"></div>
+    }
+  </div>
+}
+
+<!-- Skeleton loading -->

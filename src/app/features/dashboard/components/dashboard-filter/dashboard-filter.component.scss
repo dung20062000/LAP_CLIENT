@@ -1,0 +1,111 @@
+// ── Dashboard Filter Styles ──────────────────────────────────────────────────
+// Người tạo: DungBT – 01/06/2026
+
+:host {
+  display: block;
+}
+
+// Xóa background/box-shadow vì filter giờ nằm trên header
+.dashboard-filter {
+  width: 100%;
+}
+
+// Tùy chỉnh ng-select để trông thanh mảnh hơn
+::ng-deep .custom-ng-select {
+  .ng-select-container {
+    min-height: 32px; // Chiều cao giống input form
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    box-shadow: none !important;
+
+    &:hover {
+      border-color: #999;
+    }
+  }
+
+  &.ng-select-opened > .ng-select-container {
+    border-color: #0066cc;
+  }
+
+  .ng-value-container {
+    padding: 0 8px;
+  }
+}
+
+// ─── Custom tags hiển thị khi đã chọn ─────────────────────────────────────────
+.filter-tags {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  padding: 2px 0;
+}
+
+.filter-tag {
+  display: inline-flex;
+  align-items: center;
+  background: #e9ecef;
+  color: #495057;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 500;
+
+  &-remove {
+    margin-left: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+    color: #6c757d;
+
+    &:hover {
+      color: #dc3545;
+    }
+  }
+
+  &--count {
+    background: #0066cc;
+    color: #fff;
+  }
+}
+// ─── Option Template ──────────────────────────────────────────────────────────
+.filter-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #f8f9fa;
+  }
+
+  &--all {
+    color: #0066cc;
+    border-bottom: 1px solid #e9ecef;
+    padding: 8px 12px;
+    background-color: #fff;
+    
+    &:hover {
+      background-color: #f8f9fa;
+    }
+  }
+
+  .filter-option-label {
+    font-size: 13px;
+    color: #333;
+    margin: 0;
+
+    &.bold {
+      font-weight: 700;
+    }
+  }
+
+  .filter-checkbox {
+    cursor: pointer;
+    width: 14px;
+    height: 14px;
+    margin: 0;
+    pointer-events: none; /* Tránh cản trở sự kiện click lên phần tử cha filter-option */
+  }
+}
+

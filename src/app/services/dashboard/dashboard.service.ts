@@ -341,11 +341,11 @@ export class DashboardService {
     const vehicles: Vehicle[] = [];
     let vehicleId = 1;
 
-    // Phân bổ phương tiện theo loại điểm (tổng 8 xe để test)
+    // Phân bổ phương tiện theo loại điểm
     const distributions: { type: Vehicle['locationType']; destIds: number[]; count: number }[] = [
-      { type: 'border',  destIds: [1], count: 2 },
-      { type: 'port',    destIds: [6], count: 2 },
-      { type: 'factory', destIds: [11], count: 2 },
+      { type: 'border',  destIds: [1, 2, 3, 4, 5], count: 2 },
+      { type: 'port',    destIds: [6, 7, 8, 9, 10], count: 20 },
+      { type: 'factory', destIds: [11, 12, 13, 14, 15, 16, 17, 18, 19, 20], count: 20 },
       { type: 'road',    destIds: [], count: 2 },
     ];
 
@@ -364,14 +364,22 @@ export class DashboardService {
           destName = MOCK_DESTINATIONS.find((d) => d.id === destId)?.name;
         }
 
+        const driverName = DRIVER_NAMES[Math.floor(Math.random() * DRIVER_NAMES.length)];
+        const hasLoad = Math.random() > 0.45; // ~55% có hàng
+
+        let finalDestName = destName;
+        if (dist.type === 'port' && destName) {
+          finalDestName = `${destName} (${driverName})`;
+        }
+
         vehicles.push({
           id: vehicleId++,
           licensePlate: plate,
-          driverName: DRIVER_NAMES[Math.floor(Math.random() * DRIVER_NAMES.length)],
-          hasLoad: Math.random() > 0.45, // ~55% có hàng
+          driverName,
+          hasLoad,
           locationType: dist.type,
           destinationId: destId,
-          destinationName: destName,
+          destinationName: finalDestName,
         });
       }
     }

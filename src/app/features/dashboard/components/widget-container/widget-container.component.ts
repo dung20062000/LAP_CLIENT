@@ -11,6 +11,7 @@ import {
   EventEmitter,
   HostListener,
   ElementRef,
+  ChangeDetectorRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { WidgetSize } from '../../../../models';
@@ -108,7 +109,10 @@ export class WidgetContainerComponent {
   onReload(): void {
     this.isReloading = true;
     this.reload.emit();
-    setTimeout(() => (this.isReloading = false), 800);
+    setTimeout(() => {
+      this.isReloading = false;
+      this.cdr.markForCheck();
+    }, 800);
   }
 
   /**
@@ -138,5 +142,8 @@ export class WidgetContainerComponent {
     }
   }
 
-  constructor(private el: ElementRef) {}
+  constructor(
+    private el: ElementRef,
+    private cdr: ChangeDetectorRef,
+  ) {}
 }

@@ -16,6 +16,8 @@ import {
 import { CommonModule } from '@angular/common';
 import { WidgetSize } from '../../../../models';
 
+const WIDGET_OPTIONS_OPEN_EVENT = 'widget-options-open';
+
 /**
  * Người tạo: DungBT
  * Ngày tạo: 01/06/2026
@@ -68,9 +70,15 @@ export class WidgetContainerComponent {
    */
   toggleOptions(event: MouseEvent): void {
     event.stopPropagation();
-    this.showOptions = !this.showOptions;
-    if (this.showOptions) {
-      this.checkSubmenuPosition();
+
+    const nextState = !this.showOptions;
+    this.showOptions = nextState;
+
+    if (nextState) {
+      window.dispatchEvent(new CustomEvent(WIDGET_OPTIONS_OPEN_EVENT, { detail: this.widgetId }));
+      this.updateSubmenuPosition();
+    } else {
+      this.openLeft = false;
     }
   }
 
@@ -79,16 +87,20 @@ export class WidgetContainerComponent {
    * Ngày tạo: 02/06/2026
    * Tính toán xem menu có gần rìa phải màn hình không để mở submenu sang trái
    */
-  checkSubmenuPosition(): void {
-    setTimeout(() => {
-      const btn = this.el.nativeElement.querySelector('.widget-btn--options');
-      if (btn) {
-        const rect = btn.getBoundingClientRect();
-        const screenWidth = window.innerWidth;
-        // Nếu khoảng cách tới mép phải < 350px thì mở submenu sang bên trái
-        this.openLeft = (screenWidth - rect.right) < 350;
+  updateSubmenuPosition(): void {
+    requestAnimationFrame(() => {
+      const menu = this.el.nativeElement.querySelector('.widget-options-menu') as HTMLElement | null;
+      if (menu) {
+        const rect = menu.getBoundingClientRect();
+        const viewportWidth = window.innerWidth;
+        const submenuMinWidth = 180;
+        const gap = 2;
+
+        // Nếu submenu mở sang phải sẽ bị tràn viewport thì đổi sang trái ngay từ lần mở đầu tiên.
+        this.openLeft = rect.right + submenuMinWidth + gap > viewportWidth;
+        this.cdr.markForCheck();
       }
-    }, 50);
+    });
   }
 
   /**
@@ -130,7 +142,16 @@ export class WidgetContainerComponent {
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: Event): void {
     if (!this.el.nativeElement.contains(event.target)) {
-      this.showOptions = false;
+      this.closeOptions();
+    }
+  }
+
+  /** Đóng popup khi widget khác mở dropdown */
+  @HostListener('window:widget-options-open', ['$event'])
+  onWidgetOptionsOpen(event: Event): void {
+    const customEvent = event as CustomEvent;
+    if (customEvent.detail !== this.widgetId) {
+      this.closeOptions();
     }
   }
 
@@ -138,8 +159,13 @@ export class WidgetContainerComponent {
   @HostListener('window:resize')
   onResize(): void {
     if (this.showOptions) {
-      this.checkSubmenuPosition();
+      this.updateSubmenuPosition();
     }
+  }
+
+  private closeOptions(): void {
+    this.showOptions = false;
+    this.openLeft = false;
   }
 
   constructor(

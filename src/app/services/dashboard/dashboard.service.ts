@@ -398,8 +398,8 @@ export class DashboardService {
   private calcStats(vehicles: Vehicle[]): DashboardStats {
     return {
       totalVehicles: vehicles.length,
-      loadedVehicles: vehicles.filter((v) => v.hasLoad && (v.locationType === 'border' || v.locationType === 'road')).length,
-      emptyVehicles: vehicles.filter((v) => !v.hasLoad && (v.locationType === 'border' || v.locationType === 'road')).length,
+      loadedVehicles: vehicles.filter((v) => v.hasLoad).length,
+      emptyVehicles: vehicles.filter((v) => !v.hasLoad).length,
       atBorder:  vehicles.filter((v) => v.locationType === 'border').length,
       onRoad:    vehicles.filter((v) => v.locationType === 'road').length,
       atPort:    vehicles.filter((v) => v.locationType === 'port').length,

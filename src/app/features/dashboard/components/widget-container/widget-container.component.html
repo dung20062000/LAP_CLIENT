@@ -7,7 +7,14 @@
         <span class="widget-title-icon">
           <ng-content select="[widgetIcon]" />
         </span>
-        <span class="widget-title-text">{{ title }}</span>
+        <span
+          class="widget-title-text"
+          tabindex="0"
+          [title]="title"
+          (click)="toggleCollapse()"
+          (keydown.enter)="toggleCollapse()"
+          (keydown.space)="toggleCollapse()"
+        >{{ title }}</span>
       </div>
 
       <div class="widget-actions">

@@ -12,6 +12,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   signal,
+  inject,
 } from '@angular/core';
 
 import { Subject } from 'rxjs';
@@ -21,10 +22,7 @@ import { AuthService, DashboardService } from '../../../../services';
 import {
   WidgetConfig,
   WidgetSize,
-  Vehicle,
   VehicleOption,
-  DashboardStats,
-  Destination,
 } from '../../../../models';
 
 import { WidgetContainerComponent } from '../../components/widget-container/widget-container.component';
@@ -33,6 +31,8 @@ import { WidgetOverviewComponent } from '../../components/widget-overview/widget
 import { WidgetDonutBorderComponent } from '../../components/widget-donut-border/widget-donut-border.component';
 import { WidgetDonutRoadComponent } from '../../components/widget-donut-road/widget-donut-road.component';
 import { WidgetBarPortComponent } from '../../components/widget-bar-port/widget-bar-port.component';
+
+import { AsyncPipe } from '@angular/common';
 
 /**
  * Người tạo: DungBT
@@ -43,6 +43,7 @@ import { WidgetBarPortComponent } from '../../components/widget-bar-port/widget-
   selector: 'app-dashboard-page',
   standalone: true,
   imports: [
+    AsyncPipe,
     WidgetContainerComponent,
     DashboardFilterComponent,
     WidgetOverviewComponent,
@@ -55,89 +56,61 @@ import { WidgetBarPortComponent } from '../../components/widget-bar-port/widget-
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardPageComponent implements OnInit, OnDestroy {
-  private destroy$ = new Subject<void>();
+  private destroySignal = new Subject<void>();
+  private authService = inject(AuthService);
+  private dashboardService = inject(DashboardService);
+  private cdr = inject(ChangeDetectorRef);
 
-  // ─── Thống kê tổng quan (từ toàn bộ xe, không lọc) ──────────────────────
-  stats: DashboardStats | null = null;
-  destinations: Destination[] = [];
+  // Thống kê tổng quan
+  statsData = this.dashboardService.statsData;
+  destinationsData = this.dashboardService.destinationsData;
 
-  // ─── Dữ liệu stream riêng cho từng widget ────────────────────────────────
-  borderVehicles: Vehicle[] = [];
-  roadVehicles: Vehicle[] = [];
-  factoryVehicles: Vehicle[] = [];
-  portVehicles: Vehicle[] = [];
+  // Dữ liệu stream riêng cho từng widget
+  borderVehiclesData = this.dashboardService.borderVehiclesData;
+  roadVehiclesData = this.dashboardService.roadVehiclesData;
+  factoryVehiclesData = this.dashboardService.factoryVehiclesData;
+  portVehiclesData = this.dashboardService.portVehiclesData;
 
-  // ─── Danh sách option cho bộ lọc (id + biển số) ──────────────────────────
+  // Danh sách option cho bộ lọc (id + biển số)
   vehicleOptions: VehicleOption[] = [];
 
-  // ─── Cấu hình layout widget ───────────────────────────────────────────────
+  // Cấu hình layout widget
   widgetConfigs: WidgetConfig[] = [];
 
-  // ─── Timestamp refresh gần nhất ──────────────────────────────────────────
+  // Timestamp refresh gần nhất
   lastRefresh = signal<Date>(new Date());
 
-  constructor(
-    private authService: AuthService,
-    private dashboardService: DashboardService,
-    private cdr: ChangeDetectorRef,
-  ) {}
+  constructor() {}
 
   ngOnInit(): void {
+    this.getDataInit();
+  }
+
+  ngOnDestroy(): void {
+    this.destroySignal.next();
+    this.destroySignal.complete();
+  }
+
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 02/06/2026
+   * Load dữ liệu dashboard.
+   */
+  getDataInit(): void {
     const userId = this.getCurrentUserId();
 
     // Load cấu hình layout từ localStorage
     this.widgetConfigs = this.dashboardService.getLayoutConfig(userId);
 
-    // Subscribe stream tất cả xe (cho thống kê tổng quan + tải danh sách option)
-    this.dashboardService.allVehicles$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+    // Subscribe stream tất cả xe chỉ để lấy vehicleOptions (danh sách dropdown)
+    this.dashboardService.allVehiclesDataStream.pipe(takeUntil(this.destroySignal)).subscribe(() => {
       this.vehicleOptions = this.dashboardService.getVehicleOptions();
       this.lastRefresh.set(new Date());
       this.cdr.markForCheck();
     });
-
-    // Subscribe stats
-    this.dashboardService.stats$.pipe(takeUntil(this.destroy$)).subscribe((stats) => {
-      this.stats = stats;
-      this.cdr.markForCheck();
-    });
-
-    // Subscribe destinations
-    this.dashboardService.destinations$.pipe(takeUntil(this.destroy$)).subscribe((destinations) => {
-      this.destinations = destinations;
-      this.cdr.markForCheck();
-    });
-
-    // Subscribe stream xe tại Cửa khẩu
-    this.dashboardService.borderVehicles$.pipe(takeUntil(this.destroy$)).subscribe((vehicles) => {
-      this.borderVehicles = vehicles;
-      this.cdr.markForCheck();
-    });
-
-    // Subscribe stream xe Đang trên đường
-    this.dashboardService.roadVehicles$.pipe(takeUntil(this.destroy$)).subscribe((vehicles) => {
-      this.roadVehicles = vehicles;
-      this.cdr.markForCheck();
-    });
-
-    // Subscribe stream xe tại Nhà máy
-    this.dashboardService.factoryVehicles$.pipe(takeUntil(this.destroy$)).subscribe((vehicles) => {
-      this.factoryVehicles = vehicles;
-      this.cdr.markForCheck();
-    });
-
-    // Subscribe stream xe tại Cảng
-    this.dashboardService.portVehicles$.pipe(takeUntil(this.destroy$)).subscribe((vehicles) => {
-      this.portVehicles = vehicles;
-      this.cdr.markForCheck();
-    });
   }
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
-  // ─── Helpers ─────────────────────────────────────────────────────────────
+  // Helpers
 
   /**
    * Người tạo: DungBT
@@ -274,7 +247,7 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
     return result;
   }
 
-  // ─── Event handlers ───────────────────────────────────────────────────────
+  // Event handlers
 
   /**
    * Người tạo: DungBT
@@ -337,10 +310,10 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
    * Người tạo: DungBT
    * Ngày tạo: 01/06/2026
    * Xử lý reload từng widget (hiện tại dữ liệu đã được stream, không cần thêm logic).
-   * @param _widgetId ID widget (dùng khi mở rộng sau này để refresh riêng từng widget)
+   * @param widgetId ID widget (dùng khi mở rộng sau này để refresh riêng từng widget)
    */
-  onWidgetReload(_widgetId: string): void {
-    // TODO: Mở rộng sau – gọi refresh stream riêng của từng widget theo widgetId
-    this.cdr.markForCheck();
+  onWidgetReload(widgetId: string): void {
+    // Gọi method refresh riêng biệt trên service
+    this.dashboardService.refreshWidget(widgetId);
   }
 }

@@ -22,11 +22,11 @@ import {
   WidgetSize,
 } from '../../models/dashboard';
 
-// ─── Hằng số ─────────────────────────────────────────────────────────────────
+// Hằng số
 const REFRESH_INTERVAL_MS = 5 * 60 * 1000; // 5 phút
 const LAYOUT_STORAGE_PREFIX = 'dashboard_layout_';
 
-// ─── Dữ liệu giả lập điểm đến ────────────────────────────────────────────────
+// Dữ liệu giả lập điểm đến
 const MOCK_DESTINATIONS: Omit<Destination, 'vehicleCount'>[] = [
   // Cửa khẩu
   { id: 1, name: 'Cửa khẩu Mộc Bài', type: 'border' },
@@ -53,7 +53,7 @@ const MOCK_DESTINATIONS: Omit<Destination, 'vehicleCount'>[] = [
   { id: 20, name: 'KCN Long An', type: 'factory' },
 ];
 
-// ─── Dữ liệu giả lập tên lái xe ──────────────────────────────────────────────
+// Dữ liệu giả lập tên lái xe
 const DRIVER_NAMES = [
   'Nguyễn Văn An', 'Trần Văn Bình', 'Lê Minh Cường', 'Phạm Văn Dũng', 'Hoàng Văn Em',
   'Nguyễn Thị Phương', 'Trần Văn Giang', 'Lê Văn Hùng', 'Phạm Minh Khoa', 'Đỗ Văn Long',
@@ -70,17 +70,17 @@ const DRIVER_NAMES = [
   providedIn: 'root',
 })
 export class DashboardService {
-  // ─── BehaviorSubject bộ lọc xe đang chọn theo ID (rỗng = tất cả) ──────────
+  // BehaviorSubject bộ lọc xe đang chọn theo ID (rỗng = tất cả)
   private selectedIdsSubject = new BehaviorSubject<number[]>([]);
   readonly selectedIds$ = this.selectedIdsSubject.asObservable();
 
-  // ─── Trigger reload thủ công hoặc tự động ─────────────────────────────────
+  // Trigger reload thủ công hoặc tự động
   private refreshTrigger$ = new BehaviorSubject<void>(undefined);
 
-  // ─── Cache dữ liệu mock hiện tại ──────────────────────────────────────────
+  // Cache dữ liệu mock hiện tại
   private cachedVehicles: Vehicle[] = [];
 
-  // ─── Stream dữ liệu thô (tất cả xe, chưa lọc) ───────────────────────────
+  // Stream dữ liệu thô (tất cả xe, chưa lọc)
   readonly rawVehicles$: Observable<Vehicle[]> = this.refreshTrigger$.pipe(
     map(() => this.generateMockData()),
     shareReplay(1)
@@ -90,7 +90,7 @@ export class DashboardService {
    * Stream xe đã lọc theo selectedIds (rỗng = hiển thị tất cả).
    * Là nguồn gốc để derive các stream theo từng loại địa điểm.
    */
-  readonly vehicles$: Observable<Vehicle[]> = combineLatest([
+  readonly allVehiclesData: Observable<Vehicle[]> = combineLatest([
     this.rawVehicles$,
     this.selectedIds$,
   ]).pipe(
@@ -102,28 +102,28 @@ export class DashboardService {
     shareReplay(1)
   );
 
-  // ─── Stream dữ liệu theo từng loại địa điểm (dùng cho từng widget) ────────
+  // Stream dữ liệu theo từng loại địa điểm (dùng cho từng widget)
 
   /** Stream xe tại Cửa khẩu (đã lọc theo bộ lọc tổng quan) */
-  readonly borderVehicles$: Observable<Vehicle[]> = this.vehicles$.pipe(
+  readonly borderVehiclesData: Observable<Vehicle[]> = this.allVehiclesData.pipe(
     map((vehicles) => vehicles.filter((v) => v.locationType === 'border')),
     shareReplay(1)
   );
 
   /** Stream xe Đang trên đường (đã lọc theo bộ lọc tổng quan) */
-  readonly roadVehicles$: Observable<Vehicle[]> = this.vehicles$.pipe(
+  readonly roadVehiclesData: Observable<Vehicle[]> = this.allVehiclesData.pipe(
     map((vehicles) => vehicles.filter((v) => v.locationType === 'road')),
     shareReplay(1)
   );
 
   /** Stream xe tại Nhà máy (đã lọc theo bộ lọc tổng quan) */
-  readonly factoryVehicles$: Observable<Vehicle[]> = this.vehicles$.pipe(
+  readonly factoryVehiclesData: Observable<Vehicle[]> = this.allVehiclesData.pipe(
     map((vehicles) => vehicles.filter((v) => v.locationType === 'factory')),
     shareReplay(1)
   );
 
   /** Stream xe tại Cảng (đã lọc theo bộ lọc tổng quan) */
-  readonly portVehicles$: Observable<Vehicle[]> = this.vehicles$.pipe(
+  readonly portVehiclesData: Observable<Vehicle[]> = this.allVehiclesData.pipe(
     map((vehicles) => vehicles.filter((v) => v.locationType === 'port')),
     shareReplay(1)
   );
@@ -132,13 +132,13 @@ export class DashboardService {
    * Stream thống kê tổng quan (luôn tính trên toàn bộ dữ liệu thô, không lọc).
    * Dùng cho widget TỔNG QUAN CÔNG TY.
    */
-  readonly allVehicles$: Observable<Vehicle[]> = this.rawVehicles$;
+  readonly allVehiclesDataStream: Observable<Vehicle[]> = this.rawVehicles$;
 
-  readonly stats$: Observable<DashboardStats> = this.allVehicles$.pipe(
+  readonly statsData: Observable<DashboardStats> = this.allVehiclesData.pipe(
     map((vehicles) => this.calcStats(vehicles))
   );
 
-  readonly destinations$: Observable<Destination[]> = this.allVehicles$.pipe(
+  readonly destinationsData: Observable<Destination[]> = this.allVehiclesData.pipe(
     map((vehicles) => this.calcDestinations(vehicles))
   );
 
@@ -159,7 +159,18 @@ export class DashboardService {
     this.refreshTrigger$.next();
   }
 
-  // ─── Public methods ───────────────────────────────────────────────────────
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 02/06/2026
+   * Reload dữ liệu của một widget cụ thể.
+   * (Hiện tại gọi chung refreshTrigger$, khi tách API thật sẽ gọi riêng endpoint tại đây).
+   * @param widgetId ID của widget cần reload
+   */
+  refreshWidget(widgetId: string): void {
+    console.log(`Đang gọi API reload riêng cho widget: ${widgetId}`);
+    // Tạm thời mock data đang dùng chung 1 stream nên trigger gọi lại toàn bộ
+    this.refreshTrigger$.next();
+  }
 
   /**
    * Người tạo: DungBT
@@ -180,7 +191,7 @@ export class DashboardService {
     if (this.cachedVehicles.length === 0) {
       this.generateMockData();
     }
-    return this.cachedVehicles.map((v) => ({ id: v.id, licensePlate: v.licensePlate }));
+    return this.cachedVehicles.map((v) => ({ value: v.id, label: v.licensePlate }));
   }
 
   /**
@@ -206,7 +217,7 @@ export class DashboardService {
       .sort((a, b) => b.count - a.count);
   }
 
-  // ─── Layout localStorage ──────────────────────────────────────────────────
+  // Layout localStorage
 
   /**
    * Người tạo: DungBT
@@ -222,7 +233,7 @@ export class DashboardService {
       if (!raw) return defaults;
       const config: DashboardLayoutConfig = JSON.parse(raw);
       const savedWidgets = config.widgets || [];
-      
+
       // Trộn cấu hình đã lưu với cấu hình mặc định để tự động bổ sung các widget bị thiếu trong localStorage
       const merged = [...savedWidgets];
       defaults.forEach((def) => {
@@ -253,7 +264,7 @@ export class DashboardService {
       };
       localStorage.setItem(key, JSON.stringify(config));
     } catch {
-      // Bỏ qua lỗi localStorage (ví dụ quota exceeded)
+      console.error('Không thể lưu layout widget');
     }
   }
 
@@ -317,7 +328,7 @@ export class DashboardService {
     return updated;
   }
 
-  // ─── Private – Tạo mock data ──────────────────────────────────────────────
+  // Private – Tạo mock data
 
   /**
    * Người tạo: DungBT
@@ -330,15 +341,15 @@ export class DashboardService {
     const vehicles: Vehicle[] = [];
     let vehicleId = 1;
 
-    // Phân bổ phương tiện theo loại điểm (tổng 83 xe)
+    // Phân bổ phương tiện theo loại điểm (tổng 8 xe để test)
     const distributions: { type: Vehicle['locationType']; destIds: number[]; count: number }[] = [
-      { type: 'border',  destIds: [1, 2, 3, 4, 5],                              count: 15 },
-      { type: 'port',    destIds: [6, 7, 8, 9, 10],                             count: 20 },
-      { type: 'factory', destIds: [11, 12, 13, 14, 15, 16, 17, 18, 19, 20],    count: 25 },
-      { type: 'road',    destIds: [],                                            count: 23 },
+      { type: 'border',  destIds: [1], count: 2 },
+      { type: 'port',    destIds: [6], count: 2 },
+      { type: 'factory', destIds: [11], count: 2 },
+      { type: 'road',    destIds: [], count: 2 },
     ];
 
-    // Biển số xe bắt đầu từ 43C01338_C (khớp với dữ liệu thực)
+    // Biển số xe bắt đầu từ 43C01338_C
     let plateSeq = 1338;
 
     for (const dist of distributions) {
@@ -366,6 +377,7 @@ export class DashboardService {
     }
 
     this.cachedVehicles = vehicles;
+    console.log('DungBTvehicles', vehicles);
     return vehicles;
   }
 
@@ -378,8 +390,8 @@ export class DashboardService {
   private calcStats(vehicles: Vehicle[]): DashboardStats {
     return {
       totalVehicles: vehicles.length,
-      loadedVehicles: vehicles.filter((v) => v.hasLoad).length,
-      emptyVehicles: vehicles.filter((v) => !v.hasLoad).length,
+      loadedVehicles: vehicles.filter((v) => v.hasLoad && (v.locationType === 'border' || v.locationType === 'road')).length,
+      emptyVehicles: vehicles.filter((v) => !v.hasLoad && (v.locationType === 'border' || v.locationType === 'road')).length,
       atBorder:  vehicles.filter((v) => v.locationType === 'border').length,
       onRoad:    vehicles.filter((v) => v.locationType === 'road').length,
       atPort:    vehicles.filter((v) => v.locationType === 'port').length,

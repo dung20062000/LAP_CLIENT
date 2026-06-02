@@ -47,13 +47,13 @@ export class DashboardFilterComponent implements OnInit, OnChanges {
   constructor(private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
-    // Không cần khởi tạo gì thêm vì vehicleOptions được truyền từ parent
+    console.log("Kiểm tra data xe: ",this.vehicleOptions)
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['vehicleOptions'] && this.selectedIds.length > 0) {
       // Loại bỏ id không còn tồn tại trong danh sách mới
-      const validIds = new Set(this.vehicleOptions.map((o) => o.id));
+      const validIds = new Set(this.vehicleOptions.map((o) => o.value));
       this.selectedIds = this.selectedIds.filter((id) => validIds.has(id));
     }
     this.cdr.markForCheck();
@@ -79,7 +79,7 @@ export class DashboardFilterComponent implements OnInit, OnChanges {
     if (this.isAllSelected) {
       this.selectedIds = [];
     } else {
-      this.selectedIds = this.vehicleOptions.map((o) => o.id);
+      this.selectedIds = this.vehicleOptions.map((o) => o.value);
     }
     this.filterChange.emit(this.selectedIds);
     this.cdr.markForCheck();
@@ -88,13 +88,35 @@ export class DashboardFilterComponent implements OnInit, OnChanges {
   /**
    * Người tạo: DungBT
    * Ngày tạo: 01/06/2026
-   * Xử lý khi người dùng click chọn/bỏ chọn từng xe trong dropdown.
-   * ng-select với bindValue="id" trả về number[] trực tiếp.
-   * @param selected Danh sách id xe đang được chọn từ ng-select
+   * Gọi khi ng-select chọn 1 item.
+   * ng-select với bindValue="id" trả về { id } object, ta dùng [(ngModel)] đã update selectedIds.
    */
-  onSelectionChange(selected: number[]): void {
-    this.selectedIds = selected || [];
-    this.filterChange.emit(this.selectedIds);
+  onAdd(): void {
+    console.log('Kiểm tra data xe được chọn: ', this.selectedIds);
+    this.filterChange.emit([...this.selectedIds]);
+    this.cdr.markForCheck();
+  }
+
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 01/06/2026
+   * Gọi khi ng-select bỏ chọn 1 item.
+   */
+  onRemove(): void {
+    console.log('Kiểm tra data xe được chọn: ', this.selectedIds);
+    this.filterChange.emit([...this.selectedIds]);
+    this.cdr.markForCheck();
+  }
+
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 01/06/2026
+   * Gọi khi người dùng xóa tất cả bằng nút clear.
+   */
+  onClear(): void {
+    this.selectedIds = [];
+    console.log('Kiểm tra data xe được chọn: ', this.selectedIds);
+    this.filterChange.emit([]);
     this.cdr.markForCheck();
   }
 
@@ -106,6 +128,6 @@ export class DashboardFilterComponent implements OnInit, OnChanges {
    * @param item  Option đang xét
    */
   searchFn(term: string, item: VehicleOption): boolean {
-    return item.licensePlate.toLowerCase().includes(term.toLowerCase());
+    return item.label.toLowerCase().includes(term.toLowerCase());
   }
 }

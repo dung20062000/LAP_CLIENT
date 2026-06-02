@@ -27,10 +27,9 @@ export interface Vehicle {
   destinationName?: string;
 }
 
-// ─── Điểm đến (cửa khẩu, nhà máy, bãi cảng) ─────────────────────────────────
+// Điểm đến (cửa khẩu, nhà máy, bãi cảng)
 export interface Destination {
   id: number;
-  /** Tên điểm đến */
   name: string;
   /** Loại điểm đến */
   type: DestinationType;
@@ -38,7 +37,7 @@ export interface Destination {
   vehicleCount: number;
 }
 
-// ─── Thống kê tổng quan dashboard ────────────────────────────────────────────
+// Thống kê tổng quan dashboard
 export interface DashboardStats {
   totalVehicles: number;
   loadedVehicles: number;
@@ -49,31 +48,29 @@ export interface DashboardStats {
   atFactory: number;
 }
 
-// ─── Cấu hình từng widget ────────────────────────────────────────────────────
+// Cấu hình từng widget
 export interface WidgetConfig {
   widgetId: string;
   size: WidgetSize;
   collapsed: boolean;
 }
 
-// ─── Cấu hình layout toàn dashboard (lưu localStorage) ──────────────────────
+// Cấu hình layout toàn dashboard (lưu localStorage)
 export interface DashboardLayoutConfig {
   userId: string;
   widgets: WidgetConfig[];
   savedAt: string;
 }
 
-// ─── Dữ liệu điểm đến dạng biểu đồ (bar chart) ──────────────────────────────
+// Dữ liệu điểm đến dạng biểu đồ (bar chart)
 export interface DestinationChartItem {
   name: string;
   count: number;
   type: DestinationType;
 }
 
-// ─── Option item dùng cho bộ lọc ng-select (multi-select) ────────────────────
+// Option item dùng cho bộ lọc ng-select (multi-select)
 export interface VehicleOption {
-  /** ID xe – dùng làm bindValue để so sánh bằng primitive number */
-  id: number;
-  /** Biển số xe – hiển thị trong dropdown */
-  licensePlate: string;
+  value: number;
+  label: string;
 }

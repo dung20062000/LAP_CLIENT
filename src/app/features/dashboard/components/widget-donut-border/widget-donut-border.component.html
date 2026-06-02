@@ -1,9 +1,16 @@
 <!-- Widget Donut – Phương tiện tại Cửa khẩu -->
 <div class="donut-chart-wrap">
-  <div
-    echarts
-    class="donut-chart"
-    [options]="chartOption"
-    [theme]="'default'">
-  </div>
+  @if (hasData) {
+    <div
+      echarts
+      class="donut-chart"
+      [options]="chartOption"
+      [theme]="'default'">
+    </div>
+  } @else {
+    <div class="no-data-placeholder">
+      <i class="fas fa-chart-pie" aria-hidden="true"></i>
+      <p>Không có dữ liệu</p>
+    </div>
+  }
 </div>

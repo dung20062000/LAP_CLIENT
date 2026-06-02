@@ -25,7 +25,7 @@
     </div>
   </div>
 
-  <!-- ── Widget Grid ───────────────────────────────────────────────────── -->
+  <!-- Widget Grid -->
   <div class="widget-grid row">
 
     <!-- Row 1: Tổng quan công ty -->
@@ -38,7 +38,7 @@
       (sizeChange)="onWidgetSizeChange('overview', $event)"
       (collapsedChange)="onWidgetCollapsedChange('overview', $event)"
       (reload)="onWidgetReload('overview')">
-      <app-widget-overview [stats]="stats" />
+      <app-widget-overview [stats]="statsData | async" />
     </app-widget-container>
 
     <!-- Row 2: Cửa khẩu | Trên đường | Nhà máy -->
@@ -53,7 +53,7 @@
       (sizeChange)="onWidgetSizeChange('donut-border', $event)"
       (collapsedChange)="onWidgetCollapsedChange('donut-border', $event)"
       (reload)="onWidgetReload('donut-border')">
-      <app-widget-donut-border [vehicles]="borderVehicles" />
+      <app-widget-donut-border [vehicles]="(borderVehiclesData | async) || []" />
     </app-widget-container>
 
     <!-- Donut: Trên đường -->
@@ -66,7 +66,7 @@
       (sizeChange)="onWidgetSizeChange('donut-road', $event)"
       (collapsedChange)="onWidgetCollapsedChange('donut-road', $event)"
       (reload)="onWidgetReload('donut-road')">
-      <app-widget-donut-road [vehicles]="roadVehicles" />
+      <app-widget-donut-road [vehicles]="(roadVehiclesData | async) || []" />
     </app-widget-container>
 
     <!-- Bar Chart: Nhà máy -->
@@ -81,7 +81,7 @@
       (reload)="onWidgetReload('bar-factory')">
       <app-widget-bar-port
         barColor="#dc3545"
-        [vehicles]="factoryVehicles"
+        [vehicles]="(factoryVehiclesData | async) || []"
         [showZoom]="false" />
     </app-widget-container>
 
@@ -97,7 +97,7 @@
       (reload)="onWidgetReload('bar-port')">
       <app-widget-bar-port
         barColor="#00c07f"
-        [vehicles]="portVehicles"
+        [vehicles]="(portVehiclesData | async) || []"
         [showZoom]="true" />
     </app-widget-container>
 

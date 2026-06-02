@@ -4,8 +4,9 @@
   <div class="filter-select-wrap">
     <ng-select
       id="vehicle-filter-select"
-      bindLabel="licensePlate"
-      bindValue="id"
+      class="custom-ng-select"
+      bindLabel="label"
+      bindValue="value"
       notFoundText="Không tìm thấy xe"
       appendTo="body"
       placeholder="Chọn phương tiện"
@@ -16,7 +17,9 @@
       [clearable]="true"
       [maxSelectedItems]="1000"
       [(ngModel)]="selectedIds"
-      (change)="onSelectionChange($event)"
+      (add)="onAdd()"
+      (remove)="onRemove()"
+      (clear)="onClear()"
     >
       <!-- Header template: ghim cố định "Tất cả (N)" không bị cuộn -->
       <ng-template ng-header-tmp>
@@ -43,22 +46,19 @@
       </ng-template>
 
       <!-- Option template: checkbox cho từng biển số xe -->
-      <ng-template let-item="item" let-index="index" ng-option-tmp>
+      <ng-template let-item="item" let-index="index" let-item$="item$" ng-option-tmp>
         <div class="filter-option">
           <input
             type="checkbox"
             class="filter-checkbox"
             readonly
-            [attr.aria-label]="'Chọn xe ' + item.licensePlate"
+            [attr.aria-label]="'Chọn xe ' + item.label"
             [attr.id]="'filter-opt-' + index"
-            [checked]="selectedIds.includes(item.id)"
+            [checked]="item$.selected"
           />
-          <label
-            class="filter-option-label"
-            [attr.for]="'filter-opt-' + index"
-          >
-            {{ item.licensePlate }}
-          </label>
+          <span class="filter-option-label">
+            {{ item.label }}
+          </span>
         </div>
       </ng-template>
 
@@ -67,14 +67,14 @@
         @if (items.length > 0) {
           <div class="filter-tags">
             @if (items.length <= 3) {
-              @for (item of items; track item.id) {
+              @for (item of items; track item.value) {
                 <span class="filter-tag">
-                  {{ item.licensePlate }}
+                  {{ item.label }}
                   <span
                     class="filter-tag-remove"
                     role="button"
                     tabindex="0"
-                    [attr.aria-label]="'Bỏ chọn xe ' + item.licensePlate"
+                    [attr.aria-label]="'Bỏ chọn xe ' + item.label"
                     (click)="clear(item)"
                     (keydown.enter)="clear(item)"
                   >×</span>

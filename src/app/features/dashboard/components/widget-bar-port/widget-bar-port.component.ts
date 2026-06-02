@@ -33,6 +33,23 @@ export class WidgetBarPortComponent implements OnChanges {
   @Input() showZoom: boolean = true;
 
   chartOption: EChartsOption = {};
+  /** Flag kiểm tra xem có dữ liệu hay không */
+  hasData = false;
+  /** Độ rộng động của chart */
+  chartWidth = '100%';
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private chartInstance: any;
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onChartInit(ec: any): void {
+    this.chartInstance = ec;
+    setTimeout(() => {
+      if (this.chartInstance) {
+        this.chartInstance.resize();
+      }
+    }, 50);
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['vehicles']) {
@@ -60,9 +77,22 @@ export class WidgetBarPortComponent implements OnChanges {
 
     const categories = Object.keys(groupMap);
     const seriesData = categories.map((k) => groupMap[k]);
+    this.hasData = categories.length > 0;
 
-    // Tự động dataZoom nếu bật và cột nhiều hơn 8
-    const useZoom = this.showZoom && categories.length > 8;
+    // Tính toán độ rộng của chart dựa trên số lượng phần tử để hỗ trợ cuộn ngang
+    const colWidth = 90; // Độ rộng tối thiểu cho mỗi cột (bao gồm khoảng trống giữa các cột)
+    const calculatedWidth = categories.length * colWidth + 80; // Cộng thêm margin cho grid
+    this.chartWidth = calculatedWidth > 400 ? `${calculatedWidth}px` : '100%';
+
+    // Resize chart khi độ rộng thay đổi
+    setTimeout(() => {
+      if (this.chartInstance) {
+        this.chartInstance.resize();
+      }
+    }, 50);
+
+    // Tự động dataZoom nếu bật và cột nhiều hơn 8 (chỉ bật khi không cuộn ngang bằng CSS)
+    const useZoom = this.showZoom && categories.length > 8 && calculatedWidth <= 400;
     const endPercent = categories.length > 0 ? Math.min(100, (8 / categories.length) * 100) : 100;
 
     this.chartOption = {
@@ -86,7 +116,7 @@ export class WidgetBarPortComponent implements OnChanges {
       grid: {
         top: 30,
         bottom: useZoom ? 60 : 30,
-        left: 36,
+        left: 90, // Dịch cột Y về bên phải để label của Y nằm gọn bên trái
         right: 16,
         containLabel: true,
       },
@@ -113,10 +143,10 @@ export class WidgetBarPortComponent implements OnChanges {
         axisLabel: {
           fontSize: 10,
           color: '#333',
-          rotate: categories.length > 5 ? 0 : 0, // In the image, text is not rotated, but long text might need it. Let's keep 0 and wrap or ellipsis.
+          rotate: 0,
           interval: 0,
           overflow: 'break',
-          width: 70,
+          width: 90, // Tăng độ rộng nhãn của cột trục x lên
         },
         axisTick: { alignWithLabel: true },
         axisLine: { lineStyle: { color: '#dee2e6' } },
@@ -124,15 +154,19 @@ export class WidgetBarPortComponent implements OnChanges {
       yAxis: {
         type: 'value',
         name: 'Số phương tiện',
-        nameTextStyle: { fontSize: 11, color: '#6c757d', padding: [0, 0, 0, 30] },
+        nameTextStyle: { fontSize: 11, color: '#6c757d', padding: [0, 125, 0, 0] },
         minInterval: 1,
-        axisLabel: { fontSize: 11, color: '#6c757d' },
+        axisLabel: {
+          fontSize: 11,
+          color: '#6c757d',
+          margin: 12, // Dịch các label cách xa đường trục y một chút
+        },
         splitLine: { lineStyle: { color: '#f0f0f0' } },
       },
       series: [
         {
           type: 'bar',
-          barMaxWidth: 30,
+          barMaxWidth: 25, // độ rộng cột
           data: seriesData,
           label: {
             show: true,

@@ -32,6 +32,8 @@ export class WidgetDonutBorderComponent implements OnChanges {
 
   /** ECharts option */
   chartOption: EChartsOption = {};
+  /** Flag kiểm tra xem có dữ liệu hay không */
+  hasData = false;
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['vehicles'] || changes['destinations']) {
@@ -57,10 +59,23 @@ export class WidgetDonutBorderComponent implements OnChanges {
     });
 
     const total = loadedCount + emptyCount;
+    this.hasData = total > 0;
 
     const data = [
-      { value: loadedCount, name: 'Phương tiện có hàng', itemStyle: { color: '#4db848' } },
-      { value: emptyCount, name: 'Phương tiện không hàng', itemStyle: { color: '#e67e22' } },
+      {
+        value: loadedCount,
+        name: 'Phương tiện có hàng',
+        itemStyle: { color: '#4db848' },
+        label: { show: loadedCount > 0 },
+        labelLine: { show: loadedCount > 0 },
+      },
+      {
+        value: emptyCount,
+        name: 'Phương tiện không hàng',
+        itemStyle: { color: '#e67e22' },
+        label: { show: emptyCount > 0 },
+        labelLine: { show: emptyCount > 0 },
+      },
     ];
 
     this.chartOption = {
@@ -125,12 +140,9 @@ export class WidgetDonutBorderComponent implements OnChanges {
             length2: 4,
           },
           labelLayout: {
-            y: 250, // Căn chỉnh nhãn về phía chân dưới biểu đồ (y = 220px)
+            y: 260, // Căn chỉnh nhãn về phía chân dưới biểu đồ
           },
-          data:
-            total > 0
-              ? data
-              : [{ name: 'Không có dữ liệu', value: 1, itemStyle: { color: '#e9ecef' } }],
+          data: data,
         },
       ],
     };

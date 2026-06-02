@@ -1,9 +1,18 @@
 <!-- Widget Bar Chart – Phương tiện tại Cảng / Nhà máy -->
 <div class="bar-chart-wrap">
-  <div
-    echarts
-    class="bar-chart"
-    [options]="chartOption"
-    [theme]="'default'">
-  </div>
+  @if (hasData) {
+    <div
+      echarts
+      class="bar-chart"
+      [style.width]="chartWidth"
+      [options]="chartOption"
+      [theme]="'default'"
+      (chartInit)="onChartInit($event)">
+    </div>
+  } @else {
+    <div class="no-data-placeholder">
+      <i class="fas fa-chart-bar" aria-hidden="true"></i>
+      <p>Không có dữ liệu</p>
+    </div>
+  }
 </div>

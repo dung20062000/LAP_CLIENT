@@ -67,10 +67,10 @@ export class WidgetBarPortComponent implements OnChanges {
     // Data đã được lọc sẵn theo loại địa điểm từ service (không cần filter lại)
     const filteredVehicles = this.vehicles.filter((v) => v.destinationName);
 
-    // Nhóm theo tên
+    // Nhóm theo tên (loại bỏ phần lái xe trong ngoặc đơn nếu có để gom nhóm chính xác theo địa điểm)
     const groupMap: Record<string, number> = {};
     filteredVehicles.forEach((v) => {
-      const key = v.destinationName!;
+      const key = v.destinationName!.split(' (')[0];
       if (!groupMap[key]) groupMap[key] = 0;
       groupMap[key]++;
     });

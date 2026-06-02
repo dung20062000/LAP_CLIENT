@@ -1,34 +1,94 @@
-<!-- Dashboard Filter – Bộ lọc phương tiện ng-select multi-select -->
+<!-- Dashboard Filter – Bộ lọc phương tiện (thuần HTML/Angular, không dùng ng-select) -->
 
 <div class="filter-bar">
-  <div class="filter-select-wrap">
-    <ng-select
+  <div class="filter-select-wrap" (clickOutside)="closeDropdown()">
+
+    <div
       id="vehicle-filter-select"
-      class="custom-ng-select"
-      bindLabel="label"
-      bindValue="value"
-      notFoundText="Không tìm thấy xe"
-      appendTo="body"
-      placeholder="Chọn phương tiện"
-      [items]="vehicleOptions"
-      [multiple]="true"
-      [closeOnSelect]="false"
-      [searchFn]="searchFn"
-      [clearable]="true"
-      [maxSelectedItems]="1000"
-      [(ngModel)]="selectedIds"
-      (add)="onAdd()"
-      (remove)="onRemove()"
-      (clear)="onClear()"
+      class="custom-select-container"
+      role="combobox"
+      aria-haspopup="listbox"
+      aria-label="Chọn phương tiện"
+      tabindex="0"
+      [class.is-open]="isOpen"
+      [attr.aria-expanded]="isOpen"
+      (click)="toggleDropdown()"
+      (keydown.enter)="toggleDropdown()"
+      (keydown.space)="toggleDropdown(); $event.preventDefault()"
     >
-      <!-- Header template: ghim cố định "Tất cả (N)" không bị cuộn -->
-      <ng-template ng-header-tmp>
+      <div class="value-container">
+        <div class="filter-tags-and-search">
+          @if (selectedIds.length === 0 && !isOpen) {
+            <span class="select-placeholder">Chọn phương tiện</span>
+          }
+
+          @if (selectedIds.length > 0) {
+            <div class="filter-tags">
+              @if (selectedIds.length <= 3) {
+                @for (id of selectedIds; track id) {
+                  <span class="filter-tag">
+                    {{ getLabelById(id) }}
+                    <span
+                      class="filter-tag-remove"
+                      role="button"
+                      tabindex="0"
+                      [attr.aria-label]="'Bỏ chọn xe ' + getLabelById(id)"
+                      (click)="removeItem(id, $event)"
+                      (keydown.enter)="removeItem(id, $event)"
+                    >×</span>
+                  </span>
+                }
+              }
+              @if (selectedIds.length > 3) {
+                <span class="filter-tag filter-tag--count">
+                  {{ selectedIds.length }} xe được chọn
+                </span>
+              }
+            </div>
+          }
+
+          <input
+            #searchInput
+            id="vehicle-filter-search"
+            type="text"
+            autocomplete="off"
+            class="dropdown-search-inline-input"
+            [class.is-hidden]="!isOpen"
+            [placeholder]="selectedIds.length === 0 ? 'Tìm phương tiện...' : ''"
+            [(ngModel)]="searchTerm"
+            (input)="onSearch()"
+            (click)="$event.stopPropagation()"
+            (keydown)="$event.stopPropagation()"
+          />
+        </div>
+      </div>
+
+      <!-- Nút clear -->
+      @if (selectedIds.length > 0) {
+        <span
+          class="select-clear-btn"
+          role="button"
+          tabindex="0"
+          aria-label="Xóa tất cả"
+          (click)="onClear($event)"
+          (keydown.enter)="onClear($event)"
+        >×</span>
+      }
+
+      <i class="fa-solid select-arrow" [class.fa-caret-down]="!isOpen" [class.fa-caret-up]="isOpen"></i>
+    </div>
+
+    <!-- Dropdown panel -->
+    @if (isOpen) {
+      <div class="custom-dropdown-panel" role="listbox" aria-multiselectable="true">
+
+        <!-- Header "Tất cả (N)" -->
         <div
           class="filter-option filter-option--all"
           role="option"
           tabindex="0"
           [attr.aria-selected]="isAllSelected"
-          (click)="toggleAllSelection()"
+          (click)="toggleAllSelection(); $event.stopPropagation()"
           (keydown.enter)="toggleAllSelection()"
           (keydown.space)="toggleAllSelection()"
         >
@@ -43,52 +103,37 @@
             Tất cả ({{ vehicleOptions.length }})
           </span>
         </div>
-      </ng-template>
 
-      <!-- Option template: checkbox cho từng biển số xe -->
-      <ng-template let-item="item" let-index="index" let-item$="item$" ng-option-tmp>
-        <div class="filter-option">
-          <input
-            type="checkbox"
-            class="filter-checkbox"
-            readonly
-            [attr.aria-label]="'Chọn xe ' + item.label"
-            [attr.id]="'filter-opt-' + index"
-            [checked]="item$.selected"
-          />
-          <span class="filter-option-label">
-            {{ item.label }}
-          </span>
+        <!-- Danh sách option -->
+        <div class="dropdown-options-list">
+          @if (filteredOptions.length === 0) {
+            <div class="dropdown-no-result">Không tìm thấy xe</div>
+          }
+          @for (item of filteredOptions; track item.value; let index = $index) {
+            <div
+              class="filter-option"
+              role="option"
+              tabindex="0"
+              [attr.aria-selected]="isSelected(item.value)"
+              (click)="toggleItem(item.value); $event.stopPropagation()"
+              (keydown.enter)="toggleItem(item.value)"
+              (keydown.space)="toggleItem(item.value)"
+            >
+              <input
+                type="checkbox"
+                class="filter-checkbox"
+                readonly
+                [attr.aria-label]="'Chọn xe ' + item.label"
+                [attr.id]="'filter-opt-' + index"
+                [checked]="isSelected(item.value)"
+              />
+              <span class="filter-option-label">{{ item.label }}</span>
+            </div>
+          }
         </div>
-      </ng-template>
 
-      <!-- Label template: hiển thị các tag xe đã chọn -->
-      <ng-template let-items="items" let-clear="clear" ng-multi-label-tmp>
-        @if (items.length > 0) {
-          <div class="filter-tags">
-            @if (items.length <= 3) {
-              @for (item of items; track item.value) {
-                <span class="filter-tag">
-                  {{ item.label }}
-                  <span
-                    class="filter-tag-remove"
-                    role="button"
-                    tabindex="0"
-                    [attr.aria-label]="'Bỏ chọn xe ' + item.label"
-                    (click)="clear(item)"
-                    (keydown.enter)="clear(item)"
-                  >×</span>
-                </span>
-              }
-            }
-            @if (items.length > 3) {
-              <span class="filter-tag filter-tag--count">
-                {{ items.length }} xe được chọn
-              </span>
-            }
-          </div>
-        }
-      </ng-template>
-    </ng-select>
+      </div>
+    }
+
   </div>
 </div>

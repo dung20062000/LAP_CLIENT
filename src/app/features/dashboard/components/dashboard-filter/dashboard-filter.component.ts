@@ -36,18 +36,17 @@ import { VehicleOption } from '../../../../models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardFilterComponent implements OnInit, OnChanges {
-  /** Danh sách option xe nhận từ service (id + biển số) */
+  //Danh sách option xe nhận từ service (id + biển số)
   @Input() vehicleOptions: VehicleOption[] = [];
-  /** Phát ra danh sách Vehicle.id đang được chọn (rỗng = tất cả) */
+  //Phát ra danh sách Vehicle.id đang được chọn (rỗng = tất cả)
   @Output() filterChange = new EventEmitter<number[]>();
 
-  /** Giá trị đang chọn: array number (Vehicle.id), đồng bộ với bindValue="id" */
+  //Giá trị đang chọn
   selectedIds: number[] = [];
 
   constructor(private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
-    console.log("Kiểm tra data xe: ",this.vehicleOptions)
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -59,16 +58,10 @@ export class DashboardFilterComponent implements OnInit, OnChanges {
     this.cdr.markForCheck();
   }
 
-  // ─── Getters ─────────────────────────────────────────────────────────────
-
-  /**
-   * Kiểm tra xem tất cả xe có đang được chọn hay không.
-   */
+  //Kiểm tra xem tất cả xe có đang được chọn hay không.
   get isAllSelected(): boolean {
     return this.vehicleOptions.length > 0 && this.selectedIds.length === this.vehicleOptions.length;
   }
-
-  // ─── Event handlers ───────────────────────────────────────────────────────
 
   /**
    * Người tạo: DungBT

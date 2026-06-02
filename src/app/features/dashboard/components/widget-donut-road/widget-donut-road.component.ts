@@ -25,13 +25,18 @@ import { Vehicle } from '../../../../models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WidgetDonutRoadComponent implements OnChanges {
-  /** Danh sách xe (đã lọc từ dashboard) */
+  // Danh sách xe (đã lọc từ dashboard)
   @Input() vehicles: Vehicle[] = [];
 
   chartOption: EChartsOption = {};
-  /** Flag kiểm tra xem có dữ liệu hay không */
+  // Flag kiểm tra xem có dữ liệu hay không
   hasData = false;
 
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 02/06/2026
+   * Xử lý thay đổi input
+   */
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['vehicles']) {
       this.buildChart();

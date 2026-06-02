@@ -1,9 +1,8 @@
 <!-- Widget Container – bao ngoài mỗi widget Dashboard -->
 <div class="widget-wrapper mb-3" [ngClass]="layoutClass" [class.options-open]="showOptions">
   <div class="widget-card" [class.widget-collapsed]="collapsed">
-    <!-- ── Widget Header ────────────────────────────────────────────────── -->
+    <!-- Widget Header -->
     <div class="widget-header">
-      <!-- Tiêu đề bên trái -->
       <div class="widget-title">
         <span class="widget-title-icon">
           <ng-content select="[widgetIcon]" />
@@ -11,7 +10,6 @@
         <span class="widget-title-text">{{ title }}</span>
       </div>
 
-      <!-- Cụm nút chức năng bên phải -->
       <div class="widget-actions">
         <!-- Nút Thu gọn / Mở rộng -->
         <button
@@ -22,7 +20,7 @@
           <i class="fas" [ngClass]="collapsed ? 'fa-chevron-down' : 'fa-chevron-up'"></i>
         </button>
 
-        <!-- Nút Tải lại (Reload) -->
+        <!-- Nút Tải lại -->
         <button
           class="widget-btn widget-btn--reload"
           title="Tải lại"
@@ -32,7 +30,7 @@
           <i class="fas fa-arrow-rotate-right"></i>
         </button>
 
-        <!-- Nút Options (3 chấm dọc) + dropdown -->
+        <!-- Nút Options-->
         <div class="widget-options-wrap" [class.hide-on-mobile]="true">
           <button
             class="widget-btn widget-btn--options"
@@ -49,7 +47,7 @@
                 <li class="has-submenu">
                   <span>Độ rộng</span>
                   <i class="fas fa-chevron-right submenu-indicator"></i>
-                  
+
                   <!-- Submenu (Level 2) nằm bên phải hoặc trái -->
                   <div class="widget-submenu" [class.open-left]="openLeft">
                     <ul class="options-list">
@@ -73,14 +71,12 @@
         </div>
       </div>
     </div>
-    <!-- ── /Widget Header ─────────────────────────────────────────────── -->
 
-    <!-- ── Widget Body (ẩn khi collapsed) ──────────────────────────────── -->
+    <!-- Widget Body (ẩn khi collapsed) -->
     @if (!collapsed) {
       <div class="widget-body">
         <ng-content />
       </div>
     }
-    <!-- ── /Widget Body ──────────────────────────────────────────────── -->
   </div>
 </div>

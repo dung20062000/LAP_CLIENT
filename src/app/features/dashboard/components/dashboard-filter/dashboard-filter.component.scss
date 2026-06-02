@@ -5,7 +5,6 @@
   display: block;
 }
 
-// Xóa background/box-shadow vì filter giờ nằm trên header
 .dashboard-filter {
   width: 100%;
 }
@@ -14,10 +13,9 @@
   min-width: 260px;
 }
 
-// Tùy chỉnh ng-select để trông thanh mảnh hơn
 ::ng-deep .custom-ng-select {
   .ng-select-container {
-    min-height: 32px; // Chiều cao giống input form
+    min-height: 32px;
     border-radius: 4px;
     border: 1px solid #ccc;
     box-shadow: none !important;
@@ -33,8 +31,6 @@
 
   .ng-value-container {
     padding: 0 8px;
-
-    // Ngăn chặn input search chiếm quá nhiều không gian dẫn đến khoảng trắng rộng
     .ng-input {
       flex: 0 1 auto;
       input {
@@ -44,7 +40,6 @@
   }
 }
 
-// ─── Custom tags hiển thị khi đã chọn ─────────────────────────────────────────
 .filter-tags {
   display: flex;
   gap: 4px;
@@ -79,7 +74,7 @@
     color: #fff;
   }
 }
-// ─── Option Template ──────────────────────────────────────────────────────────
+
 .filter-option {
   display: flex;
   align-items: center;
@@ -117,7 +112,7 @@
     width: 14px;
     height: 14px;
     margin: 0;
-    pointer-events: none; /* Tránh cản trở sự kiện click lên phần tử cha filter-option */
+    pointer-events: none;
   }
 }
 

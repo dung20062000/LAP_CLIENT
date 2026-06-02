@@ -25,17 +25,17 @@ import { Vehicle } from '../../../../models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WidgetBarPortComponent implements OnChanges {
-  /** Danh sách xe đã được lọc sẵn theo loại địa điểm (factory hoặc port) từ service */
+  //Danh sách xe đã được lọc sẵn theo loại địa điểm (factory hoặc port) từ service
   @Input() vehicles: Vehicle[] = [];
-  /** Màu sắc cột biểu đồ */
+  //Màu sắc cột biểu đồ
   @Input() barColor: string = '#00c07f';
-  /** Hiển thị thanh cuộn dataZoom ngang */
+  //Hiển thị thanh cuộn dataZoom ngang
   @Input() showZoom: boolean = true;
 
   chartOption: EChartsOption = {};
-  /** Flag kiểm tra xem có dữ liệu hay không */
+  //Flag kiểm tra xem có dữ liệu hay không
   hasData = false;
-  /** Độ rộng động của chart */
+  //Độ rộng động của chart
   chartWidth = '100%';
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

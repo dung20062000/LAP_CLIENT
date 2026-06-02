@@ -33,6 +33,10 @@
 
   /* Background color */
   --bg-white: #ffffff;
+  --bg-blue: #0066cc;
+  --bg-green: #4db848;
+  --bg-orange: #e67e22;
+
   --bg-banner-overlay: rgba(0, 20, 60, 0.65);
   --bg-gray-light-2: #b9b9b9;
 

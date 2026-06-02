@@ -2,25 +2,21 @@
 // Người tạo: DungBT – 01/06/2026
 
 :host {
-  display: contents; // Không tạo box riêng, col class áp lên .widget-wrapper
+  display: contents;
 }
 
-// ─── Wrapper (col class của Bootstrap được gắn vào đây) ──────────────────────
 .widget-wrapper {
   display: flex;
   flex-direction: column;
   min-width: 280px;
-  // height: 100%;
   transition: all 0.3s ease;
 
-  // Khi dropdown mở, nâng cao z-index của widget hiện tại lên để không bị đè bởi các card phía dưới
   &.options-open {
     position: relative;
     z-index: 1000;
   }
 }
 
-// ─── Card chứa widget ─────────────────────────────────────────────────────────
 .widget-card {
   height: 100%;
   display: flex;
@@ -34,7 +30,6 @@
   }
 }
 
-// ─── Widget Header ────────────────────────────────────────────────────────────
 .widget-header {
   position: relative;
   z-index: 5;
@@ -75,7 +70,6 @@
   }
 }
 
-// ─── Cụm nút chức năng ───────────────────────────────────────────────────────
 .widget-actions {
   display: flex;
   align-items: center;
@@ -207,7 +201,7 @@
 .widget-submenu {
   position: absolute;
   top: -5px;
-  left: 100%; /* Nằm bên phải menu level 1 */
+  left: 100%;
   z-index: 501;
   background: var(--bg-white, #ffffff);
   border: 1px solid #e0e0e0;
@@ -221,7 +215,7 @@
 
   &.open-left {
     left: auto;
-    right: 100%; /* Mở sang bên trái */
+    right: 100%;
     margin-right: 2px;
   }
 
@@ -235,13 +229,12 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
-// ─── Widget Body ──────────────────────────────────────────────────────────────
 .widget-body {
   flex: 1;
   padding: 16px;
-  overflow: auto; /* Cho phép cuộn khi nội dung bên trong quá rộng */
+  overflow: auto;
   min-height: 0;
-  min-width: 0; /* Cho phép widget co dãn nhỏ hơn chiều rộng nội dung */
+  min-width: 0;
 
   background: var(--widget-bg, #ffffff);
   border-bottom-right-radius: 10px;

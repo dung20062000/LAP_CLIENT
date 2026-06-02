@@ -1,10 +1,10 @@
-// ── Widget Overview Styles (Khối liền mạch)
+// ── Widget Overview Styles (Khối tổng quan)
 // Người tạo: DungBT – 01/06/2026
 
 .overview-blocks {
   display: flex;
   width: 100%;
-  gap: 12px; // Có một khoảng cách rất nhỏ giữa 3 khối trong ảnh (12px là vừa đẹp)
+  gap: 12px;
 }
 
 .overview-block {
@@ -16,18 +16,18 @@
   flex-direction: column;
   justify-content: start;
   min-height: 120px;
-  min-width: 140px; /* Độ rộng tối thiểu để nội dung không bị méo và cuộn được ngang */
+  min-width: 140px;
 
   &--blue {
-    background-color: #0066cc; // Giống màu xanh dương trong ảnh
+    background-color: var(--bg-blue, #0066cc);
   }
 
   &--green {
-    background-color: #4db848; // Màu xanh lá giống ảnh
+    background-color: var(--bg-green, #4db848);
   }
 
   &--orange {
-    background-color: #e67e22; // Màu cam giống ảnh
+    background-color: var(--bg-orange, #e67e22);
   }
 }
 

@@ -25,16 +25,22 @@ import { Vehicle, Destination } from '../../../../models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WidgetDonutBorderComponent implements OnChanges {
-  /** Danh sách xe (đã lọc từ dashboard) */
+  // Danh sách xe (đã lọc từ dashboard)
   @Input() vehicles: Vehicle[] = [];
-  /** Danh sách điểm đến để lấy tên */
+  // Danh sách điểm đến để lấy tên
   @Input() destinations: Destination[] = [];
 
-  /** ECharts option */
+  // ECharts option
   chartOption: EChartsOption = {};
-  /** Flag kiểm tra xem có dữ liệu hay không */
+  // Flag kiểm tra xem có dữ liệu hay không
   hasData = false;
 
+
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 02/06/2026
+   * Xử lý thay đổi input
+   */
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['vehicles'] || changes['destinations']) {
       this.buildChart();

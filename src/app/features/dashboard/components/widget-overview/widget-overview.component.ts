@@ -22,12 +22,13 @@ import { DashboardStats } from '../../../../models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WidgetOverviewComponent implements OnChanges {
-  /** Dữ liệu thống kê từ DashboardService */
+  //Dữ liệu thống kê từ DashboardService
   @Input() stats: DashboardStats | null = null;
 
-  /** Phần trăm xe có hàng */
+  //Phần trăm xe có hàng
   loadedPercent = 0;
-  /** Phần trăm xe không hàng */
+
+  //Phần trăm xe không hàng
   emptyPercent = 0;
 
   ngOnChanges(): void {

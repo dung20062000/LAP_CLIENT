@@ -61,6 +61,8 @@ export class WidgetContainerComponent {
   ];
 
   /**
+   * Người tạo: DungBT
+   * Ngày tạo: 02/06/2026
    * Toggle mở options và tự động tính toán hướng mở rộng của submenu
    */
   toggleOptions(event: MouseEvent): void {
@@ -72,6 +74,8 @@ export class WidgetContainerComponent {
   }
 
   /**
+   * Người tạo: DungBT
+   * Ngày tạo: 02/06/2026
    * Tính toán xem menu có gần rìa phải màn hình không để mở submenu sang trái
    */
   checkSubmenuPosition(): void {

@@ -3,7 +3,7 @@
  * Ngày tạo: 03/06/2026
  * Mô tả: Unit test cho WidgetOverviewComponent — kiểm tra khởi tạo, tính phần trăm và ngOnChanges.
  */
-import { describe, expect, it, beforeEach } from 'vitest';
+import { afterEach, describe, expect, it, beforeEach } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { WidgetOverviewComponent } from './widget-overview.component';
 import { DashboardStats } from '../../../../models/dashboard';
@@ -15,12 +15,16 @@ describe('WidgetOverviewComponent', () => {
   beforeEach(() => {
     TestBed.resetTestingModule();
     TestBed.configureTestingModule({
-      declarations: [WidgetOverviewComponent],
+      imports: [WidgetOverviewComponent],
     });
 
     fixture = TestBed.createComponent(WidgetOverviewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    fixture.destroy();
   });
 
   // Khởi tạo
@@ -30,22 +34,22 @@ describe('WidgetOverviewComponent', () => {
       expect(component).toBeTruthy();
     });
 
-    it('should have stats as null initially', () => {
+    it('should have stats as null by default', () => {
       expect(component.stats).toBeNull();
     });
 
-    it('should have loadedPercent as 0 initially', () => {
+    it('should have loadedPercent as 0 by default', () => {
       expect(component.loadedPercent).toBe(0);
     });
 
-    it('should have emptyPercent as 0 initially', () => {
+    it('should have emptyPercent as 0 by default', () => {
       expect(component.emptyPercent).toBe(0);
     });
   });
 
-  // ngOnChanges
+  // ngOnChanges – tính phần trăm
 
-  describe('ngOnChanges()', () => {
+  describe('ngOnChanges() – tính phần trăm', () => {
     it('should calculate loadedPercent correctly', () => {
       const stats: DashboardStats = {
         totalVehicles: 100,
@@ -56,7 +60,6 @@ describe('WidgetOverviewComponent', () => {
         atPort: 30,
         atFactory: 40,
       };
-      component.ngOnChanges();
       component.stats = stats;
       component.ngOnChanges();
       expect(component.loadedPercent).toBe(55);
@@ -147,21 +150,6 @@ describe('WidgetOverviewComponent', () => {
       component.ngOnChanges();
       expect(component.loadedPercent).toBe(50);
       expect(component.emptyPercent).toBe(50);
-    });
-
-    it('should correctly aggregate atBorder+onRoad+atPort+atFactory = totalVehicles', () => {
-      const stats: DashboardStats = {
-        totalVehicles: 44,
-        loadedVehicles: 25,
-        emptyVehicles: 19,
-        atBorder: 2,
-        onRoad: 2,
-        atPort: 20,
-        atFactory: 20,
-      };
-      component.stats = stats;
-      component.ngOnChanges();
-      expect(stats.atBorder + stats.onRoad + stats.atPort + stats.atFactory).toBe(stats.totalVehicles);
     });
   });
 });

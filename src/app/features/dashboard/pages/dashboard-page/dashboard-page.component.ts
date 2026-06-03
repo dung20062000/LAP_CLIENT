@@ -9,21 +9,24 @@
 import {
   Component,
   OnInit,
-  OnDestroy,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   signal,
   inject,
+  DestroyRef,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 import { AuthService, DashboardService } from '../../../../services';
 import {
   WidgetConfig,
   WidgetSize,
   VehicleOption,
+  Vehicle,
+  Destination,
+  DashboardStats,
 } from '../../../../models';
 
 import { WidgetContainerComponent } from '../../components/widget-container/widget-container.component';
@@ -32,8 +35,6 @@ import { WidgetOverviewComponent } from '../../components/widget-overview/widget
 import { WidgetDonutBorderComponent } from '../../components/widget-donut-border/widget-donut-border.component';
 import { WidgetDonutRoadComponent } from '../../components/widget-donut-road/widget-donut-road.component';
 import { WidgetBarPortComponent } from '../../components/widget-bar-port/widget-bar-port.component';
-
-import { AsyncPipe } from '@angular/common';
 
 /**
  * Người tạo: DungBT
@@ -44,7 +45,6 @@ import { AsyncPipe } from '@angular/common';
   selector: 'app-dashboard-page',
   standalone: true,
   imports: [
-    AsyncPipe,
     WidgetContainerComponent,
     DashboardFilterComponent,
     WidgetOverviewComponent,
@@ -56,26 +56,26 @@ import { AsyncPipe } from '@angular/common';
   styleUrl: './dashboard-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DashboardPageComponent implements OnInit, OnDestroy {
-  private destroySignal = new Subject<void>();
+export class DashboardPageComponent implements OnInit {
   private authService = inject(AuthService);
   private dashboardService = inject(DashboardService);
   private cdr = inject(ChangeDetectorRef);
+  private destroyRef = inject(DestroyRef);
 
-  //Dữ liệu từng widget (stream từ service)
-  statsData          = this.dashboardService.statsData;
-  destinationsData   = this.dashboardService.destinationsData;
-  borderVehiclesData = this.dashboardService.borderVehiclesData;
-  roadVehiclesData   = this.dashboardService.roadVehiclesData;
-  factoryVehiclesData = this.dashboardService.factoryVehiclesData;
-  portVehiclesData   = this.dashboardService.portVehiclesData;
+  // Dữ liệu từng widget (giá trị thực tế nhận từ service)
+  statsData: DashboardStats | null = null;
+  destinationsData: Destination[] = [];
+  borderVehiclesData: Vehicle[] = [];
+  roadVehiclesData: Vehicle[] = [];
+  factoryVehiclesData: Vehicle[] = [];
+  portVehiclesData: Vehicle[] = [];
 
-  // Loading state từng widget (stream từ service)
-  overviewLoading$  = this.dashboardService.overviewLoading$;
-  borderLoading$    = this.dashboardService.borderLoading$;
-  roadLoading$      = this.dashboardService.roadLoading$;
-  factoryLoading$   = this.dashboardService.factoryLoading$;
-  portLoading$      = this.dashboardService.portLoading$;
+  // Trạng thái loading từng widget
+  overviewLoading = false;
+  borderLoading = false;
+  roadLoading = false;
+  factoryLoading = false;
+  portLoading = false;
 
   // Danh sách option cho bộ lọc (id + biển số)
   vehicleOptions: VehicleOption[] = [];
@@ -89,13 +89,39 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
   constructor() {}
 
   ngOnInit(): void {
+    this.initStreams();
     this.initLayout();
     this.loadAllData();
   }
 
-  ngOnDestroy(): void {
-    this.destroySignal.next();
-    this.destroySignal.complete();
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 03/06/2026
+   * Đăng ký nhận dữ liệu và trạng thái loading từ service, gán vào các biến của component.
+   */
+  private initStreams(): void {
+    // Hàm hỗ trợ đăng ký luồng dữ liệu, gán biến và kích hoạt cập nhật giao diện
+    const subscribeTo = <T>(source$: Observable<T>, assignFn: (val: T) => void): void => {
+      source$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(val => {
+        assignFn(val);
+        this.cdr.markForCheck();
+      });
+    };
+
+    // 1. Nhận dữ liệu của từng widget
+    subscribeTo(this.dashboardService.statsData, val => this.statsData = val);
+    subscribeTo(this.dashboardService.destinationsData, val => this.destinationsData = val);
+    subscribeTo(this.dashboardService.borderVehiclesData, val => this.borderVehiclesData = val);
+    subscribeTo(this.dashboardService.roadVehiclesData, val => this.roadVehiclesData = val);
+    subscribeTo(this.dashboardService.factoryVehiclesData, val => this.factoryVehiclesData = val);
+    subscribeTo(this.dashboardService.portVehiclesData, val => this.portVehiclesData = val);
+
+    // 2. Nhận trạng thái loading của từng widget
+    subscribeTo(this.dashboardService.overviewLoading$, val => this.overviewLoading = val);
+    subscribeTo(this.dashboardService.borderLoading$, val => this.borderLoading = val);
+    subscribeTo(this.dashboardService.roadLoading$, val => this.roadLoading = val);
+    subscribeTo(this.dashboardService.factoryLoading$, val => this.factoryLoading = val);
+    subscribeTo(this.dashboardService.portLoading$, val => this.portLoading = val);
   }
 
   /**
@@ -111,7 +137,7 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
 
     // Subscribe stream tất cả xe chỉ để lấy vehicleOptions (danh sách dropdown)
     this.dashboardService.allVehiclesDataStream
-      .pipe(takeUntil(this.destroySignal))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.vehicleOptions = this.dashboardService.getVehicleOptions();
         this.cdr.markForCheck();
@@ -127,7 +153,7 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
   private loadAllData(): void {
     this.dashboardService
       .getAllDashboardData()
-      .pipe(takeUntil(this.destroySignal))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
           this.lastRefresh.set(new Date());
@@ -139,6 +165,7 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
         },
       });
   }
+
   /**
    * Người tạo: DungBT
    * Ngày tạo: 01/06/2026
@@ -169,6 +196,7 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
    * Người tạo: DungBT
    * Ngày tạo: 01/06/2026
    * Tính toán động class Bootstrap col cho các widget dựa trên kích thước cấu hình
+   * @param widgetId ID của widget cần lấy cấu hình
    */
   getWidgetColClass(widgetId: string): string {
     const config = this.getWidgetConfig(widgetId);
@@ -328,7 +356,7 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
   onPageReload(): void {
     this.dashboardService
       .refresh()
-      .pipe(takeUntil(this.destroySignal))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
           this.lastRefresh.set(new Date());
@@ -347,7 +375,7 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
   onWidgetReload(widgetId: string): void {
     this.dashboardService
       .refreshWidget(widgetId)
-      .pipe(takeUntil(this.destroySignal))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
           this.cdr.markForCheck();

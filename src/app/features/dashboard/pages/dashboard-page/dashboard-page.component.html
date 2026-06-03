@@ -35,11 +35,11 @@
       [layoutClass]="getWidgetColClass('overview')"
       [size]="getWidgetConfig('overview').size"
       [collapsed]="getWidgetConfig('overview').collapsed"
-      [loading]="(overviewLoading$ | async) ?? false"
+      [loading]="overviewLoading"
       (sizeChange)="onWidgetSizeChange('overview', $event)"
       (collapsedChange)="onWidgetCollapsedChange('overview', $event)"
       (reload)="onWidgetReload('overview')">
-      <app-widget-overview [stats]="statsData | async" />
+      <app-widget-overview [stats]="statsData" />
     </app-widget-container>
 
     <!-- Row 2: Cửa khẩu | Trên đường | Nhà máy -->
@@ -51,11 +51,11 @@
       [layoutClass]="getWidgetColClass('donut-border')"
       [size]="getWidgetConfig('donut-border').size"
       [collapsed]="getWidgetConfig('donut-border').collapsed"
-      [loading]="(borderLoading$ | async) ?? false"
+      [loading]="borderLoading"
       (sizeChange)="onWidgetSizeChange('donut-border', $event)"
       (collapsedChange)="onWidgetCollapsedChange('donut-border', $event)"
       (reload)="onWidgetReload('donut-border')">
-      <app-widget-donut-border [vehicles]="(borderVehiclesData | async) || []" />
+      <app-widget-donut-border [vehicles]="borderVehiclesData" />
     </app-widget-container>
 
     <!-- Donut: Trên đường -->
@@ -65,11 +65,11 @@
       [layoutClass]="getWidgetColClass('donut-road')"
       [size]="getWidgetConfig('donut-road').size"
       [collapsed]="getWidgetConfig('donut-road').collapsed"
-      [loading]="(roadLoading$ | async) ?? false"
+      [loading]="roadLoading"
       (sizeChange)="onWidgetSizeChange('donut-road', $event)"
       (collapsedChange)="onWidgetCollapsedChange('donut-road', $event)"
       (reload)="onWidgetReload('donut-road')">
-      <app-widget-donut-road [vehicles]="(roadVehiclesData | async) || []" />
+      <app-widget-donut-road [vehicles]="roadVehiclesData" />
     </app-widget-container>
 
     <!-- Bar Chart: Nhà máy -->
@@ -79,13 +79,13 @@
       [layoutClass]="getWidgetColClass('bar-factory')"
       [size]="getWidgetConfig('bar-factory').size"
       [collapsed]="getWidgetConfig('bar-factory').collapsed"
-      [loading]="(factoryLoading$ | async) ?? false"
+      [loading]="factoryLoading"
       (sizeChange)="onWidgetSizeChange('bar-factory', $event)"
       (collapsedChange)="onWidgetCollapsedChange('bar-factory', $event)"
       (reload)="onWidgetReload('bar-factory')">
       <app-widget-bar-port
         barColor="#dc3545"
-        [vehicles]="(factoryVehiclesData | async) || []"
+        [vehicles]="factoryVehiclesData"
         [showZoom]="false" />
     </app-widget-container>
 
@@ -96,13 +96,13 @@
       [layoutClass]="getWidgetColClass('bar-port')"
       [size]="getWidgetConfig('bar-port').size"
       [collapsed]="getWidgetConfig('bar-port').collapsed"
-      [loading]="(portLoading$ | async) ?? false"
+      [loading]="portLoading"
       (sizeChange)="onWidgetSizeChange('bar-port', $event)"
       (collapsedChange)="onWidgetCollapsedChange('bar-port', $event)"
       (reload)="onWidgetReload('bar-port')">
       <app-widget-bar-port
         barColor="#00c07f"
-        [vehicles]="(portVehiclesData | async) || []"
+        [vehicles]="portVehiclesData"
         [showZoom]="true" />
     </app-widget-container>
 

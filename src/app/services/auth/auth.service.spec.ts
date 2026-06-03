@@ -8,7 +8,7 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { HttpClient } from '@angular/common/http';
 import { Router, provideRouter } from '@angular/router';
 import { AuthService } from './auth.service';
-import { routes } from '../app.routes';
+import { routes } from '../../app.routes';
 
 /**
  * Người tạo: DungBT

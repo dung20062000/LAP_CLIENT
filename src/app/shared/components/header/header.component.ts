@@ -7,7 +7,7 @@ import { Component, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ClickOutsideDirective } from './click-outside.directive';
 import { TranslationService } from '../../services/translation.service';
-import { AuthService } from '../../../services/auth.service';
+import { AuthService } from '../../../services/auth';
 import { TranslatePipe } from '../../pipes/translate.pipe';
 
 /**

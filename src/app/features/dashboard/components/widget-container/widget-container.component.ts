@@ -65,7 +65,7 @@ export class WidgetContainerComponent {
 
   // Các tùy chọn kích thước
   readonly sizeOptions: { label: string; value: WidgetSize }[] = [
-    { label: 'Tự động (mặc định)', value: 'auto' },
+    { label: 'Tự động', value: 'auto' },
     { label: 'Nhỏ', value: 'small' },
     { label: 'Trung bình', value: 'medium' },
     { label: 'Lớn', value: 'large' },

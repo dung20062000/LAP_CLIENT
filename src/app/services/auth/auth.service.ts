@@ -8,7 +8,7 @@ import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
-import { LoginRequest, LoginResponse, ApiResponse, UserInfo } from '../models';
+import { LoginRequest, LoginResponse, ApiResponse, UserInfo } from '../../models';
 
 // Hardcode credentials tạm thời — xóa khi backend API sẵn sàng.
 const HARDCODE_USERNAME = 'admin';

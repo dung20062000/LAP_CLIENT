@@ -35,6 +35,7 @@
       [layoutClass]="getWidgetColClass('overview')"
       [size]="getWidgetConfig('overview').size"
       [collapsed]="getWidgetConfig('overview').collapsed"
+      [loading]="(overviewLoading$ | async) ?? false"
       (sizeChange)="onWidgetSizeChange('overview', $event)"
       (collapsedChange)="onWidgetCollapsedChange('overview', $event)"
       (reload)="onWidgetReload('overview')">
@@ -50,6 +51,7 @@
       [layoutClass]="getWidgetColClass('donut-border')"
       [size]="getWidgetConfig('donut-border').size"
       [collapsed]="getWidgetConfig('donut-border').collapsed"
+      [loading]="(borderLoading$ | async) ?? false"
       (sizeChange)="onWidgetSizeChange('donut-border', $event)"
       (collapsedChange)="onWidgetCollapsedChange('donut-border', $event)"
       (reload)="onWidgetReload('donut-border')">
@@ -63,6 +65,7 @@
       [layoutClass]="getWidgetColClass('donut-road')"
       [size]="getWidgetConfig('donut-road').size"
       [collapsed]="getWidgetConfig('donut-road').collapsed"
+      [loading]="(roadLoading$ | async) ?? false"
       (sizeChange)="onWidgetSizeChange('donut-road', $event)"
       (collapsedChange)="onWidgetCollapsedChange('donut-road', $event)"
       (reload)="onWidgetReload('donut-road')">
@@ -76,6 +79,7 @@
       [layoutClass]="getWidgetColClass('bar-factory')"
       [size]="getWidgetConfig('bar-factory').size"
       [collapsed]="getWidgetConfig('bar-factory').collapsed"
+      [loading]="(factoryLoading$ | async) ?? false"
       (sizeChange)="onWidgetSizeChange('bar-factory', $event)"
       (collapsedChange)="onWidgetCollapsedChange('bar-factory', $event)"
       (reload)="onWidgetReload('bar-factory')">
@@ -92,6 +96,7 @@
       [layoutClass]="getWidgetColClass('bar-port')"
       [size]="getWidgetConfig('bar-port').size"
       [collapsed]="getWidgetConfig('bar-port').collapsed"
+      [loading]="(portLoading$ | async) ?? false"
       (sizeChange)="onWidgetSizeChange('bar-port', $event)"
       (collapsedChange)="onWidgetCollapsedChange('bar-port', $event)"
       (reload)="onWidgetReload('bar-port')">

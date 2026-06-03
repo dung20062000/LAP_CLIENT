@@ -13,7 +13,7 @@
           [title]="title"
           (click)="toggleCollapse()"
           (keydown.enter)="toggleCollapse()"
-          (keydown.space)="toggleCollapse()"
+          (keydown.space)="toggleCollapse(); $event.preventDefault()"
         >{{ title }}</span>
       </div>
 

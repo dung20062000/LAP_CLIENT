@@ -2,8 +2,9 @@
  * Người tạo: DungBT
  * Ngày tạo: 01/06/2026
  * Mô tả: Dashboard Page – Màn hình chính theo dõi trạng thái xe chở hàng.
- *        Orchestrate tất cả widget, quản lý layout, bộ lọc và auto-refresh.
- *        Mỗi widget nhận stream dữ liệu riêng (border/road/factory/port).
+ *        - Gọi API tổng (getAllDashboardData) 1 lần khi load trang để lấy toàn bộ dữ liệu.
+ *        - Khi ấn reload trên từng Widget, chỉ gọi API riêng của widget đó (refreshWidget).
+ *        - Mỗi widget có loading state độc lập, hiển thị spinner khi đang reload.
  */
 import {
   Component,
@@ -61,15 +62,20 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
   private dashboardService = inject(DashboardService);
   private cdr = inject(ChangeDetectorRef);
 
-  // Thống kê tổng quan
-  statsData = this.dashboardService.statsData;
-  destinationsData = this.dashboardService.destinationsData;
-
-  // Dữ liệu stream riêng cho từng widget
+  //Dữ liệu từng widget (stream từ service)
+  statsData          = this.dashboardService.statsData;
+  destinationsData   = this.dashboardService.destinationsData;
   borderVehiclesData = this.dashboardService.borderVehiclesData;
-  roadVehiclesData = this.dashboardService.roadVehiclesData;
+  roadVehiclesData   = this.dashboardService.roadVehiclesData;
   factoryVehiclesData = this.dashboardService.factoryVehiclesData;
-  portVehiclesData = this.dashboardService.portVehiclesData;
+  portVehiclesData   = this.dashboardService.portVehiclesData;
+
+  // Loading state từng widget (stream từ service)
+  overviewLoading$  = this.dashboardService.overviewLoading$;
+  borderLoading$    = this.dashboardService.borderLoading$;
+  roadLoading$      = this.dashboardService.roadLoading$;
+  factoryLoading$   = this.dashboardService.factoryLoading$;
+  portLoading$      = this.dashboardService.portLoading$;
 
   // Danh sách option cho bộ lọc (id + biển số)
   vehicleOptions: VehicleOption[] = [];
@@ -83,7 +89,8 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
   constructor() {}
 
   ngOnInit(): void {
-    this.getDataInit();
+    this.initLayout();
+    this.loadAllData();
   }
 
   ngOnDestroy(): void {
@@ -93,25 +100,45 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
 
   /**
    * Người tạo: DungBT
-   * Ngày tạo: 02/06/2026
-   * Load dữ liệu dashboard.
+   * Ngày tạo: 01/06/2026
+   * Load cấu hình layout từ localStorage và subscribe vehicleOptions.
    */
-  getDataInit(): void {
+  private initLayout(): void {
     const userId = this.getCurrentUserId();
 
     // Load cấu hình layout từ localStorage
     this.widgetConfigs = this.dashboardService.getLayoutConfig(userId);
 
     // Subscribe stream tất cả xe chỉ để lấy vehicleOptions (danh sách dropdown)
-    this.dashboardService.allVehiclesDataStream.pipe(takeUntil(this.destroySignal)).subscribe(() => {
-      this.vehicleOptions = this.dashboardService.getVehicleOptions();
-      this.lastRefresh.set(new Date());
-      this.cdr.markForCheck();
-    });
+    this.dashboardService.allVehiclesDataStream
+      .pipe(takeUntil(this.destroySignal))
+      .subscribe(() => {
+        this.vehicleOptions = this.dashboardService.getVehicleOptions();
+        this.cdr.markForCheck();
+      });
   }
 
-  // Helpers
-
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 03/06/2026
+   * [Gọi API tổng] Tải toàn bộ dữ liệu dashboard khi load trang lần đầu.
+   * Sau khi hoàn thành sẽ cập nhật lastRefresh.
+   */
+  private loadAllData(): void {
+    this.dashboardService
+      .getAllDashboardData()
+      .pipe(takeUntil(this.destroySignal))
+      .subscribe({
+        next: () => {
+          this.lastRefresh.set(new Date());
+          this.cdr.markForCheck();
+        },
+        error: (err) => {
+          console.error('[Dashboard] Lỗi khi tải dữ liệu tổng:', err);
+          this.cdr.markForCheck();
+        },
+      });
+  }
   /**
    * Người tạo: DungBT
    * Ngày tạo: 01/06/2026
@@ -130,7 +157,7 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
    */
   getWidgetConfig(widgetId: string): WidgetConfig {
     return (
-      this.widgetConfigs.find((w) => w.widgetId === widgetId) || {
+      this.widgetConfigs.find(w => w.widgetId === widgetId) || {
         widgetId,
         size: 'auto',
         collapsed: false,
@@ -168,8 +195,8 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
   private getMiddleWidgetColClasses(): Record<string, string> {
     const configs = {
       'donut-border': { default: 3, size: this.getWidgetConfig('donut-border').size || 'auto' },
-      'donut-road': { default: 3, size: this.getWidgetConfig('donut-road').size || 'auto' },
-      'bar-factory': { default: 6, size: this.getWidgetConfig('bar-factory').size || 'auto' },
+      'donut-road':   { default: 3, size: this.getWidgetConfig('donut-road').size   || 'auto' },
+      'bar-factory':  { default: 6, size: this.getWidgetConfig('bar-factory').size  || 'auto' },
     };
 
     const fixedWidths: Record<string, number> = {};
@@ -202,8 +229,8 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
     if (autoWidgets.length === 3) {
       return {
         'donut-border': 'col-12 col-md-3',
-        'donut-road': 'col-12 col-md-3',
-        'bar-factory': 'col-12 col-md-6',
+        'donut-road':   'col-12 col-md-3',
+        'bar-factory':  'col-12 col-md-6',
       };
     }
 
@@ -237,7 +264,7 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
         }
       } else {
         // Không đủ không gian trên hàng hiện tại -> Để tự động xuống hàng theo kích thước mặc định
-        autoWidgets.forEach((id) => {
+        autoWidgets.forEach(id => {
           const def = configs[id as keyof typeof configs].default;
           result[id] = `col-12 col-md-${def}`;
         });
@@ -246,8 +273,6 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
 
     return result;
   }
-
-  // Event handlers
 
   /**
    * Người tạo: DungBT
@@ -298,22 +323,39 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
   /**
    * Người tạo: DungBT
    * Ngày tạo: 01/06/2026
-   * Làm mới toàn bộ dữ liệu dashboard: reset bộ lọc + tải dữ liệu mới.
+   * Làm mới toàn bộ dữ liệu dashboard: reset bộ lọc + tải lại tất cả widget.
    */
   onPageReload(): void {
-    this.dashboardService.refresh();
-    this.lastRefresh.set(new Date());
-    this.cdr.markForCheck();
+    this.dashboardService
+      .refresh()
+      .pipe(takeUntil(this.destroySignal))
+      .subscribe({
+        next: () => {
+          this.lastRefresh.set(new Date());
+          this.cdr.markForCheck();
+        },
+      });
   }
 
   /**
    * Người tạo: DungBT
-   * Ngày tạo: 01/06/2026
-   * Xử lý reload từng widget (hiện tại dữ liệu đã được stream, không cần thêm logic).
-   * @param widgetId ID widget (dùng khi mở rộng sau này để refresh riêng từng widget)
+   * Ngày tạo: 03/06/2026
+   * [Reload độc lập] Xử lý reload từng widget riêng biệt.
+   * Gọi đúng API tương ứng với widgetId, chỉ cập nhật dữ liệu widget đó.
+   * @param widgetId ID widget cần reload ('overview' | 'donut-border' | 'donut-road' | 'bar-factory' | 'bar-port')
    */
   onWidgetReload(widgetId: string): void {
-    // Gọi method refresh riêng biệt trên service
-    this.dashboardService.refreshWidget(widgetId);
+    this.dashboardService
+      .refreshWidget(widgetId)
+      .pipe(takeUntil(this.destroySignal))
+      .subscribe({
+        next: () => {
+          this.cdr.markForCheck();
+        },
+        error: (err) => {
+          console.error(`[Dashboard] Lỗi khi reload widget "${widgetId}":`, err);
+          this.cdr.markForCheck();
+        },
+      });
   }
 }

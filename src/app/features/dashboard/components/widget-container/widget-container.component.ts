@@ -26,6 +26,7 @@ const WIDGET_OPTIONS_OPEN_EVENT = 'widget-options-open';
  * @Input  widgetId  – ID duy nhất của widget (dùng cho lưu layout)
  * @Input  size      – Kích thước hiện tại ('auto' | 'small' | 'medium' | 'large')
  * @Input  collapsed – Trạng thái thu gọn
+ * @Input  loading   – Loading state từ bên ngoài (service), true = đang fetch API
  * @Output sizeChange   – Phát ra khi người dùng thay đổi kích thước
  * @Output reload       – Phát ra khi người dùng nhấn nút Tải lại
  * @Output collapsedChange – Phát ra khi trạng thái thu gọn thay đổi
@@ -43,16 +44,23 @@ export class WidgetContainerComponent {
   @Input() size: WidgetSize = 'auto';
   @Input() collapsed = false;
   @Input() layoutClass = ''; // Nhận class col động từ component cha
+  // Loading state từ bên ngoài – true khi service đang fetch API cho widget này
+  @Input() loading = false;
 
   @Output() sizeChange = new EventEmitter<WidgetSize>();
   @Output() reload = new EventEmitter<void>();
   @Output() collapsedChange = new EventEmitter<boolean>();
 
-  /** Hiển thị popup options (hover) */
+  // Hiển thị popup options (hover)
   showOptions = false;
-  /** Đang spinner reload */
-  isReloading = false;
-  /** Mở submenu sang bên trái khi sát mép phải màn hình */
+  // Spinner nội bộ (khi nhấn reload) – kết hợp với loading input để hiển thị spinner
+  private _internalReloading = false;
+
+  // Getter tổng hợp: đang spinner nếu loading từ ngoài HOẶC nội bộ đang chờ
+  get isReloading(): boolean {
+    return this.loading || this._internalReloading;
+  }
+  // Mở submenu sang bên trái khi sát mép phải màn hình
   openLeft = false;
 
   // Các tùy chọn kích thước
@@ -119,12 +127,15 @@ export class WidgetContainerComponent {
    * Kích hoạt reload với animation spinner tạm thời.
    */
   onReload(): void {
-    this.isReloading = true;
+    // Bật spinner nội bộ ngay lập tức để phản hồi click tức thì,
+    // sau đó tắt khi loading input từ service đã bật lên (hoặc timeout an toàn).
+    this._internalReloading = true;
     this.reload.emit();
+    // Tắt spinner nội bộ sau 600ms (service sẽ bật loading$ song song)
     setTimeout(() => {
-      this.isReloading = false;
+      this._internalReloading = false;
       this.cdr.markForCheck();
-    }, 800);
+    }, 600);
   }
 
   /**
@@ -138,7 +149,7 @@ export class WidgetContainerComponent {
     this.showOptions = false;
   }
 
-  /** Đóng popup options khi click ra ngoài */
+  // Đóng popup options khi click ra ngoài
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: Event): void {
     if (!this.el.nativeElement.contains(event.target)) {
@@ -146,7 +157,7 @@ export class WidgetContainerComponent {
     }
   }
 
-  /** Đóng popup khi widget khác mở dropdown */
+  // Đóng popup khi widget khác mở dropdown
   @HostListener('window:widget-options-open', ['$event'])
   onWidgetOptionsOpen(event: Event): void {
     const customEvent = event as CustomEvent;
@@ -155,7 +166,7 @@ export class WidgetContainerComponent {
     }
   }
 
-  /** Tính toán lại khi resize màn hình */
+  // Tính toán lại khi resize màn hình
   @HostListener('window:resize')
   onResize(): void {
     if (this.showOptions) {

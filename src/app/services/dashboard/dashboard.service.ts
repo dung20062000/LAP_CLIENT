@@ -131,9 +131,9 @@ export class DashboardService {
   );
 
   constructor() {
-    // Tự động reload toàn bộ sau mỗi 5 phút
+    // Tự động reload toàn bộ sau mỗi khoảng thời gian
     timer(REFRESH_INTERVAL_MS, REFRESH_INTERVAL_MS).subscribe(() => {
-      this.refresh();
+      this.refresh().subscribe();
     });
   }
 

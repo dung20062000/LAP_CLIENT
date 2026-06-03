@@ -3,6 +3,7 @@
  * Ngày tạo: 03/06/2026
  * Mô tả: Unit test cho WidgetDonutRoadComponent — kiểm tra khởi tạo chart, buildChart, donut structure và ngOnChanges.
  */
+import { afterEach, describe, expect, it, beforeEach, vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { WidgetDonutRoadComponent } from './widget-donut-road.component';
 import { Vehicle } from '../../../../models/dashboard';
@@ -21,14 +22,27 @@ describe('WidgetDonutRoadComponent', () => {
   });
 
   beforeEach(() => {
+    let currentWidth = 1200;
+    Object.defineProperty(window, 'innerWidth', {
+      get: () => currentWidth,
+      set: (v) => { currentWidth = v; },
+      configurable: true,
+    });
+    vi.spyOn(window, 'addEventListener');
+    vi.spyOn(window, 'removeEventListener');
+
     TestBed.resetTestingModule();
     TestBed.configureTestingModule({
-      declarations: [WidgetDonutRoadComponent],
+      imports: [WidgetDonutRoadComponent],
     });
 
     fixture = TestBed.createComponent(WidgetDonutRoadComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    fixture.destroy();
   });
 
   // Khởi tạo
@@ -48,6 +62,55 @@ describe('WidgetDonutRoadComponent', () => {
 
     it('should have hasData as false initially', () => {
       expect(component.hasData).toBe(false);
+    });
+  });
+
+  // buildChart – labelLine responsive
+
+  describe('buildChart() – labelLine responsive (desktop vs mobile)', () => {
+    it('should show labelLine on desktop (innerWidth > 576)', () => {
+      component.vehicles = [makeVehicle({ id: 1, hasLoad: true, locationType: 'road' })];
+      component.ngOnChanges({ vehicles: { currentValue: component.vehicles } } as any);
+      const opts = component.chartOption as any;
+      expect(opts.series[0].labelLine.show).toBe(true);
+      opts.series[0].data.forEach((item: any) => {
+        expect(item.labelLine.show).toBe(true);
+      });
+    });
+
+    it('should hide labelLine on mobile (innerWidth <= 576)', () => {
+      window.innerWidth = 375;
+      window.dispatchEvent(new Event('resize'));
+      component.vehicles = [makeVehicle({ id: 1, hasLoad: true, locationType: 'road' })];
+      component.ngOnChanges({ vehicles: { currentValue: component.vehicles } } as any);
+      const opts = component.chartOption as any;
+      expect(opts.series[0].labelLine.show).toBe(false);
+      opts.series[0].data.forEach((item: any) => {
+        expect(item.labelLine.show).toBe(false);
+      });
+    });
+
+    it('should hide label on data item when mobile even if count > 0', () => {
+      window.innerWidth = 375;
+      window.dispatchEvent(new Event('resize'));
+      component.vehicles = [
+        makeVehicle({ id: 1, hasLoad: true, locationType: 'road' }),
+        makeVehicle({ id: 2, hasLoad: false, locationType: 'road' }),
+      ];
+      component.ngOnChanges({ vehicles: { currentValue: component.vehicles } } as any);
+      const opts = component.chartOption as any;
+      opts.series[0].data.forEach((item: any) => {
+        expect(item.label.show).toBe(false);
+      });
+    });
+  });
+
+  // ngOnDestroy
+
+  describe('ngOnDestroy()', () => {
+    it('should remove resize event listener on destroy', () => {
+      component.ngOnDestroy();
+      expect(window.removeEventListener).toHaveBeenCalledWith('resize', expect.any(Function));
     });
   });
 
@@ -125,7 +188,7 @@ describe('WidgetDonutRoadComponent', () => {
       expect(emptyItem.itemStyle.color).toBe('#e67e22');
     });
 
-    it('should show label only when count > 0', () => {
+    it('should show label only when count > 0 on desktop', () => {
       component.vehicles = [
         makeVehicle({ id: 1, hasLoad: true, locationType: 'road' }),
         makeVehicle({ id: 2, hasLoad: false, locationType: 'road' }),

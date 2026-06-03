@@ -5,11 +5,13 @@
  *        Hiển thị phân bổ xe tại các cửa khẩu dạng hình vành khăn (Donut).
  *        Số tổng hiển thị ở giữa biểu đồ bằng graphic text.
  */
-import { Component, Input, OnChanges, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 
 import { NgxEchartsDirective } from 'ngx-echarts';
 import type { EChartsOption } from 'echarts';
 import { Vehicle, Destination } from '../../../../models';
+
+const MOBILE_BREAKPOINT = 576;
 
 /**
  * Người tạo: DungBT
@@ -24,7 +26,7 @@ import { Vehicle, Destination } from '../../../../models';
   styleUrl: './widget-donut-border.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class WidgetDonutBorderComponent implements OnChanges {
+export class WidgetDonutBorderComponent implements OnChanges, OnDestroy {
   // Danh sách xe (đã lọc từ dashboard)
   @Input() vehicles: Vehicle[] = [];
   // Danh sách điểm đến để lấy tên
@@ -35,8 +37,32 @@ export class WidgetDonutBorderComponent implements OnChanges {
   // Flag kiểm tra xem có dữ liệu hay không
   hasData = false;
 
+  private isMobile = false;
+  private resizeHandler: (() => void) | null = null;
 
-  /**
+  constructor(private cdr: ChangeDetectorRef) {
+    this.isMobile = window.innerWidth <= MOBILE_BREAKPOINT;
+    this.resizeHandler = () => {
+      this.updateMobile();
+    };
+    window.addEventListener('resize', this.resizeHandler);
+  }
+
+  ngOnDestroy(): void {
+    if (this.resizeHandler) {
+      window.removeEventListener('resize', this.resizeHandler);
+    }
+  }
+
+  private updateMobile(): void {
+    const isNowMobile = window.innerWidth <= MOBILE_BREAKPOINT;
+    if (this.isMobile !== isNowMobile) {
+      this.isMobile = isNowMobile;
+      if (this.vehicles.length > 0 || this.destinations.length > 0) {
+        this.buildChart();
+      }
+    }
+  }  /**
    * Người tạo: DungBT
    * Ngày tạo: 02/06/2026
    * Xử lý thay đổi input
@@ -67,20 +93,22 @@ export class WidgetDonutBorderComponent implements OnChanges {
     const total = loadedCount + emptyCount;
     this.hasData = total > 0;
 
+    const showLabelLine = !this.isMobile;
+
     const data = [
       {
         value: loadedCount,
         name: 'Phương tiện có hàng',
         itemStyle: { color: '#4db848' },
-        label: { show: loadedCount > 0 },
-        labelLine: { show: loadedCount > 0 },
+        label: { show: loadedCount > 0 && showLabelLine },
+        labelLine: { show: showLabelLine },
       },
       {
         value: emptyCount,
         name: 'Phương tiện không hàng',
         itemStyle: { color: '#e67e22' },
-        label: { show: emptyCount > 0 },
-        labelLine: { show: emptyCount > 0 },
+        label: { show: emptyCount > 0 && showLabelLine },
+        labelLine: { show: showLabelLine },
       },
     ];
 
@@ -141,8 +169,8 @@ export class WidgetDonutBorderComponent implements OnChanges {
             fontSize: 11,
           },
           labelLine: {
-            show: true,
-            length: 3, // Thu ngắn đường dẫn để nhãn sát biểu đồ hơn, tránh tràn viền gây dấu ba chấm
+            show: showLabelLine,
+            length: 6, // Thu ngắn đường dẫn để nhãn sát biểu đồ hơn, tránh tràn viền gây dấu ba chấm
             length2: 4,
           },
           labelLayout: {
@@ -152,5 +180,7 @@ export class WidgetDonutBorderComponent implements OnChanges {
         },
       ],
     };
+
+    this.cdr.markForCheck();
   }
 }

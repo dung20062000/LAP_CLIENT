@@ -5,11 +5,13 @@
  *        Hiển thị phân bổ xe đang di chuyển phân loại theo trạng thái có/không hàng.
  *        Số tổng hiển thị ở giữa biểu đồ.
  */
-import { Component, Input, OnChanges, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 
 import { NgxEchartsDirective } from 'ngx-echarts';
 import type { EChartsOption } from 'echarts';
 import { Vehicle } from '../../../../models';
+
+const MOBILE_BREAKPOINT = 576;
 
 /**
  * Người tạo: DungBT
@@ -24,32 +26,47 @@ import { Vehicle } from '../../../../models';
   styleUrl: './widget-donut-road.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class WidgetDonutRoadComponent implements OnChanges {
-  // Danh sách xe (đã lọc từ dashboard)
+export class WidgetDonutRoadComponent implements OnChanges, OnDestroy {
   @Input() vehicles: Vehicle[] = [];
 
   chartOption: EChartsOption = {};
-  // Flag kiểm tra xem có dữ liệu hay không
   hasData = false;
 
-  /**
-   * Người tạo: DungBT
-   * Ngày tạo: 02/06/2026
-   * Xử lý thay đổi input
-   */
+  private isMobile = false;
+  private resizeHandler: (() => void) | null = null;
+
+  constructor(private cdr: ChangeDetectorRef) {
+    this.isMobile = window.innerWidth <= MOBILE_BREAKPOINT;
+    this.resizeHandler = () => {
+      this.updateMobile();
+    };
+    window.addEventListener('resize', this.resizeHandler);
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['vehicles']) {
       this.buildChart();
     }
   }
 
-  /**
-   * Người tạo: DungBT
-   * Ngày tạo: 01/06/2026
-   * Xây dựng cấu hình ECharts Donut cho xe đang trên đường.
-   */
+  ngOnDestroy(): void {
+    if (this.resizeHandler) {
+      window.removeEventListener('resize', this.resizeHandler);
+    }
+  }
+
+  private updateMobile(): void {
+    const isNowMobile = window.innerWidth <= MOBILE_BREAKPOINT;
+    // Chỉ build lại chart khi thay đổi trạng thái giữa mobile và desktop
+    if (this.isMobile !== isNowMobile) {
+      this.isMobile = isNowMobile;
+      if (this.vehicles.length > 0) {
+        this.buildChart();
+      }
+    }
+  }
+
   private buildChart(): void {
-    // Lọc xe trên đường
     const roadVehicles = this.vehicles.filter((v) => v.locationType === 'road');
 
     let loadedCount = 0;
@@ -63,20 +80,22 @@ export class WidgetDonutRoadComponent implements OnChanges {
     const total = loadedCount + emptyCount;
     this.hasData = total > 0;
 
+    const showLabelLine = !this.isMobile;
+
     const data = [
       {
         value: loadedCount,
         name: 'Phương tiện có hàng',
         itemStyle: { color: '#4db848' },
-        label: { show: loadedCount > 0 },
-        labelLine: { show: loadedCount > 0 },
+        label: { show: loadedCount > 0 && showLabelLine },
+        labelLine: { show: showLabelLine },
       },
       {
         value: emptyCount,
         name: 'Phương tiện không hàng',
         itemStyle: { color: '#e67e22' },
-        label: { show: emptyCount > 0 },
-        labelLine: { show: emptyCount > 0 },
+        label: { show: emptyCount > 0 && showLabelLine },
+        labelLine: { show: showLabelLine },
       },
     ];
 
@@ -92,7 +111,7 @@ export class WidgetDonutRoadComponent implements OnChanges {
             fontSize: 32,
             fontWeight: 800,
             fill: '#1a1a2e',
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
           } as any,
         },
         {
@@ -103,10 +122,10 @@ export class WidgetDonutRoadComponent implements OnChanges {
             text: 'đang di chuyển',
             fontSize: 11,
             fill: '#6c757d',
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
           } as any,
         },
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ] as any[],
       tooltip: {
         trigger: 'item',
@@ -136,16 +155,18 @@ export class WidgetDonutRoadComponent implements OnChanges {
             fontSize: 11,
           },
           labelLine: {
-            show: true,
-            length: 6, // Thu ngắn đường dẫn để nhãn sát biểu đồ hơn, tránh tràn viền gây dấu ba chấm
+            show: showLabelLine,
+            length: 6,
             length2: 4,
           },
           labelLayout: {
-            y: 260, // Căn chỉnh nhãn về phía chân dưới biểu đồ
+            y: 260,
           },
           data: data,
         },
       ],
     };
+
+    this.cdr.markForCheck();
   }
 }

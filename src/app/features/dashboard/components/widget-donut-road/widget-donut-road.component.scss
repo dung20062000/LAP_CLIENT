@@ -36,3 +36,8 @@
     font-weight: 500;
   }
 }
+@media (max-width: 576px) {
+  .donut-chart-wrap {
+    height: 240px;
+  }
+}

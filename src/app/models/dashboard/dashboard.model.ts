@@ -4,26 +4,26 @@
  * Mô tả: Các interface/type dùng cho Dashboard theo dõi trạng thái xe chở hàng.
  */
 
-// ─── Kích thước widget ────────────────────────────────────────────────────────
+//Kích thước widget
 export type WidgetSize = 'auto' | 'small' | 'medium' | 'large';
 
-// ─── Loại điểm đến ───────────────────────────────────────────────────────────
+//Loại điểm đến
 export type DestinationType = 'border' | 'port' | 'factory' | 'road';
 
-// ─── Thông tin phương tiện ───────────────────────────────────────────────────
+//Thông tin phương tiện
 export interface Vehicle {
   id: number;
-  /** Biển số xe */
+  // Biển số xe
   licensePlate: string;
-  /** Tên lái xe */
+  // Tên lái xe
   driverName: string;
-  /** Có hàng: true, Không hàng: false */
+  // Có hàng: true, Không hàng: false
   hasLoad: boolean;
-  /** Loại vị trí hiện tại */
+  // Loại vị trí hiện tại
   locationType: DestinationType;
-  /** ID điểm đến (nếu có) */
+  // ID điểm đến (nếu có)
   destinationId?: number;
-  /** Tên điểm đến hiển thị */
+  // Tên điểm đến hiển thị
   destinationName?: string;
 }
 
@@ -31,9 +31,9 @@ export interface Vehicle {
 export interface Destination {
   id: number;
   name: string;
-  /** Loại điểm đến */
+  // Loại điểm đến
   type: DestinationType;
-  /** Số xe hiện tại tại điểm */
+  // Số xe hiện tại tại điểm
   vehicleCount: number;
 }
 

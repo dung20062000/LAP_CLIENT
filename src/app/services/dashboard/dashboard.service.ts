@@ -378,12 +378,7 @@ export class DashboardService {
    * @param size      Kích thước mới
    * @param currentWidgets Danh sách widget hiện tại
    */
-  updateWidgetSize(
-    userId: string,
-    widgetId: string,
-    size: WidgetSize,
-    currentWidgets: WidgetConfig[],
-  ): WidgetConfig[] {
+  updateWidgetSize(userId: string, widgetId: string, size: WidgetSize, currentWidgets: WidgetConfig[]): WidgetConfig[] {
     let exists = false;
     const updated = currentWidgets.map(w => {
       if (w.widgetId === widgetId) {

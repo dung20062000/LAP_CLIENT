@@ -16,7 +16,7 @@ export const routes: Routes = [
     canActivate: [guestGuard],
   },
   {
-    path: 'dashboard',
+    path: 'public',
     loadComponent: () =>
       import('./shared/components/layout/main-layout/main-layout.component').then(
         (m) => m.MainLayoutComponent
@@ -25,9 +25,21 @@ export const routes: Routes = [
     children: [
       {
         path: '',
+        redirectTo: 'dashboard',
+        pathMatch: 'full',
+      },
+      {
+        path: 'dashboard',
         loadComponent: () =>
           import('./features/dashboard/pages/dashboard-page/dashboard-page.component').then(
             (m) => m.DashboardPageComponent
+          ),
+      },
+      {
+        path: 'media',
+        loadComponent: () =>
+          import('./features/media/pages/media-gallery-page/media-gallery-page.component').then(
+            (m) => m.MediaGalleryPageComponent
           ),
       },
     ],

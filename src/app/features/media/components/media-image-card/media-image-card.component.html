@@ -1,0 +1,59 @@
+<!-- Card ảnh phương tiện -->
+<div
+  class="image-card"
+  role="button"
+  tabindex="0"
+  (click)="onCardClick()"
+  (keydown.enter)="onCardClick()"
+>
+  <!-- Thumbnail ảnh -->
+  <div class="card-thumbnail">
+    <img
+      loading="lazy"
+      [src]="image.url"
+      [alt]="'Kênh ' + image.channel + ' – ' + (image.imageTime | date:'dd/MM/yyyy HH:mm:ss')"
+    />
+  </div>
+
+  <!-- Metadata bên dưới ảnh -->
+  <div class="card-meta">
+
+    <!-- Hàng 1: Thời gian + Tốc độ + Download -->
+    <div class="meta-row meta-row-top">
+      <span class="meta-time">
+        <i class="fas fa-clock"></i>
+        {{ image.imageTime | date:'dd/MM/yyyy' }}<br/>
+        <strong>{{ image.imageTime | date:'HH:mm:ss' }}</strong>
+      </span>
+      <span class="meta-speed">
+        <i class="fas fa-tachometer-alt"></i>
+        0 km/h
+      </span>
+      <!-- Nút tải ảnh -->
+      <button
+        class="btn-download"
+        title="Tải ảnh"
+        (click)="onDownload($event)"
+      >
+        <i class="fas fa-download"></i>
+      </button>
+    </div>
+
+    <!-- Hàng 2: Kênh -->
+    <div class="meta-row">
+      <span class="meta-channel">
+        <i class="fas fa-video"></i>
+        Kênh {{ image.channel }}
+      </span>
+    </div>
+
+    <!-- Hàng 3: Địa chỉ -->
+    <div class="meta-row">
+      <span class="meta-address" [title]="fakeAddress">
+        <i class="fas fa-map-marker-alt"></i>
+        {{ fakeAddress }}
+      </span>
+    </div>
+
+  </div>
+</div>

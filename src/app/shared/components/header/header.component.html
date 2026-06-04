@@ -38,6 +38,19 @@
             </a>
           </li>
         }
+        @if (isLoggedIn()) {
+          <li class="nav-item">
+            <a
+              class="nav-link nav-link-internal"
+              routerLink="/public/media"
+              routerLinkActive="active"
+              (click)="closeMenu()"
+            >
+              <i class="fas fa-camera"></i>
+              Xem ảnh phương tiện
+            </a>
+          </li>
+        }
       </ul>
 
       <div class="mobile-actions">

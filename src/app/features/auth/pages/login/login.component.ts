@@ -124,7 +124,7 @@ export class LoginComponent implements OnInit {
         this.isLoading.set(false);
         if (response.success) {
           const returnUrl = this.route.snapshot.queryParams['returnUrl'];
-          this.router.navigate([returnUrl || '/dashboard']);
+          this.router.navigate([returnUrl || '/public/dashboard']);
         } else {
           this.errorMessage.set(
             response.message || this.translationService.translate('login.err_invalid_credentials'),

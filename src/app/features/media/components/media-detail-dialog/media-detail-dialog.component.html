@@ -1,0 +1,111 @@
+<!-- Dialog Xem Chi Tiết Ảnh -->
+<p-dialog
+  id="media-detail-dialog"
+  header="XEM CHI TIẾT"
+  styleClass="media-dialog"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [style]="{ width: '900px', maxWidth: '95vw' }"
+  [(visible)]="visible"
+  (onHide)="onHide()"
+>
+  @if (images.length > 0) {
+    <!-- Galleria slideshow bên trong dialog -->
+    <p-galleria
+      styleClass="media-galleria"
+      [value]="images"
+      [circular]="true"
+      [showItemNavigators]="true"
+      [showThumbnails]="false"
+      [showIndicators]="false"
+      [autoPlay]="autoPlay"
+      [transitionInterval]="3000"
+      [(activeIndex)]="currentIndex"
+      (activeIndexChange)="onActiveIndexChange($event)"
+    >
+      <!-- Template ảnh chính -->
+      <ng-template let-image pTemplate="item">
+        <div class="galleria-item">
+          <img
+            class="galleria-image"
+            [src]="image.url"
+            [alt]="'Kênh ' + image.channel"
+          />
+        </div>
+      </ng-template>
+
+      <!-- Caption overlay dưới ảnh – thông tin phương tiện -->
+      <ng-template let-image pTemplate="caption">
+        <div class="galleria-caption">
+
+          <!-- Dòng 1: Nút autoPlay + số thứ tự -->
+          <div class="caption-top">
+            <button
+              class="btn-autoplay"
+              [class.playing]="autoPlay"
+              (click)="toggleAutoPlay()"
+            >
+              <i [class]="autoPlay ? 'fas fa-pause' : 'fas fa-play'"></i>
+              {{ autoPlay ? 'Dừng' : 'Xem ảnh tự động' }}
+            </button>
+            <span class="caption-counter">
+              {{ currentIndex + 1 }}/{{ images.length }} ảnh
+            </span>
+          </div>
+
+          <!-- Dòng 2: Biển số + Thời gian -->
+          <div class="caption-row">
+            <span class="caption-plate">
+              <i class="fas fa-id-card"></i>
+              {{ image.vehiclePlate || '---' }}
+            </span>
+            <span class="caption-time">
+              <i class="fas fa-clock"></i>
+              {{ image.imageTime | date:'HH:mm:ss dd/MM/yyyy' }}
+            </span>
+          </div>
+
+          <!-- Dòng 3: Kênh + Lái xe + Tốc độ + Download -->
+          <div class="caption-row">
+            <span class="caption-channel">
+              <i class="fas fa-video"></i>
+              Kênh {{ image.channel }}
+            </span>
+            <span class="caption-driver">
+              <i class="fas fa-user"></i>
+              {{ image.displayName || 'N/A' }}
+            </span>
+            <span class="caption-speed">
+              <i class="fas fa-tachometer-alt"></i>
+              0 km/h
+            </span>
+            <button
+              class="btn-download-caption"
+              title="Tải ảnh"
+              (click)="onDownload(image)"
+            >
+              <i class="fas fa-download"></i>
+            </button>
+          </div>
+
+          <!-- Dòng 4: Địa chỉ -->
+          <div class="caption-row">
+            <span class="caption-address">
+              <i class="fas fa-map-marker-alt"></i>
+              {{ getFakeAddress(currentIndex) }}
+            </span>
+          </div>
+
+        </div>
+      </ng-template>
+    </p-galleria>
+  }
+
+  @if (images.length === 0) {
+    <div class="no-images">
+      <i class="fas fa-image fa-3x text-muted"></i>
+      <p class="text-muted mt-2">Không có ảnh để hiển thị</p>
+    </div>
+  }
+</p-dialog>

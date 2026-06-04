@@ -1,0 +1,147 @@
+<!-- Bộ lọc màn hình Xem Ảnh Phương Tiện -->
+<div class="media-filter">
+  <div class="filter-row">
+
+    <!-- Nhóm phương tiện: TreeSelect với checkbox -->
+    <div class="filter-item filter-group">
+      <p-treeSelect
+        id="filter-vehicle-group"
+        selectionMode="checkbox"
+        filterPlaceholder="Tìm nhóm..."
+        placeholder="Chọn nhóm phương tiện"
+        styleClass="filter-primeng w-100"
+        [options]="vehicleGroups"
+        [metaKeySelection]="false"
+        [filter]="true"
+        [(ngModel)]="selectedGroups"
+        (onNodeSelect)="onNodeSelect()"
+        (onNodeUnselect)="onNodeUnselect()"
+      />
+    </div>
+
+    <!-- Chọn xe: p-select (PrimeNG v21 thay thế p-dropdown) -->
+    <div class="filter-item filter-vehicle">
+      <p-select
+        id="filter-vehicle"
+        optionLabel="displayName"
+        filterPlaceholder="Tìm xe..."
+        placeholder="Chọn xe"
+        styleClass="filter-primeng w-100"
+        [options]="vehicleList"
+        [filter]="true"
+        [showClear]="true"
+        [loading]="vehicleLoading"
+        [(ngModel)]="selectedVehicle"
+        (onChange)="onVehicleChange()"
+      />
+    </div>
+
+    <!-- Chọn kênh: MultiSelect -->
+    <div class="filter-item filter-channel">
+      <p-multiSelect
+        id="filter-channel"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Chọn kênh"
+        styleClass="filter-primeng w-100"
+        [options]="channelOptions"
+        [disabled]="!selectedVehicle"
+        [(ngModel)]="selectedChannels"
+      />
+    </div>
+
+    <!-- Chiều sắp xếp: p-select không cho clear -->
+    <div class="filter-item filter-sort">
+      <p-select
+        id="filter-sort"
+        optionLabel="label"
+        optionValue="value"
+        styleClass="filter-primeng w-100"
+        [options]="sortOptions"
+        [showClear]="false"
+        [(ngModel)]="selectedSort"
+      />
+    </div>
+
+    <!-- Ngày: DatePicker có icon (PrimeNG v21 thay thế p-calendar) -->
+    <div class="filter-item filter-date">
+      <p-datepicker
+        id="filter-date"
+        dateFormat="dd/mm/yy"
+        placeholder="Chọn ngày"
+        styleClass="filter-primeng"
+        [showIcon]="true"
+        [maxDate]="today"
+        [(ngModel)]="selectedDate"
+        (onSelect)="onDateChange()"
+      />
+    </div>
+
+    <!-- Giờ bắt đầu: timeOnly -->
+    <div class="filter-item filter-time">
+      <p-datepicker
+        id="filter-time-start"
+        placeholder="00:00"
+        styleClass="filter-primeng filter-time-input"
+        [timeOnly]="true"
+        [(ngModel)]="startTime"
+      />
+    </div>
+
+    <!-- Giờ kết thúc: timeOnly -->
+    <div class="filter-item filter-time">
+      <p-datepicker
+        id="filter-time-end"
+        placeholder="23:59"
+        styleClass="filter-primeng filter-time-input"
+        [timeOnly]="true"
+        [(ngModel)]="endTime"
+      />
+    </div>
+
+    <!-- Nút tìm kiếm -->
+    <div class="filter-item filter-btn">
+      <button
+        id="btn-media-search"
+        class="btn btn-search"
+        [disabled]="!selectedVehicle"
+        (click)="onSearch()"
+      >
+        <i class="fas fa-search me-1"></i>
+        Tìm kiếm
+      </button>
+    </div>
+
+    <!-- Nút chọn số cột layout (4 / 5 / 6) -->
+    <div class="filter-item layout-controls ml-auto">
+      <button
+        id="layout-btn-4"
+        class="btn btn-layout"
+        title="4 ảnh mỗi hàng"
+        [class.active]="activeLayout === 4"
+        (click)="changeLayout(4)"
+      >
+        4 <i class="fas fa-file-image"></i>
+      </button>
+      <button
+        id="layout-btn-5"
+        class="btn btn-layout"
+        title="5 ảnh mỗi hàng"
+        [class.active]="activeLayout === 5"
+        (click)="changeLayout(5)"
+      >
+        5 <i class="fas fa-file-image"></i>
+      </button>
+      <button
+        id="layout-btn-6"
+        class="btn btn-layout"
+        title="6 ảnh mỗi hàng"
+        [class.active]="activeLayout === 6"
+        (click)="changeLayout(6)"
+      >
+        6 <i class="fas fa-file-image"></i>
+      </button>
+    </div>
+
+  </div>
+</div>

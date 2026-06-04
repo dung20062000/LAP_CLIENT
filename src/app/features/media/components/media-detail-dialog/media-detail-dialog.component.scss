@@ -1,0 +1,215 @@
+:host {
+  display: block;
+}
+
+// Override PrimeNG Dialog
+::ng-deep {
+  .media-dialog {
+    .p-dialog-header {
+      background: #007bff;
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 4px 4px 0 0;
+
+      .p-dialog-title {
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+      }
+
+      .p-dialog-header-icon {
+        color: #fff;
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.2);
+        }
+      }
+    }
+
+    .p-dialog-content {
+      padding: 0;
+      background: #1a1a1a;
+    }
+
+    // Galleria bên trong dialog
+    .media-galleria {
+      width: 100%;
+
+      .p-galleria-item-container {
+        position: relative;
+      }
+
+      // Nút prev/next
+      .p-galleria-item-prev,
+      .p-galleria-item-next {
+        background: rgba(0, 123, 255, 0.8);
+        color: #fff;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        transition: background 0.2s;
+
+        &:hover {
+          background: rgba(0, 86, 179, 0.9);
+        }
+
+        .p-icon {
+          color: #fff;
+        }
+      }
+    }
+  }
+}
+
+// Ảnh trong galleria
+.galleria-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #1a1a1a;
+  min-height: 400px;
+  max-height: 60vh;
+  overflow: hidden;
+}
+
+.galleria-image {
+  width: 100%;
+  max-height: 60vh;
+  object-fit: contain;
+  display: block;
+}
+
+// Caption overlay – nền đen trong suốt rgba(0,0,0,0.7)
+.galleria-caption {
+  position: relative;
+  background: rgba(0, 0, 0, 0.85);
+  padding: 10px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+// Dòng top: autoplay + counter
+.caption-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+// Nút autoplay
+.btn-autoplay {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 4px;
+  color: #fff;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  i {
+    font-size: 11px;
+  }
+
+  &:hover,
+  &.playing {
+    background: rgba(255, 255, 255, 0.15);
+  }
+}
+
+// Bộ đếm ảnh
+.caption-counter {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+// Các hàng thông tin
+.caption-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  color: #fff;
+  font-size: 12px;
+
+  span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+
+    i {
+      font-size: 11px;
+      opacity: 0.75;
+    }
+  }
+}
+
+// Biển số xe – nổi bật
+.caption-plate {
+  font-weight: 700;
+  font-size: 13px;
+  color: #4dd0e1 !important;
+}
+
+// Thời gian
+.caption-time {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+// Kênh
+.caption-channel {
+  color: #81c784 !important;
+}
+
+// Tốc độ
+.caption-speed {
+  color: #ffb74d !important;
+}
+
+// Địa chỉ
+.caption-address {
+  i {
+    color: #ef5350 !important;
+  }
+}
+
+// Nút download trong caption
+.btn-download-caption {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: none;
+  border-radius: 50%;
+  background: #28a745;
+  cursor: pointer;
+  margin-left: auto;
+  flex-shrink: 0;
+  transition: background 0.2s;
+
+  i {
+    font-size: 11px;
+    color: #fff;
+  }
+
+  &:hover {
+    background: #1e7e34;
+  }
+}
+
+// Khi không có ảnh
+.no-images {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  background: #1a1a1a;
+  color: #adb5bd;
+}

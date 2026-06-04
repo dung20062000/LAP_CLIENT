@@ -13,6 +13,7 @@
   },
   "private": true,
   "dependencies": {
+    "@angular/animations": "^21.2.14",
     "@angular/common": "^21.2.0",
     "@angular/compiler": "^21.2.0",
     "@angular/core": "^21.2.0",
@@ -21,11 +22,15 @@
     "@angular/router": "^21.2.0",
     "@fortawesome/fontawesome-free": "^7.2.0",
     "@ng-select/ng-select": "^21.8.2",
+    "@primeng/themes": "^21.0.4",
+    "@primeuix/themes": "^2.0.3",
     "bootstrap": "4.6.2",
     "echarts": "^6.1.0",
     "jquery": "3.6.0",
     "ngx-echarts": "^21.0.0",
     "popper.js": "1.16.1",
+    "primeicons": "^7.0.0",
+    "primeng": "^21.1.8",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },

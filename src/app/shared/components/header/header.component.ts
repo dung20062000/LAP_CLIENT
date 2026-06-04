@@ -5,6 +5,7 @@
  */
 import { Component, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 import { ClickOutsideDirective } from './click-outside.directive';
 import { TranslationService } from '../../services/translation.service';
 import { AuthService } from '../../../services/auth';
@@ -27,7 +28,7 @@ interface MenuItem {
  */
 @Component({
   selector: 'app-header',
-  imports: [CommonModule, ClickOutsideDirective, TranslatePipe],
+  imports: [CommonModule, RouterLink, RouterLinkActive, ClickOutsideDirective, TranslatePipe],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
 })

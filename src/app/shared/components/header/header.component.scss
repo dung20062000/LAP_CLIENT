@@ -66,7 +66,59 @@
     background: rgba(17, 174, 199, 0.08);
     color: var(--primary-color-darker);
   }
+
+  // Link nội bộ routerLink – thêm icon camera
+  &.nav-link-internal {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    i {
+      font-size: 13px;
+    }
+
+    &.active {
+      background: rgba(17, 174, 199, 0.12);
+      color: var(--primary-color-darker);
+      font-weight: 600;
+    }
+  }
 }
+
+// Nút Xem ảnh PT trên header-right (desktop)
+.media-gallery-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border: 1.5px solid var(--primary-color);
+  border-radius: 20px;
+  color: var(--primary-color);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  transition: background 0.2s, color 0.2s;
+  white-space: nowrap;
+
+  i {
+    font-size: 13px;
+  }
+
+  .btn-text {
+    color: var(--primary-color);
+  }
+
+  &:hover,
+  &.active {
+    background: var(--primary-color);
+    color: #fff;
+
+    .btn-text {
+      color: #fff;
+    }
+  }
+}
+
 
 // ─── CÁC NÚT CHỨC NĂNG BÊN PHẢI ──────────────────────────────────────────
 

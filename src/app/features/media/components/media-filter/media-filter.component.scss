@@ -92,6 +92,9 @@
     .p-datepicker-dropdown {
       height: 32px;
     }
+    .p-tree-node-content{
+      padding: 0;
+    }
   }
 
   .p-checkbox-checked .p-checkbox-box{
@@ -178,6 +181,17 @@
         color: #007bff !important;
       }
     }
+  }
+
+}
+
+// Viền dưới cho các node cha (root level nodes) trừ node cha cuối cùng
+::ng-deep {
+  .p-tree-root-children > p-treenode:not(:last-child) > .p-tree-node,
+  .p-tree-root-children > p-treenode:not(:last-child) > .p-treenode,
+  .p-tree-list > p-treenode:not(:last-child) > .p-tree-item,
+  .p-tree-list > p-treenode:not(:last-child) > .p-tree-node {
+    border-bottom: 1px solid #dee2e6 !important;
   }
 }
 
@@ -396,7 +410,6 @@
   .ng-value-label {
     font-size: 13px;
   }
-
   &.ng-select-opened > .ng-select-container {
     border-color: #80bdff;
     box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
@@ -424,4 +437,5 @@
     border-top: 1px solid var(--form-input-border-color, #ccc);
   }
 }
+
 

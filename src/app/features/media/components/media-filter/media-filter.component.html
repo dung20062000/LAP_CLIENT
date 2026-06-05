@@ -12,59 +12,147 @@
         styleClass="filter-primeng w-100"
         [options]="vehicleGroups"
         [metaKeySelection]="false"
-        [filter]="true"
+        [showClear]="true"
+        [filter]="false"
+        [emptyMessage]="'Không tìm thấy nhóm phương tiện'"
         [(ngModel)]="selectedGroups"
         (onNodeSelect)="onNodeSelect()"
         (onNodeUnselect)="onNodeUnselect()"
-      />
+      >
+        <ng-template pTemplate="dropdownicon">
+          <i class="fa-solid fa-caret-down"></i>
+        </ng-template>
+        <ng-template let-expanded pTemplate="itemtogglericon">
+          @if (expanded) {
+            <i class="fa-solid fa-caret-down"></i>
+          } @else {
+            <i class="fa-solid fa-caret-right"></i>
+          }
+        </ng-template>
+        <ng-template pTemplate="header">
+          <div class="tree-select-custom-header-container">
+            <div class="tree-select-filter-wrapper">
+              <i class="fa-solid fa-magnifying-glass search-icon"></i>
+              <input type="text"
+                     placeholder="Tìm nhóm..."
+                     class="tree-select-filter-input"
+                     (input)="onCustomFilter($event)" />
+            </div>
+            <div class="tree-select-header-all">
+              <span class="d-flex align-items-center mb-0 cursor-pointer text-dark">
+                <p-checkbox class="mr-2" [binary]="true" [ngModel]="isAllSelected()"
+                  (onChange)="toggleSelectAll($event)"/>
+                Tất cả ({{ getLeafNodesCount() }})
+              </span>
+              <span
+                class="fa-solid fa-up-right-and-down-left-from-center cursor-pointer text-secondary expand-all-icon"
+                title="Mở rộng / Thu gọn toàn bộ"
+                tabindex="0"
+                role="button"
+                (click)="toggleExpandAll()"
+                (keydown.enter)="toggleExpandAll()"
+                (keydown.space)="toggleExpandAll()"></span>
+            </div>
+          </div>
+        </ng-template>
+      </p-treeSelect>
     </div>
 
-    <!-- Chọn xe: p-select (PrimeNG v21 thay thế p-dropdown) -->
+    <!-- Chọn xe: ng-select -->
     <div class="filter-item filter-vehicle">
-      <p-select
+      <ng-select
         id="filter-vehicle"
-        optionLabel="displayName"
-        filterPlaceholder="Tìm xe..."
+        bindLabel="displayName"
         placeholder="Chọn xe"
-        styleClass="filter-primeng w-100"
-        [options]="vehicleList"
-        [filter]="true"
-        [showClear]="true"
+        notFoundText="Không tìm thấy xe"
+        class="filter-ng-select"
+        [items]="vehicleList"
         [loading]="vehicleLoading"
         [(ngModel)]="selectedVehicle"
-        (onChange)="onVehicleChange()"
+        (change)="onVehicleChange()"
       />
     </div>
 
-    <!-- Chọn kênh: MultiSelect -->
+    <!-- Chọn kênh: ng-select -->
     <div class="filter-item filter-channel">
-      <p-multiSelect
+      <ng-select
         id="filter-channel"
-        optionLabel="label"
-        optionValue="value"
+        bindLabel="label"
+        bindValue="value"
         placeholder="Chọn kênh"
-        styleClass="filter-primeng w-100"
-        [options]="channelOptions"
+        notFoundText="Không tìm thấy kênh"
+        class="filter-ng-select custom-ng-select-checkbox"
+        [items]="channelOptions"
+        [multiple]="true"
+        [closeOnSelect]="false"
         [disabled]="!selectedVehicle"
         [(ngModel)]="selectedChannels"
-      />
+      >
+        <ng-template let-items="items" let-clear="clear" ng-multi-label-tmp>
+          @if (items.length > 0) {
+            <div class="ng-value">
+              @if (items.length === 1) {
+                <span class="ng-value-label">{{ items[0].label }}</span>
+              }
+              @if (items.length > 1 && items.length < channelOptions.length) {
+                <span class="ng-value-label">{{ items.length }} kênh được chọn</span>
+              }
+              @if (items.length === channelOptions.length) {
+                <span class="ng-value-label">Tất cả ({{ channelOptions.length }})</span>
+              }
+            </div>
+          }
+        </ng-template>
+        <ng-template ng-header-tmp>
+          <div
+            class="filter-option filter-option--all"
+            tabindex="0"
+            role="button"
+            style="cursor: pointer;"
+            (click)="toggleAllChannels(); $event.stopPropagation()"
+            (keydown.enter)="toggleAllChannels(); $event.stopPropagation()"
+            (keydown.space)="toggleAllChannels(); $event.stopPropagation()"
+          >
+            <input
+              type="checkbox"
+              class="filter-checkbox"
+              readonly
+              [checked]="isAllChannelsSelected()"
+            />
+            <span class="filter-option-label bold" style="font-weight: bold; margin-left: 8px;">
+              Tất cả ({{ channelOptions.length }})
+            </span>
+          </div>
+        </ng-template>
+        <ng-template let-item="item" let-item$="item$" let-index="index" ng-option-tmp>
+          <div class="filter-option" style="cursor: pointer; display: flex; align-items: center;">
+            <input
+              type="checkbox"
+              class="filter-checkbox"
+              readonly
+              [checked]="item$.selected"
+            />
+            <span class="filter-option-label" style="margin-left: 8px;">{{ item.label }}</span>
+          </div>
+        </ng-template>
+      </ng-select>
     </div>
 
-    <!-- Chiều sắp xếp: p-select không cho clear -->
+    <!-- Chiều sắp xếp: ng-select -->
     <div class="filter-item filter-sort">
-      <p-select
+      <ng-select
         id="filter-sort"
-        optionLabel="label"
-        optionValue="value"
-        styleClass="filter-primeng w-100"
-        [options]="sortOptions"
-        [showClear]="false"
+        bindLabel="label"
+        bindValue="value"
+        class="filter-ng-select"
+        [items]="sortOptions"
+        [clearable]="false"
         [(ngModel)]="selectedSort"
       />
     </div>
 
     <!-- Ngày: DatePicker có icon (PrimeNG v21 thay thế p-calendar) -->
-    <div class="filter-item filter-date">
+    <div class="filter-item filter-date" [class.has-value]="selectedDate">
       <p-datepicker
         id="filter-date"
         dateFormat="dd/mm/yy"
@@ -78,25 +166,35 @@
     </div>
 
     <!-- Giờ bắt đầu: timeOnly -->
-    <div class="filter-item filter-time">
+    <div class="filter-item filter-time" [class.has-value]="startTime">
       <p-datepicker
         id="filter-time-start"
         placeholder="00:00"
         styleClass="filter-primeng filter-time-input"
         [timeOnly]="true"
+        [showIcon]="true"
         [(ngModel)]="startTime"
-      />
+      >
+        <ng-template pTemplate="triggericon">
+          <i class="fa-regular fa-clock"></i>
+        </ng-template>
+      </p-datepicker>
     </div>
 
     <!-- Giờ kết thúc: timeOnly -->
-    <div class="filter-item filter-time">
+    <div class="filter-item filter-time" [class.has-value]="endTime">
       <p-datepicker
         id="filter-time-end"
         placeholder="23:59"
         styleClass="filter-primeng filter-time-input"
         [timeOnly]="true"
+        [showIcon]="true"
         [(ngModel)]="endTime"
-      />
+      >
+        <ng-template pTemplate="triggericon">
+          <i class="fa-regular fa-clock"></i>
+        </ng-template>
+      </p-datepicker>
     </div>
 
     <!-- Nút tìm kiếm -->

@@ -21,10 +21,10 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TreeSelectModule } from 'primeng/treeselect';
-import { Select } from 'primeng/select';
-import { MultiSelectModule } from 'primeng/multiselect';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { DatePicker } from 'primeng/datepicker';
 import { ButtonModule } from 'primeng/button';
+import { Checkbox } from 'primeng/checkbox';
 import { TreeNode } from 'primeng/api';
 
 import { MediaService } from '../../../../services/media';
@@ -47,10 +47,10 @@ import {
     CommonModule,
     FormsModule,
     TreeSelectModule,
-    Select,
-    MultiSelectModule,
+    NgSelectModule,
     DatePicker,
     ButtonModule,
+    Checkbox,
   ],
   templateUrl: './media-filter.component.html',
   styleUrl: './media-filter.component.scss',
@@ -73,6 +73,7 @@ export class MediaFilterComponent implements OnInit {
 
   // Dữ liệu cho TreeSelect nhóm PT
   vehicleGroups: TreeNode[] = [];
+  originalVehicleGroups: TreeNode[] = [];
   // Các node đang được chọn trong TreeSelect
   selectedGroups: TreeNode[] = [];
 
@@ -130,9 +131,50 @@ export class MediaFilterComponent implements OnInit {
     this.mediaService.getVehicleGroups().subscribe({
       next: (groups) => {
         this.vehicleGroups = groups;
+        this.originalVehicleGroups = groups ? JSON.parse(JSON.stringify(groups)) : [];
         this.cdr.markForCheck();
       },
     });
+  }
+
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 05/06/2026
+   * Bộ lọc tùy chỉnh cho TreeSelect nhóm phương tiện.
+   */
+  onCustomFilter(event: Event): void {
+    const query = (event.target as HTMLInputElement).value.toLowerCase().trim();
+    if (!query) {
+      this.vehicleGroups = JSON.parse(JSON.stringify(this.originalVehicleGroups));
+    } else {
+      this.vehicleGroups = this.filterTreeNodes(this.originalVehicleGroups, query);
+    }
+    this.cdr.markForCheck();
+  }
+
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 05/06/2026
+   * Lọc node tree.
+   */
+  private filterTreeNodes(nodes: TreeNode[], query: string): TreeNode[] {
+    const filtered: TreeNode[] = [];
+    for (const node of nodes) {
+      const matches = node.label?.toLowerCase().includes(query);
+      let filteredChildren: TreeNode[] = [];
+      if (node.children && node.children.length > 0) {
+        filteredChildren = this.filterTreeNodes(node.children, query);
+      }
+      if (matches || filteredChildren.length > 0) {
+        const clonedNode = { ...node };
+        if (node.children && node.children.length > 0) {
+          clonedNode.children = filteredChildren;
+          clonedNode.expanded = true;
+        }
+        filtered.push(clonedNode);
+      }
+    }
+    return filtered;
   }
 
   /**
@@ -154,13 +196,118 @@ export class MediaFilterComponent implements OnInit {
   }
 
   /**
+   * Trả về tất cả các node lá.
+   */
+  private getAllLeafNodes(nodes: TreeNode[]): TreeNode[] {
+    let leaves: TreeNode[] = [];
+    for (const node of nodes) {
+      if (!node.children || node.children.length === 0) {
+        leaves.push(node);
+      } else {
+        leaves.push(...this.getAllLeafNodes(node.children));
+      }
+    }
+    return leaves;
+  }
+
+  /**
+   * Trả về tất cả các node bao gồm cả node cha.
+   */
+  private getAllNodes(nodes: TreeNode[]): TreeNode[] {
+    let all: TreeNode[] = [];
+    for (const node of nodes) {
+      all.push(node);
+      if (node.children && node.children.length > 0) {
+        all.push(...this.getAllNodes(node.children));
+      }
+    }
+    return all;
+  }
+
+  /**
+   * Kiểm tra xem tất cả các nhóm phương tiện đã được chọn hay chưa.
+   */
+  isAllSelected(): boolean {
+    if (!this.vehicleGroups || this.vehicleGroups.length === 0) return false;
+    const allLeaves = this.getAllLeafNodes(this.vehicleGroups);
+    if (allLeaves.length === 0) return false;
+    const selected = this.selectedGroups || [];
+    const selectedLeaves = selected.filter(n => !n.children || n.children.length === 0);
+    return allLeaves.length === selectedLeaves.length;
+  }
+
+  /**
+   * Chọn tất cả hoặc bỏ chọn tất cả các nhóm phương tiện.
+   */
+  toggleSelectAll(event: any): void {
+    const checked = event && event.checked !== undefined
+      ? event.checked
+      : (event?.target as HTMLInputElement)?.checked ?? !!event;
+    if (checked) {
+      this.selectedGroups = this.getAllNodes(this.vehicleGroups);
+    } else {
+      this.selectedGroups = [];
+    }
+    this.loadVehiclesByGroups();
+  }
+
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 05/06/2026
+   * Chọn tất cả hoặc bỏ chọn tất cả các kênh.
+   */
+  toggleAllChannels(): void {
+    if (this.isAllChannelsSelected()) {
+      this.selectedChannels = [];
+    } else {
+      this.selectedChannels = this.channelOptions.map(c => c.value);
+    }
+    this.cdr.markForCheck();
+  }
+
+  /**
+   * Kiểm tra xem tất cả các kênh đã được chọn hay chưa.
+   */
+  isAllChannelsSelected(): boolean {
+    return this.channelOptions.length > 0 && this.selectedChannels.length === this.channelOptions.length;
+  }
+
+  /**
+   * Đếm số lượng node lá (nhóm phương tiện con).
+   */
+  getLeafNodesCount(): number {
+    return this.getAllLeafNodes(this.vehicleGroups).length;
+  }
+
+  // Trạng thái expand/collapse toàn bộ tree nodes
+  isAllExpanded = false;
+
+  /**
+   * Mở rộng / Thu gọn toàn bộ các node trong TreeSelect.
+   */
+  toggleExpandAll(): void {
+    this.isAllExpanded = !this.isAllExpanded;
+    this.expandAllRecursive(this.vehicleGroups, this.isAllExpanded);
+    this.cdr.markForCheck();
+  }
+
+  private expandAllRecursive(nodes: TreeNode[], isExpand: boolean): void {
+    for (const node of nodes) {
+      node.expanded = isExpand;
+      if (node.children && node.children.length > 0) {
+        this.expandAllRecursive(node.children, isExpand);
+      }
+    }
+  }
+  /**
    * Người tạo: DungBT
    * Ngày tạo: 04/06/2026
    * Gọi service lấy danh sách xe theo các nhóm đang được chọn.
    */
   private loadVehiclesByGroups(): void {
     // Lấy key của các node lá đang được chọn
-    const groupIds = this.selectedGroups
+    const selected = this.selectedGroups || [];
+    const groupIds = selected
       .filter((n) => !n.children || n.children.length === 0)
       .map((n) => n.key as string);
 

@@ -20,9 +20,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 16px 4px;
+  padding: 0.8rem 16px 0.2rem;
   background: #fff;
-  border-bottom: 1px solid #dee2e6;
   flex-shrink: 0;
 }
 
@@ -46,7 +45,7 @@
 .media-content {
   flex: 1;
   overflow-y: auto;
-  padding: 8px;
+  padding: 8px 16px;
   position: relative;
 
   // Scrollbar mỏng

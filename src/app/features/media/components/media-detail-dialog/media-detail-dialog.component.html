@@ -11,32 +11,34 @@
   (onHide)="onHide()"
 >
   @if (images.length > 0) {
-    <!-- Galleria slideshow bên trong dialog -->
-    <p-galleria
-      styleClass="media-galleria"
-      [value]="images"
-      [circular]="true"
-      [showItemNavigators]="true"
-      [showThumbnails]="false"
-      [showIndicators]="false"
-      [autoPlay]="autoPlay"
-      [transitionInterval]="3000"
-      [(activeIndex)]="currentIndex"
-      (activeIndexChange)="onActiveIndexChange($event)"
-    >
-      <!-- Template ảnh chính -->
-      <ng-template let-image pTemplate="item">
-        <div class="galleria-item">
-          <img
-            class="galleria-image"
-            [src]="image.url"
-            [alt]="'Kênh ' + image.channel"
-          />
-        </div>
-      </ng-template>
+    <div class="media-dialog-layout">
+      <!-- Galleria slideshow bên trong dialog -->
+      <p-galleria
+        styleClass="media-galleria"
+        [value]="images"
+        [circular]="true"
+        [showItemNavigators]="true"
+        [showThumbnails]="false"
+        [showIndicators]="false"
+        [autoPlay]="autoPlay"
+        [transitionInterval]="3000"
+        [(activeIndex)]="currentIndex"
+        (activeIndexChange)="onActiveIndexChange($event)"
+      >
+        <!-- Template ảnh chính -->
+        <ng-template let-image pTemplate="item">
+          <div class="galleria-item">
+            <img
+              class="galleria-image"
+              [src]="image.url"
+              [alt]="'Kênh ' + image.channel"
+            />
+          </div>
+        </ng-template>
+      </p-galleria>
 
-      <!-- Caption overlay dưới ảnh – thông tin phương tiện -->
-      <ng-template let-image pTemplate="caption">
+      <!-- Phần thông tin nằm riêng biệt bên dưới ảnh -->
+      @if (images[currentIndex]) {
         <div class="galleria-caption">
 
           <!-- Dòng 1: Nút autoPlay + số thứ tự -->
@@ -54,52 +56,59 @@
             </span>
           </div>
 
-          <!-- Dòng 2: Biển số + Thời gian -->
-          <div class="caption-row">
-            <span class="caption-plate">
-              <i class="fas fa-id-card"></i>
-              {{ image.vehiclePlate || '---' }}
-            </span>
-            <span class="caption-time">
-              <i class="fas fa-clock"></i>
-              {{ image.imageTime | date:'HH:mm:ss dd/MM/yyyy' }}
-            </span>
-          </div>
+          <div class="caption-details">
+            <!-- Row 1 -->
+            <div class="detail-row">
+              <div class="detail-item col-1">
+                <i class="fas fa-car icon-blue"></i>
+                <span>{{ images[currentIndex].vehiclePlate || '---' }} (DX1_CAM)</span>
+              </div>
+              <div class="detail-item col-2">
+                <i class="fas fa-clock icon-blue"></i>
+                <span>{{ images[currentIndex].imageTime | date:'HH:mm:ss dd/MM/yyyy' }}</span>
+              </div>
+              <div class="col-3"></div>
+            </div>
 
-          <!-- Dòng 3: Kênh + Lái xe + Tốc độ + Download -->
-          <div class="caption-row">
-            <span class="caption-channel">
-              <i class="fas fa-video"></i>
-              Kênh {{ image.channel }}
-            </span>
-            <span class="caption-driver">
-              <i class="fas fa-user"></i>
-              {{ image.displayName || 'N/A' }}
-            </span>
-            <span class="caption-speed">
-              <i class="fas fa-tachometer-alt"></i>
-              0 km/h
-            </span>
-            <button
-              class="btn-download-caption"
-              title="Tải ảnh"
-              (click)="onDownload(image)"
-            >
-              <i class="fas fa-download"></i>
-            </button>
-          </div>
+            <!-- Row 2 -->
+            <div class="detail-row">
+              <div class="detail-item col-1">
+                <i class="fas fa-video icon-green"></i>
+                <span>Kênh {{ images[currentIndex].channel }}</span>
+              </div>
+              <div class="detail-item col-2">
+                <i class="fas fa-user icon-white"></i>
+                <span>{{ images[currentIndex].displayName || 'N/A' }}</span>
+              </div>
+              <div class="col-3-speed">
+                <div class="detail-item icon-speed">
+                  <!-- <i class="fas fa-tachometer-alt icon-orange"></i> -->
+                  <i class="material-symbols-outlined icon-orange">speed_4</i>
+                  <span>0 km/h</span>
+                </div>
+                <button
+                  class="btn-download-caption"
+                  title="Tải ảnh"
+                  (click)="onDownload(images[currentIndex])"
+                >
+                  <!-- <i class="fas fa-download"></i> -->
+                  <i class="material-symbols-outlined">download</i>
+                </button>
+              </div>
+            </div>
 
-          <!-- Dòng 4: Địa chỉ -->
-          <div class="caption-row">
-            <span class="caption-address">
-              <i class="fas fa-map-marker-alt"></i>
-              {{ getFakeAddress(currentIndex) }}
-            </span>
+            <!-- Row 3 -->
+            <div class="detail-row">
+              <div class="detail-item col-full">
+                <i class="fas fa-map-marker-alt icon-red"></i>
+                <span>{{ getFakeAddress(currentIndex) }}</span>
+              </div>
+            </div>
           </div>
 
         </div>
-      </ng-template>
-    </p-galleria>
+      }
+    </div>
   }
 
   @if (images.length === 0) {

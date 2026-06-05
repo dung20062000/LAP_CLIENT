@@ -21,12 +21,16 @@
     <!-- Hàng 1: Thời gian + Tốc độ + Download -->
     <div class="meta-row meta-row-top">
       <span class="meta-time">
-        <i class="fas fa-clock"></i>
-        {{ image.imageTime | date:'dd/MM/yyyy' }}<br/>
-        <strong>{{ image.imageTime | date:'HH:mm:ss' }}</strong>
+        <div class="d-flex align-items-center gap-1">
+          <i class="fa-regular fa-clock"></i>
+          {{ image.imageTime | date:'dd/MM/yyyy' }}
+        </div>
+        <div style="padding-left: 17px; font-weight: 600;">
+          {{ image.imageTime | date:'HH:mm:ss' }}
+        </div>
       </span>
       <span class="meta-speed">
-        <i class="fas fa-tachometer-alt"></i>
+        <i class="material-symbols-outlined">speed_4</i>
         0 km/h
       </span>
       <!-- Nút tải ảnh -->
@@ -35,7 +39,7 @@
         title="Tải ảnh"
         (click)="onDownload($event)"
       >
-        <i class="fas fa-download"></i>
+        <i class="material-symbols-outlined">download</i>
       </button>
     </div>
 

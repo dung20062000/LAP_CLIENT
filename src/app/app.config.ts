@@ -7,10 +7,12 @@ import * as echarts from 'echarts';
 import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeuix/themes/aura';
 
+import { MessageService } from 'primeng/api';
 import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    MessageService,
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     provideHttpClient(),

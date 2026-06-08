@@ -155,12 +155,12 @@ a {
   color: #0066ff !important;
 }
 
-/* BA GPS Header Navbar Theme */
+/* Theme màu sắc navbar chính */
 .bg-primary {
   background: linear-gradient(135deg, #0052cc, #003399) !important;
 }
 
-/* BA GPS Navbar Text */
+/* màu sắc chữ navbar */
 .navbar-dark .navbar-nav .nav-link {
   color: rgba(255, 255, 255, 0.85) !important;
 }
@@ -170,7 +170,7 @@ a {
   color: #fff !important;
 }
 
-/* BA GPS Dropdowns */
+/* Dropdown BA GPS */
 .bg-primary .dropdown-menu {
   border-radius: 8px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
@@ -187,7 +187,7 @@ a {
     transform 0.3s ease;
 }
 
-/* BA GPS Form Controls */
+/* Form BA GPS */
 .form-control:focus {
   border-color: #0066ff;
   box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.12);
@@ -199,7 +199,7 @@ a {
   border: none !important;
 }
 
-/* Utilities */
+/* Tiện ích */
 .font-weight-semibold {
   font-weight: 600;
 }
@@ -230,7 +230,7 @@ a {
   animation: fadeInUp 0.6s ease-out forwards;
 }
 
-/* Responsive Helpers */
+/* Responsive */
 @media (max-width: 768px) {
   body {
     font-size: 15px;
@@ -246,7 +246,7 @@ a {
   font-weight: 700;
 }
 
-/* Prevent horizontal scroll on mobile */
+/* ẩn thanh cuộn ngang */
 html,
 body {
   overflow-x: hidden;
@@ -255,4 +255,36 @@ body {
 /* Footer text color overrides */
 .footer .text-muted {
   color: #6c757d !important;
+}
+
+/* bố cục phù hợp với màn hình và chỉ cuộn trong phạm vi nội dung body */
+body:has(app-media-gallery-page) {
+  height: 100vh;
+  overflow: hidden;
+}
+
+body:has(app-media-gallery-page) app-main-layout {
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+body:has(app-media-gallery-page) .main-content {
+  height: calc(100vh - 64px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+body:has(app-media-gallery-page) app-media-gallery-page {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+body:has(app-media-gallery-page) app-footer {
+  display: none !important;
+  flex-shrink: 0;
 }

@@ -44,7 +44,7 @@
 
   .filter-primeng {
     width: 100%;
-    height: 34px !important;
+    height: 33px !important;
     font-size: 13px;
     border-color: #ced4da;
     border-radius: 4px;
@@ -202,19 +202,56 @@
     font-size: 13px;
 }
 
-// Khi có giá trị, thêm viền xanh lá bên trái cho DatePicker (cả ngày và giờ)
+// Khi có giá trị, thêm viền xanh lá bên trái; khi không có giá trị, thêm viền đỏ bên trái
+.filter-vehicle.has-value {
+  ::ng-deep {
+    .filter-ng-select > .ng-select-container {
+      border-left: 3px solid #28a745 !important;
+      border-top-left-radius: 0 !important;
+      border-bottom-left-radius: 0 !important;
+    }
+  }
+}
+
+.filter-vehicle.no-value {
+  ::ng-deep {
+    .filter-ng-select > .ng-select-container {
+      border-left: 3px solid #dc3545 !important;
+      border-top-left-radius: 4px !important;
+      border-bottom-left-radius: 4px !important;
+    }
+  }
+}
+
 .filter-date.has-value,
 .filter-time.has-value {
   ::ng-deep {
     .filter-primeng.p-datepicker {
       border-left: 3px solid #28a745 !important;
-      border-top-left-radius: 0 !important;
-      border-bottom-left-radius: 0 !important;
+      border-top-left-radius: 4px !important;
+      border-bottom-left-radius: 4px !important;
 
       .p-inputtext {
         border-left: none !important;
         border-top-left-radius: 0 !important;
         border-bottom-left-radius: 0 !important;
+      }
+    }
+  }
+}
+
+.filter-date.no-value,
+.filter-time.no-value {
+  ::ng-deep {
+    .filter-primeng.p-datepicker {
+      border-left: 3px solid #dc3545 !important;
+      border-top-left-radius: 4px !important;
+      border-bottom-left-radius: 4px !important;
+
+      .p-inputtext {
+        border-left: none !important;
+        border-top-left-radius: 4px !important;
+        border-bottom-left-radius: 4px !important;
       }
     }
   }

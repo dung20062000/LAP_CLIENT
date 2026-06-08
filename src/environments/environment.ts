@@ -6,6 +6,5 @@
  */
 export const environment = {
   production: false,
-  // Thay port thực tế của LAP_API khi chạy local
-  apiUrl: 'http://localhost:5000/api',
+  apiUrl: 'https://localhost:44343/api',
 };

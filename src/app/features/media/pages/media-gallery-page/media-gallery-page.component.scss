@@ -122,22 +122,37 @@
       border: none;
       font-size: 13px;
 
+      .p-paginator-first { order: 1; }
+      .p-paginator-prev { order: 2; }
+      .p-paginator-pages { order: 3; }
+      .p-paginator-next { order: 4; }
+      .p-paginator-last { order: 5; }
+
+      p-select, .p-paginator-rpp-dropdown, .p-paginator-rpp-options {
+        order: 6;
+        height: 30px;
+        font-size: 12px;
+
+        ::ng-deep .p-select-label {
+          padding: 4px 8px;
+          font-size: 12px;
+        }
+      }
+      &::after {
+        content: 'ảnh mỗi trang';
+        order: 7;
+        margin-left: 8px;
+        color: #6c757d;
+        font-size: 13px;
+        display: flex;
+        align-items: center;
+      }
+
       .p-paginator-current {
+        order: 8;
         margin-left: auto;
         color: #6c757d;
         font-size: 12px;
-      }
-
-      .p-paginator-rpp-options {
-        .p-select {
-          height: 30px;
-          font-size: 12px;
-
-          .p-select-label {
-            padding: 4px 8px;
-            font-size: 12px;
-          }
-        }
       }
 
       .p-paginator-pages {
@@ -146,11 +161,13 @@
           height: 30px;
           min-width: 30px;
           font-size: 12px;
+          border-radius: 4px;
+          color: var(--primary-color-darker);
 
-          &.p-highlight {
-            background: #007bff;
-            color: #fff;
-            border-color: #007bff;
+          &.p-paginator-page-selected{
+            background: var(--primary-color);
+            color: var(--text-white);
+            border-color: var(--primary-color);
           }
         }
       }
@@ -165,4 +182,23 @@
       }
     }
   }
+}
+
+::ng-deep .p-select-list {
+  font-size: 13px;
+
+  .p-select-option{
+    padding: 4px 8px;
+
+    &.p-select-option-selected{
+      background: var(--primary-color);
+      color: var(--text-white);
+    }
+    &.p-focus{
+      background: var(--primary-color);
+      color: var(--text-white);
+      opacity: 0.8;
+    }
+  }
+
 }

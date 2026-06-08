@@ -29,6 +29,7 @@ export interface VehicleItem {
   id: number;
   vehiclePlate: string;
   privateCode: string;
+  XNCode: number;
   // Hiển thị dạng "PrivateCode (VehiclePlate)"
   displayName: string;
 }
@@ -56,7 +57,7 @@ export interface MediaImageItem {
 // Map từ ImageSearchRequest của LAP_API
 export interface MediaSearchParams {
   vehiclePlate: string | null;
-  customerId: string | null;
+  customerId: number;
   channels: number[];
   // ISO datetime string, ví dụ: "2025-04-10T00:00:00"
   startTime: string;

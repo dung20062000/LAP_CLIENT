@@ -82,9 +82,16 @@ export class MediaGalleryPageComponent {
    * Nhận params từ filter component → reset về trang 1 → tìm kiếm.
    * @param params Bộ lọc từ MediaFilterComponent
    */
-  onSearch(params: MediaSearchParams): void {
+  onSearch(params: MediaSearchParams | null): void {
     // Reset về trang đầu khi filter thay đổi
     this.currentPage = 0;
+    if (!params) {
+      this.currentParams = null;
+      this.images = [];
+      this.totalRecords = 0;
+      this.cdr.markForCheck();
+      return;
+    }
     this.currentParams = { ...params, pageNumber: 1, pageSize: this.rows };
     this.loadImages();
   }
@@ -100,7 +107,7 @@ export class MediaGalleryPageComponent {
     this.loading = true;
     this.cdr.markForCheck();
 
-    // [API] loadImages – gọi MediaService.searchImages
+    // API loadImages ( MediaService.searchImages )
     this.mediaService
       .searchImages(this.currentParams)
       .pipe(takeUntilDestroyed(this.destroyRef))

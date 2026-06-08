@@ -25,7 +25,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { DatePicker } from 'primeng/datepicker';
 import { ButtonModule } from 'primeng/button';
 import { Checkbox } from 'primeng/checkbox';
-import { TreeNode } from 'primeng/api';
+import { TreeNode, MessageService } from 'primeng/api';
 
 import { MediaService } from '../../../../services/media';
 import {
@@ -59,6 +59,7 @@ import {
 export class MediaFilterComponent implements OnInit {
   private mediaService = inject(MediaService);
   private cdr = inject(ChangeDetectorRef);
+  private messageService = inject(MessageService);
 
   // Quản lý số cột của layout từ component cha
   @Input() activeLayout: 4 | 5 | 6 = 6;
@@ -96,6 +97,12 @@ export class MediaFilterComponent implements OnInit {
   // Calendar ngày
   selectedDate: Date | null = new Date();
   today = new Date();
+  minDate: Date = (() => {
+    const d = new Date();
+    d.setDate(d.getDate() - 30);
+    return d;
+  })();
+  groupSearchQuery = '';
 
   // Calendar giờ bắt đầu (default 00:00)
   startTime: Date = (() => {
@@ -127,11 +134,19 @@ export class MediaFilterComponent implements OnInit {
    * Gọi service lấy cây nhóm xe cho TreeSelect.
    */
   private loadVehicleGroups(): void {
-    // [API] loadVehicleGroups
     this.mediaService.getVehicleGroups().subscribe({
       next: (groups) => {
-        this.vehicleGroups = groups;
-        this.originalVehicleGroups = groups ? JSON.parse(JSON.stringify(groups)) : [];
+        this.vehicleGroups = groups || [];
+        this.originalVehicleGroups = groups || [];
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        console.error('[Media] Lỗi khi tải nhóm xe:', err);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Lỗi',
+          detail: 'Không thể tải danh sách nhóm xe. Vui lòng thử lại.',
+        });
         this.cdr.markForCheck();
       },
     });
@@ -145,7 +160,7 @@ export class MediaFilterComponent implements OnInit {
   onCustomFilter(event: Event): void {
     const query = (event.target as HTMLInputElement).value.toLowerCase().trim();
     if (!query) {
-      this.vehicleGroups = JSON.parse(JSON.stringify(this.originalVehicleGroups));
+      this.vehicleGroups = this.originalVehicleGroups;
     } else {
       this.vehicleGroups = this.filterTreeNodes(this.originalVehicleGroups, query);
     }
@@ -155,7 +170,7 @@ export class MediaFilterComponent implements OnInit {
   /**
    * Người tạo: DungBT
    * Ngày tạo: 05/06/2026
-   * Lọc node tree.
+   * Lọc node tree. Nếu group cha khớp thì giữ lại toàn bộ con của nó.
    */
   private filterTreeNodes(nodes: TreeNode[], query: string): TreeNode[] {
     const filtered: TreeNode[] = [];
@@ -168,13 +183,47 @@ export class MediaFilterComponent implements OnInit {
       if (matches || filteredChildren.length > 0) {
         const clonedNode = { ...node };
         if (node.children && node.children.length > 0) {
-          clonedNode.children = filteredChildren;
+          clonedNode.children = matches ? node.children : filteredChildren;
           clonedNode.expanded = true;
         }
         filtered.push(clonedNode);
       }
     }
     return filtered;
+  }
+
+  /**
+   * Reset kết quả tìm kiếm khi đóng dropdown TreeSelect
+   */
+  onTreeSelectHide(): void {
+    this.groupSearchQuery = '';
+    this.vehicleGroups = this.originalVehicleGroups;
+    this.cdr.markForCheck();
+  }
+
+  /**
+   * Reset kết quả tìm kiếm khi mở dropdown TreeSelect
+   */
+  onTreeSelectShow(): void {
+    this.groupSearchQuery = '';
+    this.vehicleGroups = this.originalVehicleGroups;
+    this.cdr.markForCheck();
+  }
+
+  /**
+   * Xóa từ khóa tìm kiếm và khôi phục danh sách nhóm
+   */
+  clearSearchQuery(): void {
+    this.groupSearchQuery = '';
+    this.vehicleGroups = this.originalVehicleGroups;
+    this.cdr.markForCheck();
+  }
+
+  /**
+   * Xử lý khi giá trị TreeSelect thay đổi
+   */
+  onGroupsChange(): void {
+    this.loadVehiclesByGroups();
   }
 
   /**
@@ -299,11 +348,6 @@ export class MediaFilterComponent implements OnInit {
       }
     }
   }
-  /**
-   * Người tạo: DungBT
-   * Ngày tạo: 04/06/2026
-   * Gọi service lấy danh sách xe theo các nhóm đang được chọn.
-   */
   private loadVehiclesByGroups(): void {
     // Lấy key của các node lá đang được chọn
     const selected = this.selectedGroups || [];
@@ -311,16 +355,36 @@ export class MediaFilterComponent implements OnInit {
       .filter((n) => !n.children || n.children.length === 0)
       .map((n) => n.key as string);
 
+    if (groupIds.length === 0) {
+      this.vehicleList = [];
+      this.selectedVehicle = null;
+      this.channelOptions = [];
+      this.selectedChannels = [];
+      this.vehicleLoading = false;
+      this.searchSubmit.emit(null as any);
+      this.cdr.markForCheck();
+      return;
+    }
+
     this.vehicleLoading = true;
     this.selectedVehicle = null;
     this.channelOptions = [];
     this.selectedChannels = [];
     this.cdr.markForCheck();
 
-    // [API] loadVehiclesByGroups – gọi service
     this.mediaService.getVehiclesByGroups(groupIds).subscribe({
       next: (vehicles) => {
         this.vehicleList = vehicles;
+        this.vehicleLoading = false;
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        console.error('[Media] Lỗi khi tải danh sách xe:', err);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Lỗi',
+          detail: 'Không thể tải danh sách xe. Vui lòng thử lại.',
+        });
         this.vehicleLoading = false;
         this.cdr.markForCheck();
       },
@@ -330,11 +394,11 @@ export class MediaFilterComponent implements OnInit {
   /**
    * Người tạo: DungBT
    * Ngày tạo: 04/06/2026
-   * Khi chọn xe → khởi tạo danh sách kênh (Kênh 1..4 fake).
+   * Khi chọn xe → khởi tạo danh sách kênh (Kênh 1->4).
    */
   onVehicleChange(): void {
     if (this.selectedVehicle) {
-      // Khởi tạo 4 kênh fake khi có xe được chọn
+      // Khởi tạo danh sách kênh khi có xe được chọn
       this.channelOptions = [1, 2, 3, 4].map((i) => ({
         value: i,
         label: `Kênh ${i}`,
@@ -342,6 +406,7 @@ export class MediaFilterComponent implements OnInit {
     } else {
       this.channelOptions = [];
       this.selectedChannels = [];
+      this.searchSubmit.emit(null as any);
     }
     this.cdr.markForCheck();
   }
@@ -374,25 +439,51 @@ export class MediaFilterComponent implements OnInit {
   /**
    * Người tạo: DungBT
    * Ngày tạo: 04/06/2026
+   * @param detail Text thông báo lỗi
+   */
+  private showError(detail: string): void {
+    this.messageService.add({
+      severity: 'error',
+      summary: 'Lỗi',
+      detail,
+    });
+  }
+
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 04/06/2026
    * Build params và emit sự kiện search ra page cha.
-   * Validate: phải chọn xe trước khi tìm kiếm.
+   * Validate: phải chọn xe trước khi tìm kiếm, thời gian hợp lệ.
    */
   onSearch(): void {
-    if (!this.selectedVehicle || !this.selectedDate) {
-      return;
-    }
+    if (!this.selectedVehicle) return this.showError('Vui lòng chọn xe');
+    if (!this.selectedDate) return this.showError('Vui lòng chọn ngày');
 
-    // Ghép ngày và giờ thành datetime string ISO
     const date = new Date(this.selectedDate);
+    if (isNaN(date.getTime())) return this.showError('Ngày chọn không đúng định dạng hoặc không hợp lệ');
+    if (date > this.today) return this.showError('Ngày chọn không được vượt quá ngày hiện tại');
+
+    if (!this.startTime) return this.showError('Vui lòng chọn giờ bắt đầu');
+    if (isNaN(new Date(this.startTime).getTime())) return this.showError('Giờ bắt đầu không đúng định dạng hoặc không hợp lệ');
+
+    if (!this.endTime) return this.showError('Vui lòng chọn giờ kết thúc');
+    if (isNaN(new Date(this.endTime).getTime())) return this.showError('Giờ kết thúc không đúng định dạng hoặc không hợp lệ');
+
+    // Ghép ngày và giờ thành datetime Date objects
     const start = new Date(date);
     start.setHours(this.startTime.getHours(), this.startTime.getMinutes(), 0, 0);
 
     const end = new Date(date);
     end.setHours(this.endTime.getHours(), this.endTime.getMinutes(), 59, 0);
 
+    // So sánh thời gian
+    if (start > end) return this.showError('Giờ bắt đầu không được lớn hơn giờ kết thúc');
+    if (start > new Date()) return this.showError('Giờ bắt đầu không được lớn hơn thời gian hiện tại');
+    if (end > new Date()) return this.showError('Giờ kết thúc không được lớn hơn thời gian hiện tại');
+
     const params: MediaSearchParams = {
       vehiclePlate: this.selectedVehicle.vehiclePlate,
-      customerId: null,
+      customerId: this.selectedVehicle.XNCode,
       channels: this.selectedChannels,
       startTime: this.formatDatetime(start),
       endTime: this.formatDatetime(end),

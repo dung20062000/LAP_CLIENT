@@ -16,6 +16,9 @@
         [filter]="false"
         [emptyMessage]="'Không tìm thấy nhóm phương tiện'"
         [(ngModel)]="selectedGroups"
+        (ngModelChange)="onGroupsChange()"
+        (onHide)="onTreeSelectHide()"
+        (onShow)="onTreeSelectShow()"
         (onNodeSelect)="onNodeSelect()"
         (onNodeUnselect)="onNodeUnselect()"
       >
@@ -31,35 +34,45 @@
         </ng-template>
         <ng-template pTemplate="header">
           <div class="tree-select-custom-header-container">
-            <div class="tree-select-filter-wrapper">
+            <div class="tree-select-filter-wrapper" style="position: relative;">
               <i class="fa-solid fa-magnifying-glass search-icon"></i>
               <input type="text"
                      placeholder="Tìm nhóm..."
                      class="tree-select-filter-input"
-                     (input)="onCustomFilter($event)" />
+                     style="padding-right: 24px;"
+                     [(ngModel)]="groupSearchQuery"
+                     (input)="onCustomFilter($event)"/>
+              @if (groupSearchQuery) {
+                <i class="fa-solid fa-xmark clear-search-icon"
+                   tabindex="0"
+                   style="position: absolute; right: 13px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #999;"
+                   (click)="clearSearchQuery()" (keydown.enter)="clearSearchQuery()" ></i>
+              }
             </div>
-            <div class="tree-select-header-all">
-              <span class="d-flex align-items-center mb-0 cursor-pointer text-dark">
-                <p-checkbox class="mr-2" [binary]="true" [ngModel]="isAllSelected()"
-                  (onChange)="toggleSelectAll($event)"/>
-                Tất cả ({{ getLeafNodesCount() }})
-              </span>
-              <span
-                class="fa-solid fa-up-right-and-down-left-from-center cursor-pointer text-secondary expand-all-icon"
-                title="Mở rộng / Thu gọn toàn bộ"
-                tabindex="0"
-                role="button"
-                (click)="toggleExpandAll()"
-                (keydown.enter)="toggleExpandAll()"
-                (keydown.space)="toggleExpandAll()"></span>
-            </div>
+            @if (getLeafNodesCount() > 0) {
+              <div class="tree-select-header-all">
+                <span class="d-flex align-items-center mb-0 cursor-pointer text-dark">
+                  <p-checkbox class="mr-2" [binary]="true" [ngModel]="isAllSelected()"
+                    (onChange)="toggleSelectAll($event)"/>
+                  Tất cả ({{ getLeafNodesCount() }})
+                </span>
+                <span
+                  class="fa-solid fa-up-right-and-down-left-from-center cursor-pointer text-secondary expand-all-icon"
+                  title="Mở rộng / Thu gọn toàn bộ"
+                  tabindex="0"
+                  role="button"
+                  (click)="toggleExpandAll()"
+                  (keydown.enter)="toggleExpandAll()"
+                  (keydown.space)="toggleExpandAll()"></span>
+              </div>
+            }
           </div>
         </ng-template>
       </p-treeSelect>
     </div>
 
     <!-- Chọn xe: ng-select -->
-    <div class="filter-item filter-vehicle">
+    <div class="filter-item filter-vehicle" [class.has-value]="selectedVehicle" [class.no-value]="!selectedVehicle">
       <ng-select
         id="filter-vehicle"
         bindLabel="displayName"
@@ -152,13 +165,14 @@
     </div>
 
     <!-- Ngày: DatePicker có icon (PrimeNG v21 thay thế p-calendar) -->
-    <div class="filter-item filter-date" [class.has-value]="selectedDate">
+    <div class="filter-item filter-date" [class.has-value]="selectedDate" [class.no-value]="!selectedDate">
       <p-datepicker
         id="filter-date"
         dateFormat="dd/mm/yy"
         placeholder="Chọn ngày"
         styleClass="filter-primeng"
         [showIcon]="true"
+        [minDate]="minDate"
         [maxDate]="today"
         [(ngModel)]="selectedDate"
         (onSelect)="onDateChange()"
@@ -166,7 +180,7 @@
     </div>
 
     <!-- Giờ bắt đầu: timeOnly -->
-    <div class="filter-item filter-time" [class.has-value]="startTime">
+    <div class="filter-item filter-time" [class.has-value]="startTime" [class.no-value]="!startTime">
       <p-datepicker
         id="filter-time-start"
         placeholder="00:00"
@@ -182,7 +196,7 @@
     </div>
 
     <!-- Giờ kết thúc: timeOnly -->
-    <div class="filter-item filter-time" [class.has-value]="endTime">
+    <div class="filter-item filter-time" [class.has-value]="endTime" [class.no-value]="!endTime">
       <p-datepicker
         id="filter-time-end"
         placeholder="23:59"

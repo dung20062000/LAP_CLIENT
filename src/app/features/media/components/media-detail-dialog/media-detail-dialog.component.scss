@@ -5,7 +5,7 @@
 // Override PrimeNG Dialog
 ::ng-deep {
   .p-dialog {
-    border: none;
+    border: none !important;
   }
 
   .media-dialog {

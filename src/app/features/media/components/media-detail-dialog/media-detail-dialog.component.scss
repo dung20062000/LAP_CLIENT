@@ -5,7 +5,7 @@
 // Override PrimeNG Dialog
 ::ng-deep {
   .p-dialog {
-    border: 3px solid #fff !important;
+    border: none;
   }
 
   .media-dialog {
@@ -46,6 +46,7 @@
       background: #1a1a1a;
       border-bottom-left-radius: 8px;
       border-bottom-right-radius: 8px;
+      border: 3px solid #fff !important;
     }
 
     // Galleria bên trong dialog

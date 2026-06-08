@@ -77,12 +77,11 @@
                 <span>Kênh {{ images[currentIndex].channel }}</span>
               </div>
               <div class="detail-item col-2">
-                <i class="fas fa-user icon-white"></i>
+                <i class="fa-solid fa-id-badge"></i>
                 <span>{{ images[currentIndex].displayName || 'N/A' }}</span>
               </div>
               <div class="col-3-speed">
                 <div class="detail-item icon-speed">
-                  <!-- <i class="fas fa-tachometer-alt icon-orange"></i> -->
                   <i class="material-symbols-outlined icon-orange">speed_4</i>
                   <span>0 km/h</span>
                 </div>
@@ -91,7 +90,6 @@
                   title="Tải ảnh"
                   (click)="onDownload(images[currentIndex])"
                 >
-                  <!-- <i class="fas fa-download"></i> -->
                   <i class="material-symbols-outlined">download</i>
                 </button>
               </div>

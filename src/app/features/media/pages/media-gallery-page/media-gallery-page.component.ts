@@ -19,6 +19,8 @@ import {
 import { CommonModule } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
+import { MessageService } from 'primeng/api';
+import { getHttpErrorMessage } from '../../../../shared/utils/http-error';
 
 import { MediaService } from '../../../../services/media';
 import { MediaSearchParams, MediaImageItem } from '../../../../models/media';
@@ -50,6 +52,7 @@ export class MediaGalleryPageComponent {
   private mediaService = inject(MediaService);
   private cdr = inject(ChangeDetectorRef);
   private destroyRef = inject(DestroyRef);
+  private messageService = inject(MessageService);
 
   // Danh sách ảnh hiện tại
   images: MediaImageItem[] = [];
@@ -116,11 +119,21 @@ export class MediaGalleryPageComponent {
           this.images = result.items;
           this.totalRecords = result.totalCount;
           this.loading = false;
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Thành công',
+            detail: 'Tìm kiếm ảnh phương tiện thành công.',
+          });
           this.cdr.markForCheck();
         },
         error: (err) => {
           console.error('[Media] Lỗi khi tìm kiếm ảnh:', err);
           this.loading = false;
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Lỗi',
+            detail: getHttpErrorMessage(err, 'Lỗi khi tìm kiếm ảnh. Vui lòng thử lại.'),
+          });
           this.cdr.markForCheck();
         },
       });

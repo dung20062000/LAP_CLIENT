@@ -26,6 +26,7 @@ import { DatePicker } from 'primeng/datepicker';
 import { ButtonModule } from 'primeng/button';
 import { Checkbox } from 'primeng/checkbox';
 import { TreeNode, MessageService } from 'primeng/api';
+import { getHttpErrorMessage } from '../../../../shared/utils/http-error';
 
 import { MediaService } from '../../../../services/media';
 import {
@@ -145,7 +146,7 @@ export class MediaFilterComponent implements OnInit {
         this.messageService.add({
           severity: 'error',
           summary: 'Lỗi',
-          detail: 'Không thể tải danh sách nhóm xe. Vui lòng thử lại.',
+          detail: getHttpErrorMessage(err, 'Không thể tải danh sách nhóm xe. Vui lòng thử lại.'),
         });
         this.cdr.markForCheck();
       },
@@ -383,7 +384,7 @@ export class MediaFilterComponent implements OnInit {
         this.messageService.add({
           severity: 'error',
           summary: 'Lỗi',
-          detail: 'Không thể tải danh sách xe. Vui lòng thử lại.',
+          detail: getHttpErrorMessage(err, 'Không thể tải danh sách xe. Vui lòng thử lại.'),
         });
         this.vehicleLoading = false;
         this.cdr.markForCheck();
@@ -448,6 +449,8 @@ export class MediaFilterComponent implements OnInit {
       detail,
     });
   }
+
+
 
   /**
    * Người tạo: DungBT

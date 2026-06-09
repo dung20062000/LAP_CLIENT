@@ -51,9 +51,9 @@
             </div>
             @if (getLeafNodesCount() > 0) {
               <div class="tree-select-header-all">
-                <span class="d-flex align-items-center mb-0 cursor-pointer text-dark">
+                <span class="d-flex align-items-center mb-0 cursor-pointer text-dark" (click)="toggleSelectAll(!isAllSelected())">
                   <p-checkbox class="mr-2" [binary]="true" [ngModel]="isAllSelected()"
-                    (onChange)="toggleSelectAll($event)"/>
+                    style="pointer-events: none;"/>
                   Tất cả ({{ getLeafNodesCount() }})
                 </span>
                 <span
@@ -129,6 +129,7 @@
             <input
               type="checkbox"
               class="filter-checkbox"
+              style="pointer-events: none;"
               readonly
               [checked]="isAllChannelsSelected()"
             />
@@ -142,6 +143,7 @@
             <input
               type="checkbox"
               class="filter-checkbox"
+              style="pointer-events: none;"
               readonly
               [checked]="item$.selected"
             />

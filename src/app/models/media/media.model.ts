@@ -46,11 +46,9 @@ export interface MediaImageItem {
   channel: number;
   imageTime: string;
   url: string;
-  latitude: number | null;
-  longitude: number | null;
-  // Thông tin xe được gán thêm ở FE sau khi search
   vehiclePlate?: string;
-  displayName?: string;
+  driverName?: string;
+  speed: number;
 }
 
 // Params gửi lên khi tìm kiếm ảnh

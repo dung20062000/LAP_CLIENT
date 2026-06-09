@@ -61,7 +61,7 @@
             <div class="detail-row">
               <div class="detail-item col-1">
                 <i class="fas fa-car icon-blue"></i>
-                <span>{{ images[currentIndex].vehiclePlate || '---' }} (DX1_CAM)</span>
+                <span>{{ images[currentIndex].vehiclePlate || '---' }}</span>
               </div>
               <div class="detail-item col-2">
                 <i class="fas fa-clock icon-blue"></i>
@@ -78,12 +78,12 @@
               </div>
               <div class="detail-item col-2">
                 <i class="fa-solid fa-id-badge"></i>
-                <span>{{ images[currentIndex].displayName || 'N/A' }}</span>
+                <span>{{ images[currentIndex].driverName || 'N/A' }}</span>
               </div>
               <div class="col-3-speed">
                 <div class="detail-item icon-speed">
                   <i class="material-symbols-outlined icon-orange">speed_4</i>
-                  <span>0 km/h</span>
+                  <span>{{ images[currentIndex].speed || 0 }} km/h</span>
                 </div>
                 <button
                   class="btn-download-caption"

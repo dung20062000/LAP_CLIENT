@@ -440,21 +440,6 @@ export class MediaFilterComponent implements OnInit {
   /**
    * Người tạo: DungBT
    * Ngày tạo: 04/06/2026
-   * @param detail Text thông báo lỗi
-   */
-  private showError(detail: string): void {
-    this.messageService.add({
-      severity: 'error',
-      summary: 'Lỗi',
-      detail,
-    });
-  }
-
-
-
-  /**
-   * Người tạo: DungBT
-   * Ngày tạo: 04/06/2026
    * Build params và emit sự kiện search ra page cha.
    * Validate: phải chọn xe trước khi tìm kiếm, thời gian hợp lệ.
    */
@@ -512,5 +497,18 @@ export class MediaFilterComponent implements OnInit {
       `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}` +
       `T${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`
     );
+  }
+
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 04/06/2026
+   * @param detail Text thông báo lỗi
+   */
+  private showError(detail: string): void {
+    this.messageService.add({
+      severity: 'error',
+      summary: 'Lỗi',
+      detail,
+    });
   }
 }

@@ -288,3 +288,23 @@ body:has(app-media-gallery-page) app-footer {
   display: none !important;
   flex-shrink: 0;
 }
+
+/* Custom smaller styles for PrimeNG Toast */
+.p-toast {
+  width: 280px !important;
+}
+.p-toast .p-toast-message .p-toast-summary {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+}
+.p-toast .p-toast-message .p-toast-detail {
+  font-size: 12px !important;
+  font-weight: 400 !important;
+}
+.p-toast .p-toast-message .p-toast-message-text {
+  gap: 0 !important;
+}
+.p-toast .p-toast-close-button{
+  width: 14px !important;
+  height: 14px !important;
+}

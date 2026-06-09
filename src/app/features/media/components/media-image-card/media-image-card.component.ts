@@ -67,12 +67,32 @@ export class MediaImageCardComponent {
   /**
    * Người tạo: DungBT
    * Ngày tạo: 04/06/2026
-   * Tải ảnh về máy – mở URL trong tab mới.
+   * Tải ảnh về máy
    * @param event MouseEvent để ngăn bubble lên card click
    */
   onDownload(event: MouseEvent): void {
     event.stopPropagation();
-    // [API] downloadImage – mở URL để tải xuống
-    window.open(this.image.url, '_blank');
+    if (!this.image?.url) return;
+
+    fetch(this.image.url)
+      .then(res => res.blob())
+      .then(blob => {
+        const blobUrl = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = blobUrl;
+
+        // Tạo tên file từ URL hoặc dùng tên mặc định
+        const fileName = this.image.url.split('/').pop()?.split('?')[0] || 'photo.jpg';
+        a.download = fileName.endsWith('.jpg') || fileName.endsWith('.png') ? fileName : `${fileName}.jpg`;
+
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(blobUrl);
+      })
+      .catch(err => {
+        console.warn('CORS block or network error, falling back to window.open', err);
+        window.open(this.image.url, '_blank');
+      });
   }
 }

@@ -173,8 +173,28 @@ export class MediaDetailDialogComponent implements OnChanges, OnDestroy {
    * @param image Ảnh cần download
    */
   onDownload(image: MediaImageItem): void {
-    // [API] downloadImage
-    window.open(image.url, '_blank');
+    if (!image?.url) return;
+
+    fetch(image.url)
+      .then(res => res.blob())
+      .then(blob => {
+        const blobUrl = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = blobUrl;
+        
+        // Tạo tên file từ URL hoặc dùng tên mặc định
+        const fileName = image.url.split('/').pop()?.split('?')[0] || 'photo.jpg';
+        a.download = fileName.endsWith('.jpg') || fileName.endsWith('.png') ? fileName : `${fileName}.jpg`;
+        
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(blobUrl);
+      })
+      .catch(err => {
+        console.warn('CORS block or network error, falling back to window.open', err);
+        window.open(image.url, '_blank');
+      });
   }
 
   /**

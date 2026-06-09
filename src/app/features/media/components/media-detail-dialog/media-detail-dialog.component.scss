@@ -49,50 +49,6 @@
       border: 3px solid #fff !important;
     }
 
-    // Galleria bên trong dialog
-    .media-galleria {
-      width: 100%;
-
-      .p-galleria-item-container {
-        position: relative;
-      }
-
-      // Nút prev/next
-      .p-galleria-item-prev,
-      .p-galleria-item-next {
-        background: rgba(0, 123, 255, 0.8);
-        color: #fff;
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        transition: background 0.2s;
-
-        &:hover {
-          background: rgba(0, 86, 179, 0.9);
-        }
-
-        .p-icon {
-          color: #fff;
-        }
-      }
-    }
-
-    .p-galleria {
-      border: none !important;
-
-      .p-galleria-nav-button {
-        border-radius: 4px;
-        background-color: var(--primary-color-darker);
-
-        &:hover {
-          opacity: 0.8;
-        }
-
-        i {
-          color: #fff;
-        }
-      }
-    }
   }
 }
 
@@ -100,6 +56,47 @@
   display: flex;
   flex-direction: column;
 }
+
+// Custom slideshow container
+.custom-slideshow {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #1a1a1a;
+}
+
+// Nút prev/next của custom slideshow
+.slide-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 4px;
+  background-color: var(--primary-color-darker);
+  color: var(--text-white);
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, opacity 0.2s;
+
+  &:hover:not(:disabled) {
+    opacity: 0.8;
+  }
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
+}
+
+.slide-prev { left: 12px; }
+.slide-next { right: 12px; }
 
 
 // Ảnh trong galleria

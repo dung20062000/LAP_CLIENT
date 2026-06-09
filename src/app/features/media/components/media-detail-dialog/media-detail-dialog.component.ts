@@ -1,14 +1,14 @@
 /**
  * Người tạo: DungBT
  * Ngày tạo: 04/06/2026
- * Mô tả: Dialog xem ảnh chi tiết dùng PrimeNG Dialog + Galleria.
+ * Mô tả: Dialog xem ảnh chi tiết – custom slideshow (không dùng p-galleria
+ *        để tránh lỗi two-way binding với ChangeDetectionStrategy.OnPush).
  *        - @Input() images: MediaImageItem[]         – danh sách ảnh trang hiện tại
  *        - @Input() activeIndex: number              – index ảnh được click mở
  *        - @Input() visible: boolean                 – trạng thái hiển thị
  *        - @Output() visibleChange: EventEmitter<boolean> – emit khi đóng dialog
- *        - Galleria: circular, showItemNavigators, autoPlay có thể toggle.
+ *        - Hỗ trợ circular navigation, autoPlay (timer 3s).
  *        - Caption overlay: biển số, thời gian, kênh, địa chỉ, tốc độ, nút download.
- *          Nền rgba(0,0,0,0.7) giống thiết kế.
  */
 import {
   Component,
@@ -20,10 +20,10 @@ import {
   inject,
   OnChanges,
   SimpleChanges,
+  OnDestroy,
 } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
-import { GalleriaModule } from 'primeng/galleria';
 import { ButtonModule } from 'primeng/button';
 import { MediaImageItem } from '../../../../models/media';
 
@@ -39,17 +39,17 @@ const FAKE_ADDRESSES = [
 /**
  * Người tạo: DungBT
  * Ngày tạo: 04/06/2026
- * Component dialog xem ảnh chi tiết với slideshow Galleria.
+ * Component dialog xem ảnh chi tiết với custom slideshow.
  */
 @Component({
   selector: 'app-media-detail-dialog',
   standalone: true,
-  imports: [CommonModule, DatePipe, DialogModule, GalleriaModule, ButtonModule],
+  imports: [CommonModule, DatePipe, DialogModule, ButtonModule],
   templateUrl: './media-detail-dialog.component.html',
   styleUrl: './media-detail-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MediaDetailDialogComponent implements OnChanges {
+export class MediaDetailDialogComponent implements OnChanges, OnDestroy {
   private cdr = inject(ChangeDetectorRef);
 
   @Input() images: MediaImageItem[] = [];
@@ -57,18 +57,63 @@ export class MediaDetailDialogComponent implements OnChanges {
   @Input() visible: boolean = false;
   @Output() visibleChange = new EventEmitter<boolean>();
 
-  // Trạng thái autoPlay của galleria
+  /** Cho phép circular navigation (quay lại đầu khi ở cuối) */
+  circular = true;
+
+  /** Trạng thái autoPlay */
   autoPlay = false;
 
-  // Trạng thái active index nội bộ (đồng bộ từ @Input)
+  /** Index hiện tại – hoàn toàn do component tự quản lý */
   currentIndex: number = 0;
 
+  /** Timer handle cho autoPlay */
+  private autoPlayTimer: ReturnType<typeof setInterval> | null = null;
+
+  /** Getter tiện lợi để lấy ảnh hiện tại */
+  get currentImage(): MediaImageItem {
+    return this.images[this.currentIndex];
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
-    // Khi mở dialog, đồng bộ activeIndex từ @Input
+    // Khi mở dialog hoặc activeIndex thay đổi, đồng bộ lại
     if (changes['activeIndex'] || changes['visible']) {
       this.currentIndex = this.activeIndex;
       this.cdr.markForCheck();
     }
+  }
+
+  ngOnDestroy(): void {
+    this.stopAutoPlay();
+  }
+
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 09/06/2026
+   * Chuyển sang ảnh trước.
+   */
+  prev(): void {
+    if (this.images.length === 0) return;
+    if (this.currentIndex > 0) {
+      this.currentIndex--;
+    } else if (this.circular) {
+      this.currentIndex = this.images.length - 1;
+    }
+    this.cdr.detectChanges();
+  }
+
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 09/06/2026
+   * Chuyển sang ảnh tiếp theo.
+   */
+  next(): void {
+    if (this.images.length === 0) return;
+    if (this.currentIndex < this.images.length - 1) {
+      this.currentIndex++;
+    } else if (this.circular) {
+      this.currentIndex = 0;
+    }
+    this.cdr.detectChanges();
   }
 
   /**
@@ -89,7 +134,36 @@ export class MediaDetailDialogComponent implements OnChanges {
    */
   toggleAutoPlay(): void {
     this.autoPlay = !this.autoPlay;
+    if (this.autoPlay) {
+      this.startAutoPlay();
+    } else {
+      this.stopAutoPlay();
+    }
     this.cdr.markForCheck();
+  }
+
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 09/06/2026
+   * Bắt đầu autoPlay với interval 3 giây.
+   */
+  private startAutoPlay(): void {
+    this.stopAutoPlay();
+    this.autoPlayTimer = setInterval(() => {
+      this.next();
+    }, 3000);
+  }
+
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 09/06/2026
+   * Dừng autoPlay.
+   */
+  private stopAutoPlay(): void {
+    if (this.autoPlayTimer !== null) {
+      clearInterval(this.autoPlayTimer);
+      this.autoPlayTimer = null;
+    }
   }
 
   /**
@@ -110,17 +184,7 @@ export class MediaDetailDialogComponent implements OnChanges {
    */
   onHide(): void {
     this.autoPlay = false;
+    this.stopAutoPlay();
     this.visibleChange.emit(false);
-  }
-
-  /**
-   * Người tạo: DungBT
-   * Ngày tạo: 04/06/2026
-   * Cập nhật currentIndex khi galleria chuyển ảnh.
-   * @param index Index mới
-   */
-  onActiveIndexChange(index: number): void {
-    this.currentIndex = index;
-    this.cdr.markForCheck();
   }
 }

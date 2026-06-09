@@ -12,100 +12,97 @@
 >
   @if (images.length > 0) {
     <div class="media-dialog-layout">
-      <!-- Galleria slideshow bên trong dialog -->
-      <p-galleria
-        styleClass="media-galleria"
-        [value]="images"
-        [circular]="true"
-        [showItemNavigators]="true"
-        [showThumbnails]="false"
-        [showIndicators]="false"
-        [autoPlay]="autoPlay"
-        [transitionInterval]="3000"
-        [(activeIndex)]="currentIndex"
-        (activeIndexChange)="onActiveIndexChange($event)"
-      >
-        <!-- Template ảnh chính -->
-        <ng-template let-image pTemplate="item">
-          <div class="galleria-item">
-            <img
-              class="galleria-image"
-              [src]="image.url"
-              [alt]="'Kênh ' + image.channel"
-            />
-          </div>
-        </ng-template>
-      </p-galleria>
+
+      <div class="custom-slideshow">
+
+        <!-- Nút Prev -->
+        <button class="slide-nav slide-prev" [disabled]="!circular && currentIndex === 0" (click)="prev()">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+
+        <!-- Ảnh hiện tại -->
+        <div class="galleria-item">
+          <img
+            class="galleria-image"
+            [src]="currentImage.url"
+            [alt]="'Kênh ' + currentImage.channel"
+          />
+        </div>
+
+        <!-- Nút Next -->
+        <button class="slide-nav slide-next" [disabled]="!circular && currentIndex === images.length - 1" (click)="next()">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+
+      </div>
 
       <!-- Phần thông tin nằm riêng biệt bên dưới ảnh -->
-      @if (images[currentIndex]) {
-        <div class="galleria-caption">
+      <div class="galleria-caption">
 
-          <!-- Dòng 1: Nút autoPlay + số thứ tự -->
-          <div class="caption-top">
-            <button
-              class="btn-autoplay"
-              [class.playing]="autoPlay"
-              (click)="toggleAutoPlay()"
-            >
-              <i [class]="autoPlay ? 'fas fa-pause' : 'fas fa-play'"></i>
-              {{ autoPlay ? 'Dừng' : 'Xem ảnh tự động' }}
-            </button>
-            <span class="caption-counter">
-              {{ currentIndex + 1 }}/{{ images.length }} ảnh
-            </span>
-          </div>
-
-          <div class="caption-details">
-            <!-- Row 1 -->
-            <div class="detail-row">
-              <div class="detail-item col-1">
-                <i class="fas fa-car icon-blue"></i>
-                <span>{{ images[currentIndex].vehiclePlate || '---' }}</span>
-              </div>
-              <div class="detail-item col-2">
-                <i class="fas fa-clock icon-blue"></i>
-                <span>{{ images[currentIndex].imageTime | date:'HH:mm:ss dd/MM/yyyy' }}</span>
-              </div>
-              <div class="col-3"></div>
-            </div>
-
-            <!-- Row 2 -->
-            <div class="detail-row">
-              <div class="detail-item col-1">
-                <i class="fas fa-video icon-green"></i>
-                <span>Kênh {{ images[currentIndex].channel }}</span>
-              </div>
-              <div class="detail-item col-2">
-                <i class="fa-solid fa-id-badge"></i>
-                <span>{{ images[currentIndex].driverName || 'N/A' }}</span>
-              </div>
-              <div class="col-3-speed">
-                <div class="detail-item icon-speed">
-                  <i class="material-symbols-outlined icon-orange">speed_4</i>
-                  <span>{{ images[currentIndex].speed || 0 }} km/h</span>
-                </div>
-                <button
-                  class="btn-download-caption"
-                  title="Tải ảnh"
-                  (click)="onDownload(images[currentIndex])"
-                >
-                  <i class="material-symbols-outlined">download</i>
-                </button>
-              </div>
-            </div>
-
-            <!-- Row 3 -->
-            <div class="detail-row">
-              <div class="detail-item col-full">
-                <i class="fas fa-map-marker-alt icon-red"></i>
-                <span>{{ getFakeAddress(currentIndex) }}</span>
-              </div>
-            </div>
-          </div>
-
+        <!-- Dòng 1: Nút autoPlay + số thứ tự -->
+        <div class="caption-top">
+          <button
+            class="btn-autoplay"
+            [class.playing]="autoPlay"
+            (click)="toggleAutoPlay()"
+          >
+            <i [class]="autoPlay ? 'fas fa-pause' : 'fas fa-play'"></i>
+            {{ autoPlay ? 'Dừng' : 'Xem ảnh tự động' }}
+          </button>
+          <span class="caption-counter">
+            {{ currentIndex + 1 }}/{{ images.length }} ảnh
+          </span>
         </div>
-      }
+
+        <div class="caption-details">
+          <!-- Row 1 -->
+          <div class="detail-row">
+            <div class="detail-item col-1">
+              <i class="fas fa-car icon-blue"></i>
+              <span>{{ currentImage.vehiclePlate || '---' }}</span>
+            </div>
+            <div class="detail-item col-2">
+              <i class="fas fa-clock icon-blue"></i>
+              <span>{{ currentImage.imageTime | date:'HH:mm:ss dd/MM/yyyy' }}</span>
+            </div>
+            <div class="col-3"></div>
+          </div>
+
+          <!-- Row 2 -->
+          <div class="detail-row">
+            <div class="detail-item col-1">
+              <i class="fas fa-video icon-green"></i>
+              <span>Kênh {{ currentImage.channel }}</span>
+            </div>
+            <div class="detail-item col-2">
+              <i class="fa-solid fa-id-badge"></i>
+              <span>{{ currentImage.driverName || 'N/A' }}</span>
+            </div>
+            <div class="col-3-speed">
+              <div class="detail-item icon-speed">
+                <i class="material-symbols-outlined icon-orange">speed_4</i>
+                <span>{{ currentImage.speed || 0 }} km/h</span>
+              </div>
+              <button
+                class="btn-download-caption"
+                title="Tải ảnh"
+                (click)="onDownload(currentImage)"
+              >
+                <i class="material-symbols-outlined">download</i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Row 3 -->
+          <div class="detail-row">
+            <div class="detail-item col-full">
+              <i class="fas fa-map-marker-alt icon-red"></i>
+              <span>{{ getFakeAddress(currentIndex) }}</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
     </div>
   }
 

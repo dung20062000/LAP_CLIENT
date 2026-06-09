@@ -1,20 +1,20 @@
 <!-- Trang Xem Ảnh Phương Tiện -->
 <div class="media-gallery-page">
 
-  <!-- ===== HEADER ===== -->
+  <!-- HEADER -->
   <div class="page-header">
     <h1 class="page-title">
       XEM ẢNH PHƯƠNG TIỆN
     </h1>  </div>
 
-  <!-- ===== BỘ LỌC ===== -->
+  <!-- BỘ LỌC -->
   <app-media-filter
     [activeLayout]="activeLayout"
     (layoutChange)="onLayoutChange($event)"
     (searchSubmit)="onSearch($event)"
   />
 
-  <!-- ===== GRID ẢNH ===== -->
+  <!-- GRID ẢNH -->
   <div class="media-content">
 
     <!-- Loading spinner -->
@@ -58,7 +58,7 @@
 
   </div>
 
-  <!-- ===== PAGINATOR (sticky bottom) ===== -->
+  <!-- PAGINATOR (sticky bottom) -->
   @if (totalRecords > 0) {
     <div class="paginator-wrapper">
       <p-paginator
@@ -91,7 +91,7 @@
 
 </div>
 
-<!-- ===== DIALOG CHI TIẾT ===== -->
+<!-- DIALOG CHI TIẾT -->
 <app-media-detail-dialog
   [images]="images"
   [activeIndex]="activeIndex"

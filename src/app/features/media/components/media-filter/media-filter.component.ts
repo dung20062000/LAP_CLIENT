@@ -194,6 +194,8 @@ export class MediaFilterComponent implements OnInit {
   }
 
   /**
+   * Người tạo: DungBT
+   * Ngày tạo: 04/06/2026
    * Reset kết quả tìm kiếm khi đóng dropdown TreeSelect
    */
   onTreeSelectHide(): void {
@@ -203,6 +205,8 @@ export class MediaFilterComponent implements OnInit {
   }
 
   /**
+   * Người tạo: DungBT
+   * Ngày tạo: 04/06/2026
    * Reset kết quả tìm kiếm khi mở dropdown TreeSelect
    */
   onTreeSelectShow(): void {
@@ -212,6 +216,8 @@ export class MediaFilterComponent implements OnInit {
   }
 
   /**
+   * Người tạo: DungBT
+   * Ngày tạo: 04/06/2026
    * Xóa từ khóa tìm kiếm và khôi phục danh sách nhóm
    */
   clearSearchQuery(): void {
@@ -221,6 +227,8 @@ export class MediaFilterComponent implements OnInit {
   }
 
   /**
+   * Người tạo: DungBT
+   * Ngày tạo: 04/06/2026
    * Xử lý khi giá trị TreeSelect thay đổi
    */
   onGroupsChange(): void {
@@ -246,6 +254,8 @@ export class MediaFilterComponent implements OnInit {
   }
 
   /**
+   * Người tạo: DungBT
+   * Ngày tạo: 05/06/2026
    * Trả về tất cả các node lá.
    */
   private getAllLeafNodes(nodes: TreeNode[]): TreeNode[] {
@@ -261,6 +271,8 @@ export class MediaFilterComponent implements OnInit {
   }
 
   /**
+   * Người tạo: DungBT
+   * Ngày tạo: 05/06/2026
    * Trả về tất cả các node bao gồm cả node cha.
    */
   private getAllNodes(nodes: TreeNode[]): TreeNode[] {
@@ -275,6 +287,8 @@ export class MediaFilterComponent implements OnInit {
   }
 
   /**
+   * Người tạo: DungBT
+   * Ngày tạo: 05/06/2026
    * Kiểm tra xem tất cả các nhóm phương tiện đã được chọn hay chưa.
    */
   isAllSelected(): boolean {
@@ -287,6 +301,8 @@ export class MediaFilterComponent implements OnInit {
   }
 
   /**
+   * Người tạo: DungBT
+   * Ngày tạo: 05/06/2026
    * Chọn tất cả hoặc bỏ chọn tất cả các nhóm phương tiện.
    */
   toggleSelectAll(event: any): void {
@@ -315,16 +331,12 @@ export class MediaFilterComponent implements OnInit {
     this.cdr.markForCheck();
   }
 
-  /**
-   * Kiểm tra xem tất cả các kênh đã được chọn hay chưa.
-   */
+  // Kiểm tra xem tất cả các kênh đã được chọn hay chưa.
   isAllChannelsSelected(): boolean {
     return this.channelOptions.length > 0 && this.selectedChannels.length === this.channelOptions.length;
   }
 
-  /**
-   * Đếm số lượng node lá (nhóm phương tiện con).
-   */
+  //Đếm số lượng node lá (nhóm phương tiện con).
   getLeafNodesCount(): number {
     return this.getAllLeafNodes(this.vehicleGroups).length;
   }
@@ -332,9 +344,7 @@ export class MediaFilterComponent implements OnInit {
   // Trạng thái expand/collapse toàn bộ tree nodes
   isAllExpanded = false;
 
-  /**
-   * Mở rộng / Thu gọn toàn bộ các node trong TreeSelect.
-   */
+  // Mở rộng / Thu gọn toàn bộ các node trong TreeSelect.
   toggleExpandAll(): void {
     this.isAllExpanded = !this.isAllExpanded;
     this.expandAllRecursive(this.vehicleGroups, this.isAllExpanded);

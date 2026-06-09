@@ -39,7 +39,7 @@ const FAKE_ADDRESSES = [
 /**
  * Người tạo: DungBT
  * Ngày tạo: 04/06/2026
- * Component dialog xem ảnh chi tiết với custom slideshow.
+ * Component dialog xem ảnh chi tiết
  */
 @Component({
   selector: 'app-media-detail-dialog',
@@ -57,19 +57,19 @@ export class MediaDetailDialogComponent implements OnChanges, OnDestroy {
   @Input() visible: boolean = false;
   @Output() visibleChange = new EventEmitter<boolean>();
 
-  /** Cho phép circular navigation (quay lại đầu khi ở cuối) */
+  // Cho phép circular navigation (quay lại đầu khi ở cuối)
   circular = true;
 
-  /** Trạng thái autoPlay */
+  // Trạng thái autoPlay
   autoPlay = false;
 
-  /** Index hiện tại – hoàn toàn do component tự quản lý */
+  // Index hiện tại – hoàn toàn do component tự quản lý
   currentIndex: number = 0;
 
-  /** Timer handle cho autoPlay */
+  // Timer handle cho autoPlay
   private autoPlayTimer: ReturnType<typeof setInterval> | null = null;
 
-  /** Getter tiện lợi để lấy ảnh hiện tại */
+  // Getter tiện lợi để lấy ảnh hiện tại
   get currentImage(): MediaImageItem {
     return this.images[this.currentIndex];
   }
@@ -169,7 +169,7 @@ export class MediaDetailDialogComponent implements OnChanges, OnDestroy {
   /**
    * Người tạo: DungBT
    * Ngày tạo: 04/06/2026
-   * Tải ảnh hiện tại về máy – mở URL trong tab mới.
+   * Tải ảnh hiện tại về máy
    * @param image Ảnh cần download
    */
   onDownload(image: MediaImageItem): void {
@@ -181,11 +181,11 @@ export class MediaDetailDialogComponent implements OnChanges, OnDestroy {
         const blobUrl = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = blobUrl;
-        
+
         // Tạo tên file từ URL hoặc dùng tên mặc định
         const fileName = image.url.split('/').pop()?.split('?')[0] || 'photo.jpg';
         a.download = fileName.endsWith('.jpg') || fileName.endsWith('.png') ? fileName : `${fileName}.jpg`;
-        
+
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);

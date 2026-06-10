@@ -51,9 +51,11 @@
             </div>
             @if (getLeafNodesCount() > 0) {
               <div class="tree-select-header-all">
-                <span class="d-flex align-items-center mb-0 cursor-pointer text-dark" (click)="toggleSelectAll(!isAllSelected())">
-                  <p-checkbox class="mr-2" [binary]="true" [ngModel]="isAllSelected()"
-                    style="pointer-events: none;"/>
+                <span class="d-flex align-items-center mb-0 cursor-pointer text-dark"
+                  tabindex="0"
+                  (click)="toggleSelectAll(!isAllSelected())"
+                  (keydown.enter)="toggleSelectAll(!isAllSelected())">
+                  <p-checkbox class="mr-2" style="pointer-events: none;" [binary]="true" [ngModel]="isAllSelected()" />
                   Tất cả ({{ getLeafNodesCount() }})
                 </span>
                 <span
@@ -62,8 +64,7 @@
                   tabindex="0"
                   role="button"
                   (click)="toggleExpandAll()"
-                  (keydown.enter)="toggleExpandAll()"
-                  (keydown.space)="toggleExpandAll()"></span>
+                  (keydown.enter)="toggleExpandAll()"></span>
               </div>
             }
           </div>

@@ -67,7 +67,7 @@ export class MediaFilterComponent implements OnInit {
   @Output() layoutChange = new EventEmitter<4 | 5 | 6>();
 
   // Sự kiện phát ra params tìm kiếm cho page cha
-  @Output() searchSubmit = new EventEmitter<MediaSearchParams>();
+  @Output() searchSubmit = new EventEmitter<MediaSearchParams | null>();
 
   changeLayout(cols: 4 | 5 | 6): void {
     this.layoutChange.emit(cols);
@@ -305,10 +305,17 @@ export class MediaFilterComponent implements OnInit {
    * Ngày tạo: 05/06/2026
    * Chọn tất cả hoặc bỏ chọn tất cả các nhóm phương tiện.
    */
-  toggleSelectAll(event: any): void {
-    const checked = event && event.checked !== undefined
-      ? event.checked
-      : (event?.target as HTMLInputElement)?.checked ?? !!event;
+  toggleSelectAll(event: boolean | { checked?: boolean } | Event | null | undefined): void {
+    let checked = false;
+    if (typeof event === 'boolean') {
+      checked = event;
+    } else if (event && typeof event === 'object') {
+      if ('checked' in event && event.checked !== undefined) {
+        checked = event.checked;
+      } else if ('target' in event && event.target) {
+        checked = (event.target as HTMLInputElement).checked;
+      }
+    }
     if (checked) {
       this.selectedGroups = this.getAllNodes(this.vehicleGroups);
     } else {
@@ -372,7 +379,7 @@ export class MediaFilterComponent implements OnInit {
       this.channelOptions = [];
       this.selectedChannels = [];
       this.vehicleLoading = false;
-      this.searchSubmit.emit(null as any);
+      this.searchSubmit.emit(null);
       this.cdr.markForCheck();
       return;
     }
@@ -417,7 +424,7 @@ export class MediaFilterComponent implements OnInit {
     } else {
       this.channelOptions = [];
       this.selectedChannels = [];
-      this.searchSubmit.emit(null as any);
+      this.searchSubmit.emit(null);
     }
     this.cdr.markForCheck();
   }

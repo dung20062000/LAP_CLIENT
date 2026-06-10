@@ -11,9 +11,6 @@
  *        - ApiResponse<T>        ← ApiResponse<T>
  */
 
-// ApiResponse<T> được tái sử dụng từ auth.model.ts (đã export qua models/index.ts)
-// Không định nghĩa lại ở đây để tránh trùng lặp.
-
 // Node cây nhóm phương tiện cho PrimeNG TreeSelect
 // Map từ VehicleGroupTreeDto (key, label, data, children)
 export interface VehicleGroupTreeNode {

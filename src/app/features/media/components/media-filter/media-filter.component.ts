@@ -26,8 +26,8 @@ import { DatePicker } from 'primeng/datepicker';
 import { ButtonModule } from 'primeng/button';
 import { Checkbox } from 'primeng/checkbox';
 import { TreeNode, MessageService } from 'primeng/api';
-import { getHttpErrorMessage } from '../../../../shared/utils/http-error';
 
+import { getHttpErrorMessage } from '../../../../shared/utils/http-error';
 import { MediaService } from '../../../../services/media';
 import {
   VehicleItem,
@@ -68,10 +68,6 @@ export class MediaFilterComponent implements OnInit {
 
   // Sự kiện phát ra params tìm kiếm cho page cha
   @Output() searchSubmit = new EventEmitter<MediaSearchParams | null>();
-
-  changeLayout(cols: 4 | 5 | 6): void {
-    this.layoutChange.emit(cols);
-  }
 
   // Dữ liệu cho TreeSelect nhóm PT
   vehicleGroups: TreeNode[] = [];
@@ -151,6 +147,14 @@ export class MediaFilterComponent implements OnInit {
         this.cdr.markForCheck();
       },
     });
+  }
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 04/06/2026
+   * Thay đổi layout hiển thị ảnh
+   */
+  changeLayout(cols: 4 | 5 | 6): void {
+    this.layoutChange.emit(cols);
   }
 
   /**

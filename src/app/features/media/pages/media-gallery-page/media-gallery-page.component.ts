@@ -20,8 +20,8 @@ import { CommonModule } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
 import { MessageService } from 'primeng/api';
-import { getHttpErrorMessage } from '../../../../shared/utils/http-error';
 
+import { getHttpErrorMessage } from '../../../../shared/utils/http-error';
 import { MediaService } from '../../../../services/media';
 import { MediaSearchParams, MediaImageItem } from '../../../../models/media';
 
@@ -46,7 +46,7 @@ import { MediaDetailDialogComponent } from '../../components/media-detail-dialog
   ],
   templateUrl: './media-gallery-page.component.html',
   styleUrl: './media-gallery-page.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush, // Chỉ chạy code khi có thay đổi
 })
 export class MediaGalleryPageComponent {
   private mediaService = inject(MediaService);
@@ -103,6 +103,14 @@ export class MediaGalleryPageComponent {
    * Người tạo: DungBT
    * Ngày tạo: 04/06/2026
    * Gọi service tìm kiếm ảnh và cập nhật grid.
+   * searchImages(this.currentParams): Gọi API tìm kiếm ảnh
+   * pipe(...): Đưa luồng dữ liệu vào đường ống xử lý.
+   * takeUntilDestroyed(this.destroyRef): Lắp một cái "van tự động ngắt". Nếu Component bị hủy trước khi API trả lời, ngắt luồng ngay lập tức.
+   * subscribe({ ... }): Lắng nghe kết quả. Nếu dữ liệu về an toàn (Component vẫn còn sống),
+   *  -> cập nhật UI (next),
+   *  -> báo Toast success,
+   *  -> và trigger Change Detection.
+   *  Nếu lỗi thì bắt lỗi (error), báo Toast error.
    */
   private loadImages(): void {
     if (!this.currentParams) return;
@@ -110,7 +118,7 @@ export class MediaGalleryPageComponent {
     this.loading = true;
     this.cdr.markForCheck();
 
-    // API loadImages ( MediaService.searchImages )
+    // API loadImages
     this.mediaService
       .searchImages(this.currentParams)
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -153,7 +161,7 @@ export class MediaGalleryPageComponent {
     if (this.currentParams) {
       this.currentParams = {
         ...this.currentParams,
-        pageNumber: (event.page ?? 0) + 1,  // paginator 0-based → API 1-based
+        pageNumber: (event.page ?? 0) + 1,  // API 1-based (từ 1 trở đi)
         pageSize: event.rows ?? 50,
       };
       this.loadImages();

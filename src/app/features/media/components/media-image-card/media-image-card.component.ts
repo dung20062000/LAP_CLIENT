@@ -85,13 +85,13 @@ export class MediaImageCardComponent {
         const fileName = this.image.url.split('/').pop()?.split('?')[0] || 'photo.jpg';
         a.download = fileName.endsWith('.jpg') || fileName.endsWith('.png') ? fileName : `${fileName}.jpg`;
 
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(blobUrl);
+        document.body.appendChild(a); // thêm thẻ a vào body
+        a.click(); // click vào thẻ a để tải ảnh
+        document.body.removeChild(a); // xóa thẻ a khỏi body
+        window.URL.revokeObjectURL(blobUrl); // thu hồi URL của blob
       })
       .catch(err => {
-        console.warn('CORS block or network error, falling back to window.open', err);
+        console.warn('Lỗi tải ảnh, mở tab mới', err);
         window.open(this.image.url, '_blank');
       });
   }

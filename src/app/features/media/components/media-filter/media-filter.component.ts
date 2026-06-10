@@ -358,6 +358,11 @@ export class MediaFilterComponent implements OnInit {
     this.cdr.markForCheck();
   }
 
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 10/06/2026
+   * Dùng để mở rộng / thu gọn tất cả các node trong TreeSelect.
+   */
   private expandAllRecursive(nodes: TreeNode[], isExpand: boolean): void {
     for (const node of nodes) {
       node.expanded = isExpand;
@@ -366,6 +371,12 @@ export class MediaFilterComponent implements OnInit {
       }
     }
   }
+
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 10/06/2026
+   * Dùng để tải danh sách xe theo nhóm.
+   */
   private loadVehiclesByGroups(): void {
     // Lấy key của các node lá đang được chọn
     const selected = this.selectedGroups || [];

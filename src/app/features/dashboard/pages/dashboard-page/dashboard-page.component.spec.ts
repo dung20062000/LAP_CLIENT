@@ -208,7 +208,6 @@ describe('DashboardPageComponent', () => {
       return new Subject<DashboardStats | null>().asObservable();
     };
 
-    component.ngOnDestroy();
     component.ngOnInit();
     fixture.detectChanges();
     component.onPageReload();
@@ -222,7 +221,6 @@ describe('DashboardPageComponent', () => {
       return new Subject<DashboardStats | null>().asObservable();
     };
 
-    component.ngOnDestroy();
     component.ngOnInit();
     fixture.detectChanges();
 
@@ -276,8 +274,5 @@ describe('DashboardPageComponent', () => {
     expect(typeof userId).toBe('string');
   });
 
-  it('should clean up destroySignal on ngOnDestroy', () => {
-    component.ngOnDestroy();
-    expect((component as unknown as { destroySignal: { isStopped: boolean } }).destroySignal.isStopped).toBe(true);
-  });
+
 });

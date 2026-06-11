@@ -1,0 +1,441 @@
+// ─── HOST: fit toàn bộ chiều cao màn hình ────────────────────────────────────
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+// ─── Biến màu ─────────────────────────────────────────────────────────────────
+$primary:       #007bff;
+$primary-dark:  #0056b3;
+$border-color:  #dee2e6;
+$bg-panel:      #fff;
+$bg-page:       #f4f6f9;
+$dirty-bg:      #fff9c4;   // Nền vàng nhạt cho node dirty
+$dirty-border:  #f9a825;
+
+// ─── Container chính ──────────────────────────────────────────────────────────
+.vga-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  background: #fff;
+  margin: 12px 12px 12px 12px;
+  border-radius: 4px;
+  padding: 16px 8px;
+  box-shadow: 0 4px 16px 0 rgba(100, 100, 100, 0.4);
+}
+
+// ─── HEADER ───────────────────────────────────────────────────────────────────
+.vga-header {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.vga-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--bagps-primary);
+  margin: 0;
+  letter-spacing: 0.4px;
+}
+
+// ─── BODY: 3 cột ─────────────────────────────────────────────────────────────
+.vga-body {
+  flex: 1;
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  overflow: hidden;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  min-height: 0;
+}
+
+// ─── CỘT CHUNG ────────────────────────────────────────────────────────────────
+.vga-col {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
+
+  &.vga-col-users {
+    flex: 1 1 0;
+    min-width: 0;
+    margin-right: 8px;
+  }
+
+  &.vga-col-unassigned,
+  &.vga-col-assigned {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+}
+
+// ─── NÚT ĐIỀU HƯỚNG GIỮA 2 CÂY ───────────────────────────────────────────────
+.vga-nav-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 6px;
+  flex-shrink: 0;
+}
+
+.vga-nav-btn {
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  background: var(--bagps-primary);
+  border-color: var(--bagps-primary);
+  color: #fff;
+  font-size: 13px;
+  transition: background 0.15s ease, opacity 0.15s ease;
+
+  &:hover:not(:disabled) {
+    opacity: 0.8;
+    background: var(--bagps-primary);
+    border-color: var(--bagps-primary);
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    background: var(--bagps-disabled);
+    border-color: var(--bagps-disabled);
+  }
+}
+
+// ─── PANEL (bọc từng cột) ─────────────────────────────────────────────────────
+.vga-panel {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+  background: $bg-panel;
+  border: 1px solid $border-color;
+  border-radius: 6px;
+  min-height: 0;
+}
+
+.vga-panel-header {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  border-bottom: 1px solid $border-color;
+  background: #f8f9fa;
+  flex-shrink: 0;
+
+}
+
+.vga-panel-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--bagps-primary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+// ─── SEARCH BOX ───────────────────────────────────────────────────────────────
+.vga-search-box {
+  position: relative;
+  padding: 8px 10px;
+  border-bottom: 1px solid $border-color;
+  flex-shrink: 0;
+}
+
+.vga-search-icon {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  font-size: 12px;
+  pointer-events: none;
+}
+
+.vga-search-input {
+  width: 100%;
+  padding: 5px 28px 5px 8px;
+  border: 1px solid $border-color;
+  border-radius: 4px;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.15s;
+  color: #343a40;
+
+  &::placeholder {
+    color: #adb5bd;
+    font-size: 12px;
+  }
+
+  &:focus {
+    border-color: $primary;
+    box-shadow: 0 0 0 2px rgba($primary, 0.15);
+  }
+}
+
+.vga-search-clear {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  font-size: 12px;
+  cursor: pointer;
+
+  &:hover {
+    color: #343a40;
+  }
+}
+
+// ─── DANH SÁCH USER ───────────────────────────────────────────────────────────
+.vga-list-container {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+
+  &::-webkit-scrollbar { width: 5px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb { background: #ced4da; border-radius: 3px; }
+}
+
+.vga-user-list {
+  margin: 0;
+}
+
+.vga-user-item {
+  cursor: pointer;
+  padding: 8px 12px;
+  border: none;
+  transition: background 0.1s, border-color 0.1s;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  &:hover:not(.active) {
+    background: var(--bg-gray-light-3);
+  }
+
+  &.active {
+    background: var(--bagps-secondary-1);
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+}
+
+.vga-user-name {
+  font-size: 13px;
+  line-height: 1.3;
+  color: inherit;
+}
+
+.vga-user-sub {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+// ─── TREE CONTAINER ───────────────────────────────────────────────────────────
+.vga-tree-container {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0;
+  padding: 4px 4px;
+
+  &::-webkit-scrollbar { width: 5px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb { background: #ced4da; border-radius: 3px; }
+}
+
+// ─── EMPTY / LOADING STATE ────────────────────────────────────────────────────
+.vga-center-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 20px;
+  font-size: 13px;
+  color: var(--text-muted);
+
+  i { font-size: 14px; }
+
+  &--full {
+    flex: 1;
+    flex-direction: column;
+    gap: 10px;
+    padding: 40px 20px;
+    font-size: 13px;
+
+    i { font-size: 24px; opacity: 0.4; }
+  }
+}
+
+// ─── THANH HÀNH ĐỘNG ──────────────────────────────────────────────────────────
+.vga-action-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 2px 0 8px 0;
+  flex-shrink: 0;
+}
+
+.vga-action-btn {
+  font-size: 13px;
+  padding: 6px 18px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background-color: var(--bagps-primary);
+  color: var(--text-white);
+  border-color: var(--bagps-primary);
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    background-color: var(--bagps-disabled);
+    border-color: var(--bagps-disabled);
+    color: var(--text-white);
+  }
+}
+
+// ─── PRIMENG TREE OVERRIDES ───────────────────────────────────────────────────
+::ng-deep {
+  .vga-tree {
+    background: transparent;
+    border: none;
+    padding: 0;
+    font-size: 13px;
+
+    .p-tree-node {
+      padding: 0;
+    }
+
+    .p-tree-node-content {
+      padding: 3px 6px;
+      border-radius: 4px;
+      transition: background 0.1s;
+      gap: 4px;
+
+      &:hover {
+        background: #e9f0fb;
+      }
+
+      // Highlight khi node được checkbox tick (không phải node-dirty)
+      // Dùng :has() để detect checkbox checked state
+      &:has(.p-checkbox-checked) {
+        background: var(--bagps-secondary-1) !important;
+      }
+
+      &.p-tree-node-selected,
+      &.p-highlight {
+        background: var(--bagps-secondary-1) !important;
+      }
+    }
+
+    .p-tree-node-label {
+      font-size: 13px;
+      color: #343a40;
+      line-height: 1.4;
+    }
+
+    // Checkbox style
+    .p-checkbox {
+      width: 16px;
+      height: 16px;
+
+      .p-checkbox-box {
+        width: 16px;
+        height: 16px;
+        border-radius: 3px;
+        border: 1.5px solid #adb5bd;
+        transition: border-color 0.15s, background 0.15s;
+
+        &.p-highlight {
+          background: var(--bg-blue-1) !important;
+          border-color: var(--bg-blue-1) !important;
+        }
+      }
+    }
+
+    // Node dirty (nền vàng) - áp dụng qua styleClass của node
+    // Ghi đè :has() để giữ màu vàng cho node chuyển từ cột khác
+    .node-dirty > .p-tree-node-content {
+      background: $dirty-bg !important;
+      border-left: 3px solid $dirty-border;
+      border-radius: 0 4px 4px 0;
+
+      .p-tree-node-label {
+        color: #7a5c00;
+        font-weight: 500;
+      }
+
+      // Khi node dirty bị checkbox thêm, vẫn giữ màu vàng
+      &:has(.p-checkbox-checked) {
+        background: $dirty-bg !important;
+      }
+    }
+
+    .p-tree-node-children {
+      padding-left: 16px;
+    }
+  }
+
+  .vga-toggler-icon {
+    font-size: 11px;
+    color: var(--text-muted);
+    width: 14px;
+    text-align: center;
+  }
+}
+
+// ─── RESPONSIVE ───────────────────────────────────────────────────────────────
+// Tablet trở lên: 3 cột nằm cùng hàng (mặc định)
+// Dưới Tablet (< 768px): Cột User 100%, 2 cột Tree 50%
+@media (max-width: 767px) {
+  .vga-body {
+    flex-wrap: wrap;
+    overflow-y: auto;
+    align-content: flex-start;
+    gap: 8px;
+    padding-bottom: 10px;
+  }
+
+  .vga-col-users {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin-right: 0 !important;
+    height: 220px;
+    flex-shrink: 0 !important;
+  }
+
+  .vga-nav-buttons {
+    flex-direction: row;
+    width: 100%;
+    justify-content: center;
+    padding: 4px 0;
+    order: 3;
+  }
+
+  .vga-col-unassigned,
+  .vga-col-assigned {
+    width: calc(50% - 4px) !important;
+    flex: none !important;
+    height: 300px;
+    flex-shrink: 0 !important;
+  }
+}

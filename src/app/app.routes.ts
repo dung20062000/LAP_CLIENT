@@ -42,6 +42,13 @@ export const routes: Routes = [
             (m) => m.MediaGalleryPageComponent
           ),
       },
+      {
+        path: 'administration/vehicle-groups',
+        loadComponent: () =>
+          import('./features/vehicle-group-admin/pages/vehicle-group-admin-page/vehicle-group-admin-page.component').then(
+            (m) => m.VehicleGroupAdminPageComponent
+          ),
+      },
     ],
   },
   {

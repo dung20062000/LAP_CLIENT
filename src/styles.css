@@ -344,6 +344,9 @@ body:has(app-media-gallery-page) app-footer {
   background: var(--bg-blue);
   border: none;
 }
+.p-confirmdialog .p-dialog-footer .p-button i{
+  font-size: 13px !important;
+}
 .p-confirmdialog .p-dialog-footer .p-button:not(:disabled):hover{
   color: var(--text-white) !important;
   background: var(--bg-blue) !important;

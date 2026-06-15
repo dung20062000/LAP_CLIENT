@@ -467,14 +467,10 @@ export class VehicleGroupAdminPageComponent implements OnInit {
     this.confirmationService.confirm({
       message: 'Bạn có chắc muốn hủy các thay đổi chưa lưu?',
       header: 'Xác nhận hủy',
-      acceptButtonProps: {
-        label: 'Xác nhận',
-        icon: 'pi pi-check',
-      },
-      rejectButtonProps: {
-        label: 'Đóng',
-        icon: 'pi pi-times',
-      },
+      acceptLabel: 'Xác nhận',
+      rejectLabel: 'Đóng',
+      acceptIcon: 'fas fa-check',
+      rejectIcon: 'fas fa-times',
       accept: () => {
         if (this.selectedUser) {
           this.resetTreeState();

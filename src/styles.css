@@ -14,6 +14,10 @@
   --bagps-warning: #ffc107;
   --bagps-disabled: #6c757d;
 
+  --border-color:  #dee2e6;
+  --border-primary: #007bff;
+  --border-dirty:  #f9a825;
+
   /* Header primary color */
   --primary-color: #0394d6;
   --primary-color-darker: #0e94a8;
@@ -33,10 +37,12 @@
   --text-gray: #6c757d;
   --text-muted: #6c757d;
   --text-blue: #0066cc;
+  --text-blue-dark: #004A96;
   --text-white: #ffffff;
   --text-grey-light: #e2e2e2;
   --text-error: #dc3545;
   --text-danger: #dc3545;
+  --text-yellow-dark: #7a5c00;
 
   /* Background color */
   --bg-white: #ffffff;
@@ -45,6 +51,7 @@
   --bg-blue-1: #0066ff;
   --bg-green: #4db848;
   --bg-orange: #e67e22;
+  --bg-yellow: #fff9c4;
 
   --bg-banner-overlay: rgba(0, 20, 60, 0.65);
   --bg-gray-light-2: #b9b9b9;

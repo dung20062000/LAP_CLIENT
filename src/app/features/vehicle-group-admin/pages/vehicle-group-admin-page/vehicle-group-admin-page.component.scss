@@ -1,27 +1,15 @@
-// ─── HOST: fit toàn bộ chiều cao màn hình ────────────────────────────────────
 :host {
   display: flex;
   flex-direction: column;
   height: 100%;
   overflow: hidden;
 }
-
-// ─── Biến màu ─────────────────────────────────────────────────────────────────
-$primary:       #007bff;
-$primary-dark:  #0056b3;
-$border-color:  #dee2e6;
-$bg-panel:      #fff;
-$bg-page:       #f4f6f9;
-$dirty-bg:      #fff9c4;   // Nền vàng nhạt cho node dirty
-$dirty-border:  #f9a825;
-
-// ─── Container chính ──────────────────────────────────────────────────────────
 .vga-page {
   display: flex;
   flex-direction: column;
   height: 100%;
   overflow: hidden;
-  background: #fff;
+  background: var(--bg-white);
   margin: 12px 12px 12px 12px;
   border-radius: 4px;
   padding: 16px 8px;
@@ -38,7 +26,7 @@ $dirty-border:  #f9a825;
 .vga-title {
   font-size: 14px;
   font-weight: 700;
-  color: var(--bagps-primary);
+  color: var(--text-blue-dark);
   margin: 0;
   letter-spacing: 0.4px;
 }
@@ -96,7 +84,7 @@ $dirty-border:  #f9a825;
   border-radius: 4px;
   background: var(--bagps-primary);
   border-color: var(--bagps-primary);
-  color: #fff;
+  color: var(--text-white);
   font-size: 13px;
   transition: background 0.15s ease, opacity 0.15s ease;
 
@@ -120,8 +108,8 @@ $dirty-border:  #f9a825;
   flex-direction: column;
   flex: 1;
   overflow: hidden;
-  background: $bg-panel;
-  border: 1px solid $border-color;
+  background: var(--bg-white);
+  border: 1px solid var(--border-color);
   border-radius: 6px;
   min-height: 0;
 }
@@ -130,8 +118,8 @@ $dirty-border:  #f9a825;
   display: flex;
   align-items: center;
   padding: 8px 12px;
-  border-bottom: 1px solid $border-color;
-  background: #f8f9fa;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-white);
   flex-shrink: 0;
 
 }
@@ -139,7 +127,7 @@ $dirty-border:  #f9a825;
 .vga-panel-title {
   font-size: 13px;
   font-weight: 600;
-  color: var(--bagps-primary);
+  color: var(--text-blue-dark);
   display: flex;
   align-items: center;
   gap: 6px;
@@ -149,7 +137,7 @@ $dirty-border:  #f9a825;
 .vga-search-box {
   position: relative;
   padding: 8px 10px;
-  border-bottom: 1px solid $border-color;
+  border-bottom: 1px solid var(--border-color);
   flex-shrink: 0;
 }
 
@@ -166,7 +154,7 @@ $dirty-border:  #f9a825;
 .vga-search-input {
   width: 100%;
   padding: 5px 28px 5px 8px;
-  border: 1px solid $border-color;
+  border: 1px solid var(--border-color);
   border-radius: 4px;
   font-size: 13px;
   outline: none;
@@ -179,8 +167,8 @@ $dirty-border:  #f9a825;
   }
 
   &:focus {
-    border-color: $primary;
-    box-shadow: 0 0 0 2px rgba($primary, 0.15);
+    border-color: var(--border-primary);
+    box-shadow: 0 0 0 2px rgba(var(--border-primary), 0.15);
   }
 }
 
@@ -471,18 +459,17 @@ $dirty-border:  #f9a825;
     // Node dirty (nền vàng) - áp dụng qua styleClass của node
     // Ghi đè :has() để giữ màu vàng cho node chuyển từ cột khác
     .node-dirty > .p-tree-node-content {
-      background: $dirty-bg !important;
-      border-left: 3px solid $dirty-border;
+      background: var(--bg-yellow) !important;
       border-radius: 0 4px 4px 0;
 
       .p-tree-node-label {
-        color: #7a5c00;
+        color: var(--text-yellow-dark);
         font-weight: 500;
       }
 
       // Khi node dirty bị checkbox thêm, vẫn giữ màu vàng
       &:has(.p-checkbox-checked) {
-        background: $dirty-bg !important;
+        background: var(--bg-yellow) !important;
       }
     }
 

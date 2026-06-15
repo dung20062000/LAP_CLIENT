@@ -12,6 +12,7 @@ import {
   Component,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
+  NgZone,
   inject,
   DestroyRef,
   OnInit,
@@ -55,6 +56,7 @@ import { UserDto, VehicleGroupNode } from '../../../../models/vehicle-group-admi
 export class VehicleGroupAdminPageComponent implements OnInit {
   private service = inject(VehicleGroupAdminService);
   private cdr = inject(ChangeDetectorRef);
+  private zone = inject(NgZone);
   private destroyRef = inject(DestroyRef);
   private messageService = inject(MessageService);
   private confirmationService = inject(ConfirmationService);
@@ -190,6 +192,8 @@ export class VehicleGroupAdminPageComponent implements OnInit {
    * Người tạo: DungBT
    * Ngày tạo: 11/06/2026
    * Tải đồng thời nhóm chưa gán và đã gán cho user.
+   * Dùng NgZone.run() để đảm bảo Angular change detection (OnPush) được kích hoạt
+   * ngay lập tức sau khi API trả về bất đồng bộ, tránh phải click 2 lần.
    * @param userId ID người dùng đã chọn
    */
   private loadGroupsForUser(userId: string): void {
@@ -204,36 +208,34 @@ export class VehicleGroupAdminPageComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: ({ unassigned, assigned }) => {
-          // Xử lý nhóm chưa gán
-          const unassignedTreeNodes = this.toTreeNodes(unassigned, false);
-          this.originalUnassignedNodes = unassignedTreeNodes;
-          this.unassignedNodes = unassignedTreeNodes;
-          this.unassignedCount = this.countAllNodes(unassigned);
+          this.zone.run(() => {
+            const unassignedTreeNodes = this.toTreeNodes(unassigned, false);
+            this.originalUnassignedNodes = unassignedTreeNodes;
+            this.unassignedNodes = unassignedTreeNodes;
+            this.unassignedCount = this.countAllNodes(unassigned);
+            this.initialUnassignedKeys.clear();
+            this.collectKeys(unassignedTreeNodes, this.initialUnassignedKeys);
 
-          this.initialUnassignedKeys.clear();
-          this.collectKeys(unassignedTreeNodes, this.initialUnassignedKeys);
+            const assignedTreeNodes = this.toTreeNodes(assigned, false);
+            this.originalAssignedNodes = assignedTreeNodes;
+            this.assignedNodes = assignedTreeNodes;
+            this.assignedCount = this.countAllNodes(assigned);
+            this.initialAssignedKeys.clear();
+            this.collectKeys(assignedTreeNodes, this.initialAssignedKeys);
 
-          // Xử lý nhóm đã gán
-          const assignedTreeNodes = this.toTreeNodes(assigned, false);
-          this.originalAssignedNodes = assignedTreeNodes;
-          this.assignedNodes = assignedTreeNodes;
-          this.assignedCount = this.countAllNodes(assigned);
-
-          this.initialAssignedKeys.clear();
-          this.collectKeys(assignedTreeNodes, this.initialAssignedKeys);
-
-          this.unassignedLoading = false;
-          this.assignedLoading = false;
-          this.checkDirtyState();
-
-          // Dùng detectChanges thay vì markForCheck để ép buộc Angular cập nhật lại UI ngay lập tức
-          this.cdr.detectChanges();
+            this.unassignedLoading = false;
+            this.assignedLoading = false;
+            this.checkDirtyState();
+            this.cdr.markForCheck();
+          });
         },
         error: (err) => {
-          this.unassignedLoading = false;
-          this.assignedLoading = false;
-          this.showError(getHttpErrorMessage(err, 'Không thể tải thông tin nhóm xe.'));
-          this.cdr.detectChanges();
+          this.zone.run(() => {
+            this.unassignedLoading = false;
+            this.assignedLoading = false;
+            this.showError(getHttpErrorMessage(err, 'Không thể tải thông tin nhóm xe.'));
+            this.cdr.markForCheck();
+          });
         },
       });
   }
@@ -465,9 +467,14 @@ export class VehicleGroupAdminPageComponent implements OnInit {
     this.confirmationService.confirm({
       message: 'Bạn có chắc muốn hủy các thay đổi chưa lưu?',
       header: 'Xác nhận hủy',
-      icon: '',
-      acceptLabel: 'Hủy thay đổi',
-      rejectLabel: 'Tiếp tục chỉnh sửa',
+      acceptButtonProps: {
+        label: 'Xác nhận',
+        icon: 'pi pi-check',
+      },
+      rejectButtonProps: {
+        label: 'Đóng',
+        icon: 'pi pi-times',
+      },
       accept: () => {
         if (this.selectedUser) {
           this.resetTreeState();

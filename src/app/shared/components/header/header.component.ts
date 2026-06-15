@@ -103,6 +103,8 @@ export class HeaderComponent {
 
   // Trạng thái mở dropdown ngôn ngữ.
   langOpen = false;
+  // Trạng thái mở dropdown thông tin user.
+  userMenuOpen = false;
   // Trạng thái mở menu mobile (hamburger).
   isMenuOpen = false;
 

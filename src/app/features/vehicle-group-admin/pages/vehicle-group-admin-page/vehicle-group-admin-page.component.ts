@@ -465,7 +465,7 @@ export class VehicleGroupAdminPageComponent implements OnInit {
     this.confirmationService.confirm({
       message: 'Bạn có chắc muốn hủy các thay đổi chưa lưu?',
       header: 'Xác nhận hủy',
-      icon: 'pi pi-exclamation-triangle',
+      icon: '',
       acceptLabel: 'Hủy thay đổi',
       rejectLabel: 'Tiếp tục chỉnh sửa',
       accept: () => {

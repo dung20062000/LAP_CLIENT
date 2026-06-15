@@ -208,6 +208,11 @@ $dirty-border:  #f9a825;
   &::-webkit-scrollbar-track { background: transparent; }
   &::-webkit-scrollbar-thumb { background: #ced4da; border-radius: 3px; }
 }
+.vga-list-container:has(.vga-center-state){
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
 .vga-user-list {
   margin: 0;
@@ -322,6 +327,11 @@ $dirty-border:  #f9a825;
   &::-webkit-scrollbar { width: 5px; }
   &::-webkit-scrollbar-track { background: transparent; }
   &::-webkit-scrollbar-thumb { background: #ced4da; border-radius: 3px; }
+}
+.vga-tree-container:has(.vga-center-state){
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 // ─── EMPTY / LOADING STATE ────────────────────────────────────────────────────

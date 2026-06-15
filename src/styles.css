@@ -324,4 +324,29 @@ body:has(app-media-gallery-page) app-footer {
 .p-checkbox-indeterminate .p-checkbox-icon {
   font-weight: 500 !important;
 }
+/* confirmDialog custom */
+.p-confirmdialog .p-dialog-header{
+  font-size: 13px !important;
+  padding-top: 14px !important;
+  padding-bottom: 14px !important;
+}
+.p-confirmdialog .p-dialog-header .p-dialog-header-actions .p-button-icon-only.p-button-rounded{
+  height: 24px !important;
+  width: 24px !important;
+}
+.p-confirmdialog .p-dialog-content .p-confirmdialog-message{
+  font-size: 13px !important;
+}
+.p-confirmdialog .p-dialog-footer .p-button{
+  font-size: 13px !important;
+  color: var(--text-white);
+  background: var(--bg-blue);
+  border: none;
+}
 
+.p-confirmdialog .p-dialog-footer .p-button:not(:disabled):hover{
+  color: var(--text-white) !important;
+  background: var(--bg-blue) !important;
+  border: none !important;
+  opacity: 0.8;
+}

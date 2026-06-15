@@ -24,6 +24,8 @@ import { TreeNode, MessageService, ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
+import { forkJoin } from 'rxjs';
+
 
 import { getHttpErrorMessage } from '../../../../shared/utils/http-error';
 import { VehicleGroupAdminService } from '../../../../services/vehicle-group-admin';
@@ -100,7 +102,15 @@ export class VehicleGroupAdminPageComponent implements OnInit {
   // Tổng số nhóm đã gán
   assignedCount = 0;
 
-  // ─── State: Dirty tracking ────────────────────────────────────────────────
+  // ─── State: Select-all tracking ─────────────────────────────────────────
+
+  /** Trạng thái checkbox "Tất cả" của cột 2 */
+  isAllUnassignedSelected = false;
+  isUnassignedIndeterminate = false;
+
+  /** Trạng thái checkbox "Tất cả" của cột 3 */
+  isAllAssignedSelected = false;
+  isAssignedIndeterminate = false;
 
   // Tập hợp các key ban đầu thuộc cây đã gán
   initialAssignedKeys = new Set<string>();
@@ -187,51 +197,43 @@ export class VehicleGroupAdminPageComponent implements OnInit {
     this.assignedLoading = true;
     this.cdr.markForCheck();
 
-    // Load nhóm chưa gán
-    this.service.getUnassignedGroups(userId)
+    forkJoin({
+      unassigned: this.service.getUnassignedGroups(userId),
+      assigned: this.service.getAssignedGroups(userId)
+    })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (nodes) => {
-          const treeNodes = this.toTreeNodes(nodes, false);
-          this.originalUnassignedNodes = treeNodes;
-          this.unassignedNodes = treeNodes;
-          this.unassignedCount = this.countAllNodes(nodes);
+        next: ({ unassigned, assigned }) => {
+          // Xử lý nhóm chưa gán
+          const unassignedTreeNodes = this.toTreeNodes(unassigned, false);
+          this.originalUnassignedNodes = unassignedTreeNodes;
+          this.unassignedNodes = unassignedTreeNodes;
+          this.unassignedCount = this.countAllNodes(unassigned);
 
           this.initialUnassignedKeys.clear();
-          this.collectKeys(treeNodes, this.initialUnassignedKeys);
+          this.collectKeys(unassignedTreeNodes, this.initialUnassignedKeys);
 
-          this.unassignedLoading = false;
-          this.checkDirtyState();
-          this.cdr.markForCheck();
-        },
-        error: (err) => {
-          this.unassignedLoading = false;
-          this.showError(getHttpErrorMessage(err, 'Không thể tải nhóm chưa gán.'));
-          this.cdr.markForCheck();
-        },
-      });
-
-    // Load nhóm đã gán
-    this.service.getAssignedGroups(userId)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (nodes) => {
-          const treeNodes = this.toTreeNodes(nodes, false);
-          this.originalAssignedNodes = treeNodes;
-          this.assignedNodes = treeNodes;
-          this.assignedCount = this.countAllNodes(nodes);
+          // Xử lý nhóm đã gán
+          const assignedTreeNodes = this.toTreeNodes(assigned, false);
+          this.originalAssignedNodes = assignedTreeNodes;
+          this.assignedNodes = assignedTreeNodes;
+          this.assignedCount = this.countAllNodes(assigned);
 
           this.initialAssignedKeys.clear();
-          this.collectKeys(treeNodes, this.initialAssignedKeys);
+          this.collectKeys(assignedTreeNodes, this.initialAssignedKeys);
 
+          this.unassignedLoading = false;
           this.assignedLoading = false;
           this.checkDirtyState();
-          this.cdr.markForCheck();
+
+          // Dùng detectChanges thay vì markForCheck để ép buộc Angular cập nhật lại UI ngay lập tức
+          this.cdr.detectChanges();
         },
         error: (err) => {
+          this.unassignedLoading = false;
           this.assignedLoading = false;
-          this.showError(getHttpErrorMessage(err, 'Không thể tải nhóm đã gán.'));
-          this.cdr.markForCheck();
+          this.showError(getHttpErrorMessage(err, 'Không thể tải thông tin nhóm xe.'));
+          this.cdr.detectChanges();
         },
       });
   }
@@ -295,6 +297,8 @@ export class VehicleGroupAdminPageComponent implements OnInit {
 
     // Reset selection
     this.selectedUnassigned = [];
+    this.updateSelectAllStateUnassigned();
+    this.updateSelectAllStateAssigned();
     this.checkDirtyState();
     this.cdr.markForCheck();
   }
@@ -329,6 +333,8 @@ export class VehicleGroupAdminPageComponent implements OnInit {
     this.assignedCount = this.countTreeNodes(this.originalAssignedNodes);
 
     this.selectedAssigned = [];
+    this.updateSelectAllStateUnassigned();
+    this.updateSelectAllStateAssigned();
     this.checkDirtyState();
     this.cdr.markForCheck();
   }
@@ -399,7 +405,14 @@ export class VehicleGroupAdminPageComponent implements OnInit {
    * Nút Lưu: thu thập tất cả leaf node ID trong cây assigned → gọi API.
    */
   onSave(): void {
-    if (!this.selectedUser || !this.isDirty) return;
+    if (!this.selectedUser || !this.isDirty) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Lỗi',
+        detail: 'Dữ liệu không hợp lệ, vui lòng kiểm tra lại.',
+      });
+      return;
+    }
 
     // Lấy TẤT CẢ group IDs (không chỉ leaf) trong assigned tree
     const groupIds = this.collectAllGroupIds(this.originalAssignedNodes);
@@ -464,7 +477,85 @@ export class VehicleGroupAdminPageComponent implements OnInit {
     });
   }
 
-  // ─── Utilities & Helpers ─────────────────────────────────────────────────
+  // ─── Select All ───────────────────────────────────────────────────────────
+
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 15/06/2026
+   * Toggle chọn tất cả / bỏ chọn tất cả cột 2 (unassigned).
+   */
+  toggleSelectAllUnassigned(): void {
+    if (this.isAllUnassignedSelected) {
+      // Đang chọn tất cả → bỏ chọn hết
+      this.selectedUnassigned = [];
+    } else {
+      // Chưa chọn tất cả → chọn hết (cả node đang hiển thị và các node ẩn bởi propagation)
+      this.selectedUnassigned = this.collectAllTreeNodes(this.unassignedNodes);
+    }
+    this.updateSelectAllStateUnassigned();
+    this.cdr.markForCheck();
+  }
+
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 15/06/2026
+   * Toggle chọn tất cả / bỏ chọn tất cả cột 3 (assigned).
+   */
+  toggleSelectAllAssigned(): void {
+    if (this.isAllAssignedSelected) {
+      this.selectedAssigned = [];
+    } else {
+      this.selectedAssigned = this.collectAllTreeNodes(this.assignedNodes);
+    }
+    this.updateSelectAllStateAssigned();
+    this.cdr.markForCheck();
+  }
+
+  /** Gọi khi selection của cột 2 thay đổi (từ p-tree event). */
+  onUnassignedSelectionChange(): void {
+    this.updateSelectAllStateUnassigned();
+  }
+
+  /** Gọi khi selection của cột 3 thay đổi (từ p-tree event). */
+  onAssignedSelectionChange(): void {
+    this.updateSelectAllStateAssigned();
+  }
+
+  /** Cập nhật isAllUnassignedSelected và isUnassignedIndeterminate. */
+  private updateSelectAllStateUnassigned(): void {
+    const allNodes = this.collectAllTreeNodes(this.unassignedNodes);
+    const selectedKeys = new Set(this.selectedUnassigned.map((n) => n.key as string));
+    const checkedCount = allNodes.filter((n) => selectedKeys.has(n.key as string)).length;
+    this.isAllUnassignedSelected = allNodes.length > 0 && checkedCount === allNodes.length;
+    this.isUnassignedIndeterminate = checkedCount > 0 && checkedCount < allNodes.length;
+    this.cdr.markForCheck();
+  }
+
+  /** Cập nhật isAllAssignedSelected và isAssignedIndeterminate. */
+  private updateSelectAllStateAssigned(): void {
+    const allNodes = this.collectAllTreeNodes(this.assignedNodes);
+    const selectedKeys = new Set(this.selectedAssigned.map((n) => n.key as string));
+    const checkedCount = allNodes.filter((n) => selectedKeys.has(n.key as string)).length;
+    this.isAllAssignedSelected = allNodes.length > 0 && checkedCount === allNodes.length;
+    this.isAssignedIndeterminate = checkedCount > 0 && checkedCount < allNodes.length;
+    this.cdr.markForCheck();
+  }
+
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 15/06/2026
+   * Thu thập tất cả TreeNode (cả cha lấn con) từ cây để dùng cho select-all.
+   */
+  private collectAllTreeNodes(nodes: TreeNode[]): TreeNode[] {
+    const result: TreeNode[] = [];
+    for (const n of nodes) {
+      result.push(n);
+      if (n.children?.length) {
+        result.push(...this.collectAllTreeNodes(n.children));
+      }
+    }
+    return result;
+  }
 
   /**
    * Người tạo: DungBT
@@ -487,6 +578,12 @@ export class VehicleGroupAdminPageComponent implements OnInit {
     this.initialAssignedKeys.clear();
     this.initialUnassignedKeys.clear();
     this.isDirty = false;
+
+    // Reset trạng thái select-all
+    this.isAllUnassignedSelected = false;
+    this.isUnassignedIndeterminate = false;
+    this.isAllAssignedSelected = false;
+    this.isAssignedIndeterminate = false;
   }
 
   /**

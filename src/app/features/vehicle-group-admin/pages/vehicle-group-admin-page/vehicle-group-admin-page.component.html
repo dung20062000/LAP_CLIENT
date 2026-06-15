@@ -17,9 +17,9 @@
         <div class="vga-panel-header">
           <span class="vga-panel-title">
             Danh sách người dùng
-            @if (!usersLoading) {
+            <!-- @if (!usersLoading) {
               <span class="vga-badge">({{ allUsers.length }})</span>
-            }
+            } -->
           </span>
         </div>
 
@@ -123,6 +123,32 @@
             }
           </div>
 
+          <!-- Checkbox Tất cả - cố định, không cuộn -->
+          @if (!unassignedLoading && unassignedNodes.length > 0) {
+            <div class="vga-select-all-bar">
+              <div class="vga-select-all-label"
+                tabindex="0"
+                role="button"
+                (click)="toggleSelectAllUnassigned()"
+                (keydown.enter)="toggleSelectAllUnassigned()">
+                <span class="vga-custom-checkbox"
+                  [class.checked]="isAllUnassignedSelected"
+                  [class.indeterminate]="isUnassignedIndeterminate">
+                  @if (isAllUnassignedSelected) {
+                    <span class="material-symbols-outlined vga-check-icon">
+                      check
+                    </span>
+                  } @else if (isUnassignedIndeterminate) {
+                    <span class="material-symbols-outlined vga-remove-icon">
+                      remove
+                    </span>
+                  }
+                </span>
+                <span class="vga-select-all-text">Tất cả</span>
+              </div>
+            </div>
+          }
+
           <!-- Tree content -->
           <div class="vga-tree-container">
             @if (unassignedLoading) {
@@ -144,6 +170,7 @@
                 [propagateSelectionUp]="true"
                 [propagateSelectionDown]="true"
                 [(selection)]="selectedUnassigned"
+                (selectionChange)="onUnassignedSelectionChange()"
               >
                 <ng-template let-expanded pTemplate="togglericon">
                   @if (expanded) {
@@ -151,6 +178,16 @@
                   } @else {
                     <i class="fa-solid fa-caret-right vga-toggler-icon"></i>
                   }
+                </ng-template>
+
+                <ng-template let-node pTemplate="default">
+                  <span class="vga-node-content-wrapper">
+                    <!-- nếu không có node cha thì là thư mục -->
+                    @if (!node.parent) {
+                      <span class="material-symbols-outlined vga-folder-icon">folder</span>
+                    }
+                    <span class="vga-node-label">{{ node.label }}</span>
+                  </span>
                 </ng-template>
               </p-tree>
             }
@@ -226,6 +263,32 @@
             }
           </div>
 
+          <!-- Checkbox Tất cả - cố định, không cuộn -->
+          @if (!assignedLoading && assignedNodes.length > 0) {
+            <div class="vga-select-all-bar">
+              <div class="vga-select-all-label"
+                tabindex="0"
+                role="button"
+                (click)="toggleSelectAllAssigned()"
+                (keydown.enter)="toggleSelectAllAssigned()">
+                <span class="vga-custom-checkbox"
+                  [class.checked]="isAllAssignedSelected"
+                  [class.indeterminate]="isAssignedIndeterminate">
+                  @if (isAllAssignedSelected) {
+                    <span class="material-symbols-outlined vga-check-icon">
+                      check
+                    </span>
+                  } @else if (isAssignedIndeterminate) {
+                    <span class="material-symbols-outlined vga-remove-icon">
+                      remove
+                    </span>
+                  }
+                </span>
+                <span class="vga-select-all-text">Tất cả</span>
+              </div>
+            </div>
+          }
+
           <!-- Tree content -->
           <div class="vga-tree-container">
             @if (assignedLoading) {
@@ -247,6 +310,7 @@
                 [propagateSelectionUp]="true"
                 [propagateSelectionDown]="true"
                 [(selection)]="selectedAssigned"
+                (selectionChange)="onAssignedSelectionChange()"
               >
                 <ng-template let-expanded pTemplate="togglericon">
                   @if (expanded) {
@@ -254,6 +318,16 @@
                   } @else {
                     <i class="fa-solid fa-caret-right vga-toggler-icon"></i>
                   }
+                </ng-template>
+
+                <ng-template let-node pTemplate="default">
+                  <span class="vga-node-content-wrapper">
+                    <!-- nếu không có node cha thì là thư mục -->
+                    @if (!node.parent) {
+                      <span class="material-symbols-outlined vga-folder-icon">folder</span>
+                    }
+                    <span class="vga-node-label">{{ node.label }}</span>
+                  </span>
                 </ng-template>
               </p-tree>
             }

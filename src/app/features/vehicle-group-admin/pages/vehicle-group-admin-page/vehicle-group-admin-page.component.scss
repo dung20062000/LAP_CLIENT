@@ -114,7 +114,7 @@
   align-items: center;
   padding: 8px 12px;
   border-bottom: 1px solid var(--border-color);
-  background: var(--bg-white);
+  background: var(--bg-grey);
   flex-shrink: 0;
 
 }
@@ -206,6 +206,10 @@
   display: flex;
   align-items: center;
   gap: 2px;
+
+  &:nth-child(even):not(.active) {
+    background: var(--bg-grey);
+  }
 
   &:hover:not(.active) {
     background: var(--bg-gray-light-3);

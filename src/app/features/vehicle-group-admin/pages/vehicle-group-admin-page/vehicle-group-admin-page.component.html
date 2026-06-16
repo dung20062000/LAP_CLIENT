@@ -6,14 +6,13 @@
     <h1 class="vga-title">QUẢN TRỊ NHÓM PHƯƠNG TIỆN</h1>
   </div>
 
-  <!-- BODY: 3 cột -->
+  <!-- BODY -->
   <div class="vga-body">
 
-    <!-- ═══ CỘT 1: Danh Sách Người Dùng ═══════════════════════════════════ -->
+    <!-- Danh Sách Người Dùng -->
     <div class="vga-col vga-col-users">
 
       <div class="vga-panel">
-        <!-- Panel header -->
         <div class="vga-panel-header">
           <span class="vga-panel-title">
             Danh sách người dùng
@@ -79,9 +78,7 @@
       </div>
 
     </div>
-    <!-- /CỘT 1 -->
-
-    <!-- ═══ CỘT 2: Nhóm Chưa Gán ══════════════════════════════════════════ -->
+    <!-- Nhóm Chưa Gán -->
     <div class="vga-col vga-col-unassigned">
 
       <div class="vga-panel">
@@ -96,7 +93,6 @@
         </div>
 
         @if (!selectedUser) {
-          <!-- Chưa chọn user -->
           <div class="vga-center-state vga-center-state--full text-muted">
             <i class="fas fa-arrow-left"></i>
             <span>Chọn một người dùng để xem nhóm</span>
@@ -194,11 +190,9 @@
           </div>
         }
       </div>
-
     </div>
-    <!-- /CỘT 2 -->
 
-    <!-- ═══ NÚT ĐIỀU HƯỚNG ═════════════════════════════════════════════════ -->
+    <!-- NÚT ĐIỀU HƯỚNG -->
     <div class="vga-nav-buttons">
       <button
         id="btn-move-to-assigned"
@@ -219,9 +213,8 @@
         <i class="fas fa-chevron-left"></i>
       </button>
     </div>
-    <!-- /NÚT ĐIỀU HƯỚNG -->
 
-    <!-- ═══ CỘT 3: Nhóm Đã Gán ════════════════════════════════════════════ -->
+    <!-- Nhóm Đã Gán -->
     <div class="vga-col vga-col-assigned">
 
       <div class="vga-panel">
@@ -334,14 +327,10 @@
           </div>
         }
       </div>
-
     </div>
-    <!-- /CỘT 3 -->
-
   </div>
-  <!-- /BODY -->
 
-  <!-- ═══ THANH HÀNH ĐỘNG (Lưu / Hủy) ══════════════════════════════════════ -->
+  <!-- (Lưu / Hủy) -->
   <div class="vga-action-bar">
     <button
       id="btn-save-groups"
@@ -367,9 +356,6 @@
       Hủy
     </button>
   </div>
-  <!-- /THANH HÀNH ĐỘNG -->
-
 </div>
 
-<!-- ConfirmDialog toàn cục -->
 <p-confirmDialog class="confirm-dialog-custome"/>

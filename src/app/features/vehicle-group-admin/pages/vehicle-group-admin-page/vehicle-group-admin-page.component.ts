@@ -19,13 +19,13 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { forkJoin } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TreeModule } from 'primeng/tree';
 import { TreeNode, MessageService, ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
-import { forkJoin } from 'rxjs';
 
 
 import { getHttpErrorMessage } from '../../../../shared/utils/http-error';
@@ -61,8 +61,6 @@ export class VehicleGroupAdminPageComponent implements OnInit {
   private messageService = inject(MessageService);
   private confirmationService = inject(ConfirmationService);
 
-  // ─── State: Cột 1 ─────────────────────────────────────────────────────────
-
   // Danh sách user gốc từ API
   allUsers: UserDto[] = [];
   // Danh sách user sau khi lọc client-side
@@ -73,8 +71,6 @@ export class VehicleGroupAdminPageComponent implements OnInit {
   userSearchQuery = '';
   // Đang tải danh sách user
   usersLoading = false;
-
-  // ─── State: Cột 2 (Nhóm chưa gán) ────────────────────────────────────────
 
   // Nodes hiển thị trong cây nhóm chưa gán
   unassignedNodes: TreeNode[] = [];
@@ -89,8 +85,6 @@ export class VehicleGroupAdminPageComponent implements OnInit {
   // Tổng số nhóm chưa gán (flat count)
   unassignedCount = 0;
 
-  // ─── State: Cột 3 (Nhóm đã gán) ─────────────────────────────────────────
-
   // Nodes hiển thị trong cây nhóm đã gán
   assignedNodes: TreeNode[] = [];
   // Nodes gốc không lọc
@@ -104,13 +98,11 @@ export class VehicleGroupAdminPageComponent implements OnInit {
   // Tổng số nhóm đã gán
   assignedCount = 0;
 
-  // ─── State: Select-all tracking ─────────────────────────────────────────
-
-  /** Trạng thái checkbox "Tất cả" của cột 2 */
+  // Trạng thái checkbox "Tất cả" của cột 2
   isAllUnassignedSelected = false;
   isUnassignedIndeterminate = false;
 
-  /** Trạng thái checkbox "Tất cả" của cột 3 */
+  // Trạng thái checkbox "Tất cả" của cột 3
   isAllAssignedSelected = false;
   isAssignedIndeterminate = false;
 
@@ -126,8 +118,6 @@ export class VehicleGroupAdminPageComponent implements OnInit {
   ngOnInit(): void {
     this.loadUsers();
   }
-
-  // ─── CỘT 1: Danh sách User ────────────────────────────────────────────────
 
   /**
    * Người tạo: DungBT
@@ -186,7 +176,6 @@ export class VehicleGroupAdminPageComponent implements OnInit {
     this.loadGroupsForUser(user.userId);
   }
 
-  // ─── CỘT 2 & 3: Cây nhóm xe ──────────────────────────────────────────────
 
   /**
    * Người tạo: DungBT
@@ -259,13 +248,10 @@ export class VehicleGroupAdminPageComponent implements OnInit {
     }));
   }
 
-  // ─── Nút điều hướng: Move giữa 2 cây ─────────────────────────────────────
-
   /**
    * Người tạo: DungBT
    * Ngày tạo: 11/06/2026
-   * Nút > : Move các node đã check ở cột 2 sang cột 3.
-   * Thuật toán:
+   * Nút > : Move các node đã check ở cột 2 sang cột 3:
    * 1. Thu thập tất cả key của selection (bao gồm cả con).
    * 2. Xây lại cây unassigned: loại bỏ các node đã chọn; nếu node cha bị loại hết con thì cha cũng bị loại.
    * 3. Merge các node được chọn vào cây assigned, giữ nguyên cấu trúc cha/con.
@@ -341,8 +327,6 @@ export class VehicleGroupAdminPageComponent implements OnInit {
     this.cdr.markForCheck();
   }
 
-  // ─── Search / Filter cây ─────────────────────────────────────────────────
-
   /**
    * Người tạo: DungBT
    * Ngày tạo: 11/06/2026
@@ -363,6 +347,11 @@ export class VehicleGroupAdminPageComponent implements OnInit {
     this.cdr.markForCheck();
   }
 
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 11/06/2026
+   * Áp dụng filter cho cây nhóm chưa gán.
+   */
   private applyUnassignedFilter(): void {
     const q = this.unassignedSearchQuery.toLowerCase().trim();
     this.unassignedNodes = q
@@ -370,6 +359,11 @@ export class VehicleGroupAdminPageComponent implements OnInit {
       : this.originalUnassignedNodes;
   }
 
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 11/06/2026
+   * Áp dụng filter cho cây nhóm đã gán.
+   */
   private applyAssignedFilter(): void {
     const q = this.assignedSearchQuery.toLowerCase().trim();
     this.assignedNodes = q
@@ -399,7 +393,6 @@ export class VehicleGroupAdminPageComponent implements OnInit {
     return result;
   }
 
-  // ─── Lưu / Hủy ───────────────────────────────────────────────────────────
 
   /**
    * Người tạo: DungBT
@@ -480,7 +473,6 @@ export class VehicleGroupAdminPageComponent implements OnInit {
     });
   }
 
-  // ─── Select All ───────────────────────────────────────────────────────────
 
   /**
    * Người tạo: DungBT

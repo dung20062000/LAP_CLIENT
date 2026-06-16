@@ -16,7 +16,6 @@
   box-shadow: 0 4px 16px 0 rgba(100, 100, 100, 0.4);
 }
 
-// ─── HEADER ───────────────────────────────────────────────────────────────────
 .vga-header {
   display: flex;
   align-items: center;
@@ -31,7 +30,6 @@
   letter-spacing: 0.4px;
 }
 
-// ─── BODY: 3 cột ─────────────────────────────────────────────────────────────
 .vga-body {
   flex: 1;
   display: flex;
@@ -43,7 +41,6 @@
   min-height: 0;
 }
 
-// ─── CỘT CHUNG ────────────────────────────────────────────────────────────────
 .vga-col {
   display: flex;
   flex-direction: column;
@@ -63,7 +60,6 @@
   }
 }
 
-// ─── NÚT ĐIỀU HƯỚNG GIỮA 2 CÂY ───────────────────────────────────────────────
 .vga-nav-buttons {
   display: flex;
   flex-direction: column;
@@ -102,7 +98,6 @@
   }
 }
 
-// ─── PANEL (bọc từng cột) ─────────────────────────────────────────────────────
 .vga-panel {
   display: flex;
   flex-direction: column;
@@ -133,7 +128,6 @@
   gap: 6px;
 }
 
-// ─── SEARCH BOX ───────────────────────────────────────────────────────────────
 .vga-search-box {
   position: relative;
   padding: 8px 10px;
@@ -185,7 +179,6 @@
   }
 }
 
-// ─── DANH SÁCH USER ───────────────────────────────────────────────────────────
 .vga-list-container {
   flex: 1;
   overflow-y: auto;
@@ -238,7 +231,6 @@
   font-size: 13px;
 }
 
-// ─── SELECT ALL BAR ────────────────────────────────────────────────────────────
 .vga-select-all-bar {
   flex-shrink: 0;
   padding: 8px 16px;
@@ -303,7 +295,6 @@
   }
 }
 
-// ─── TREE CONTAINER ───────────────────────────────────────────────────────────
 .vga-tree-container {
   flex: 1;
   overflow-y: auto;
@@ -321,7 +312,6 @@
   align-items: center;
 }
 
-// ─── EMPTY / LOADING STATE ────────────────────────────────────────────────────
 .vga-center-state {
   display: flex;
   align-items: center;
@@ -344,7 +334,6 @@
   }
 }
 
-// ─── THANH HÀNH ĐỘNG ──────────────────────────────────────────────────────────
 .vga-action-bar {
   display: flex;
   align-items: center;
@@ -375,7 +364,6 @@
   }
 }
 
-// ─── PRIMENG TREE OVERRIDES ───────────────────────────────────────────────────
 ::ng-deep {
   .vga-tree {
     background: transparent;
@@ -485,13 +473,10 @@
   }
 }
 
-// ─── RESPONSIVE ───────────────────────────────────────────────────────────────
-// Lớn hơn Tablet (> 1024px): 3 cột trên 1 hàng (mặc định), fit chiều cao
-// Tablet trở xuống (<= 1024px): Cột User 1 hàng riêng, 2 cột Tree trên cùng 1 hàng
 @media (max-width: 1024px) {
   .vga-body {
     flex-wrap: wrap;
-    overflow: hidden; /* Không scroll body, để các panel tự scroll */
+    overflow: hidden;
     align-content: stretch;
     gap: 0;
     padding-bottom: 0;
@@ -502,14 +487,14 @@
     max-width: 100% !important;
     margin-right: 0 !important;
     margin-bottom: 12px !important;
-    height: 38% !important; /* Chiếm 38% chiều cao màn hình */
+    height: 38% !important;
   }
 
   .vga-col-unassigned,
   .vga-col-assigned {
-    width: calc(50% - 25px) !important; /* Chiếm 50% chiều rộng trừ đi 1 nửa chiều rộng của nút điều hướng */
+    width: calc(50% - 25px) !important;
     flex: none !important;
-    height: calc(62% - 12px) !important; /* Chia sẻ 62% chiều cao còn lại */
+    height: calc(62% - 12px) !important;
   }
 
   .vga-nav-buttons {
@@ -518,7 +503,7 @@
     flex-direction: column !important;
     width: auto !important;
     padding: 0 8px !important;
-    order: unset !important; /* Giữ nguyên vị trí ở giữa 2 cột cây */
+    order: unset !important;
   }
 
   .vga-action-bar {

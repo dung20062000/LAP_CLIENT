@@ -273,8 +273,8 @@ export class VehicleGroupAdminPageComponent implements OnInit {
     this.originalAssignedNodes = this.mergeNodes(this.originalAssignedNodes, this.cloneNodes(nodesToMove));
 
     // Cập nhật style
-    this.updateNodeStyles(this.originalUnassignedNodes, false);
-    this.updateNodeStyles(this.originalAssignedNodes, true);
+    this.originalUnassignedNodes = this.updateNodeStyles(this.originalUnassignedNodes, false);
+    this.originalAssignedNodes = this.updateNodeStyles(this.originalAssignedNodes, true);
 
     // Áp lại filter nếu đang có query
     this.applyUnassignedFilter();
@@ -311,8 +311,8 @@ export class VehicleGroupAdminPageComponent implements OnInit {
     this.originalUnassignedNodes = this.mergeNodes(this.originalUnassignedNodes, this.cloneNodes(nodesToMove));
 
     // Cập nhật style
-    this.updateNodeStyles(this.originalUnassignedNodes, false);
-    this.updateNodeStyles(this.originalAssignedNodes, true);
+    this.originalUnassignedNodes = this.updateNodeStyles(this.originalUnassignedNodes, false);
+    this.originalAssignedNodes = this.updateNodeStyles(this.originalAssignedNodes, true);
 
     this.applyUnassignedFilter();
     this.applyAssignedFilter();
@@ -429,8 +429,8 @@ export class VehicleGroupAdminPageComponent implements OnInit {
           this.collectKeys(this.originalUnassignedNodes, this.initialUnassignedKeys);
 
           // Cập nhật lại style của các node
-          this.updateNodeStyles(this.originalUnassignedNodes, false);
-          this.updateNodeStyles(this.originalAssignedNodes, true);
+          this.originalUnassignedNodes = this.updateNodeStyles(this.originalUnassignedNodes, false);
+          this.originalAssignedNodes = this.updateNodeStyles(this.originalAssignedNodes, true);
 
           this.applyUnassignedFilter();
           this.applyAssignedFilter();
@@ -724,18 +724,20 @@ export class VehicleGroupAdminPageComponent implements OnInit {
    * Ngày tạo: 11/06/2026
    * Cập nhật styleClass 'node-dirty' cho các node dựa vào trạng thái ban đầu.
    */
-  private updateNodeStyles(nodes: TreeNode[], isAssignedTree: boolean): void {
-    for (const node of nodes) {
+  private updateNodeStyles(nodes: TreeNode[], isAssignedTree: boolean): TreeNode[] {
+    return nodes.map((node) => {
       const isDirtyNode = isAssignedTree
         ? this.initialUnassignedKeys.has(node.key as string)
         : this.initialAssignedKeys.has(node.key as string);
 
-      node.styleClass = isDirtyNode ? 'node-dirty' : undefined;
-
-      if (node.children?.length) {
-        this.updateNodeStyles(node.children, isAssignedTree);
-      }
-    }
+      return {
+        ...node,
+        styleClass: isDirtyNode ? 'node-dirty' : undefined,
+        children: node.children?.length
+          ? this.updateNodeStyles(node.children, isAssignedTree)
+          : [],
+      };
+    });
   }
 
   /**

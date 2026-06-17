@@ -201,14 +201,14 @@ export class VehicleGroupAdminPageComponent implements OnInit {
             const unassignedTreeNodes = this.toTreeNodes(unassigned, false);
             this.originalUnassignedNodes = unassignedTreeNodes;
             this.unassignedNodes = unassignedTreeNodes;
-            this.unassignedCount = this.countAllNodes(unassigned);
+            this.unassignedCount = this.countTreeNodes(unassignedTreeNodes);
             this.initialUnassignedKeys.clear();
             this.collectKeys(unassignedTreeNodes, this.initialUnassignedKeys);
 
             const assignedTreeNodes = this.toTreeNodes(assigned, false);
             this.originalAssignedNodes = assignedTreeNodes;
             this.assignedNodes = assignedTreeNodes;
-            this.assignedCount = this.countAllNodes(assigned);
+            this.assignedCount = this.countTreeNodes(assignedTreeNodes);
             this.initialAssignedKeys.clear();
             this.collectKeys(assignedTreeNodes, this.initialAssignedKeys);
 
@@ -519,20 +519,30 @@ export class VehicleGroupAdminPageComponent implements OnInit {
   /** Cập nhật isAllUnassignedSelected và isUnassignedIndeterminate. */
   private updateSelectAllStateUnassigned(): void {
     const allNodes = this.collectAllTreeNodes(this.unassignedNodes);
-    const selectedKeys = new Set(this.selectedUnassigned.map((n) => n.key as string));
-    const checkedCount = allNodes.filter((n) => selectedKeys.has(n.key as string)).length;
-    this.isAllUnassignedSelected = allNodes.length > 0 && checkedCount === allNodes.length;
-    this.isUnassignedIndeterminate = checkedCount > 0 && checkedCount < allNodes.length;
+    if (!allNodes.length) {
+      this.isAllUnassignedSelected = false;
+      this.isUnassignedIndeterminate = false;
+    } else {
+      const selectedKeys = new Set(this.selectedUnassigned.map((n) => n.key as string));
+      const checkedCount = allNodes.filter((n) => selectedKeys.has(n.key as string)).length;
+      this.isAllUnassignedSelected = checkedCount === allNodes.length;
+      this.isUnassignedIndeterminate = checkedCount > 0 && checkedCount < allNodes.length;
+    }
     this.cdr.markForCheck();
   }
 
   /** Cập nhật isAllAssignedSelected và isAssignedIndeterminate. */
   private updateSelectAllStateAssigned(): void {
     const allNodes = this.collectAllTreeNodes(this.assignedNodes);
-    const selectedKeys = new Set(this.selectedAssigned.map((n) => n.key as string));
-    const checkedCount = allNodes.filter((n) => selectedKeys.has(n.key as string)).length;
-    this.isAllAssignedSelected = allNodes.length > 0 && checkedCount === allNodes.length;
-    this.isAssignedIndeterminate = checkedCount > 0 && checkedCount < allNodes.length;
+    if (!allNodes.length) {
+      this.isAllAssignedSelected = false;
+      this.isAssignedIndeterminate = false;
+    } else {
+      const selectedKeys = new Set(this.selectedAssigned.map((n) => n.key as string));
+      const checkedCount = allNodes.filter((n) => selectedKeys.has(n.key as string)).length;
+      this.isAllAssignedSelected = checkedCount === allNodes.length;
+      this.isAssignedIndeterminate = checkedCount > 0 && checkedCount < allNodes.length;
+    }
     this.cdr.markForCheck();
   }
 
@@ -579,21 +589,6 @@ export class VehicleGroupAdminPageComponent implements OnInit {
     this.isUnassignedIndeterminate = false;
     this.isAllAssignedSelected = false;
     this.isAssignedIndeterminate = false;
-  }
-
-  /**
-   * Người tạo: DungBT
-   * Ngày tạo: 11/06/2026
-   * Đếm tổng số node (bao gồm cả cha) trong VehicleGroupNode[].
-   * Dùng khi nhận data từ API (trước khi convert sang TreeNode).
-   */
-  private countAllNodes(nodes: VehicleGroupNode[]): number {
-    let count = 0;
-    for (const n of nodes) {
-      count++;
-      if (n.children?.length) count += this.countAllNodes(n.children);
-    }
-    return count;
   }
 
   /**
@@ -665,6 +660,10 @@ export class VehicleGroupAdminPageComponent implements OnInit {
     for (const node of nodes) {
       if (removedKeys.has(node.key as string)) continue; // Bỏ qua node này
       const filteredChildren = this.removeNodes(node.children ?? [], removedKeys);
+      
+      // Nếu node cha trước đó có con nhưng sau khi xoá bị hết con -> bỏ qua node cha
+      if (node.children?.length && filteredChildren.length === 0) continue;
+
       result.push({ ...node, children: filteredChildren });
     }
     return result;

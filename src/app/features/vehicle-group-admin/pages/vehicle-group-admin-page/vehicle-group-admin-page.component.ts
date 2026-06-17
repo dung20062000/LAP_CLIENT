@@ -516,7 +516,7 @@ export class VehicleGroupAdminPageComponent implements OnInit {
     this.updateSelectAllStateAssigned();
   }
 
-  /** Cập nhật isAllUnassignedSelected và isUnassignedIndeterminate. */
+  /** Cập nhật isAllUnassignedSelected và isUnassignedIndeterminate để check state của toggle select all của cột 2*/
   private updateSelectAllStateUnassigned(): void {
     const allNodes = this.collectAllTreeNodes(this.unassignedNodes);
     if (!allNodes.length) {
@@ -531,7 +531,7 @@ export class VehicleGroupAdminPageComponent implements OnInit {
     this.cdr.markForCheck();
   }
 
-  /** Cập nhật isAllAssignedSelected và isAssignedIndeterminate. */
+  /** Cập nhật isAllAssignedSelected và isAssignedIndeterminate để check state của toggle select all của cột 3 */
   private updateSelectAllStateAssigned(): void {
     const allNodes = this.collectAllTreeNodes(this.assignedNodes);
     if (!allNodes.length) {
@@ -660,7 +660,7 @@ export class VehicleGroupAdminPageComponent implements OnInit {
     for (const node of nodes) {
       if (removedKeys.has(node.key as string)) continue; // Bỏ qua node này
       const filteredChildren = this.removeNodes(node.children ?? [], removedKeys);
-      
+
       // Nếu node cha trước đó có con nhưng sau khi xoá bị hết con -> bỏ qua node cha
       if (node.children?.length && filteredChildren.length === 0) continue;
 

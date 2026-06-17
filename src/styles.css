@@ -43,6 +43,7 @@
   --text-error: #dc3545;
   --text-danger: #dc3545;
   --text-yellow-dark: #7a5c00;
+  --text-placeholder: #adb5bd;
 
   /* Background color */
   --bg-white: #ffffff;
@@ -143,7 +144,7 @@ a {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #adb5bd;
+  background: var(--text-placeholder);
   border-radius: 4px;
 }
 

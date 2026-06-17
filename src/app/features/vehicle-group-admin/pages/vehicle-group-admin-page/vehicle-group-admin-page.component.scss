@@ -155,7 +155,7 @@
   color: #343a40;
 
   &::placeholder {
-    color: #adb5bd;
+    color: var(--text-placeholder);
     font-size: 12px;
   }
 
@@ -272,14 +272,14 @@
   min-width: 16px;
   border-radius: 3px;
   border: 1.5px solid #adb5bd;
-  background: #fff;
+  background: var(--bg-white);
   transition: border-color 0.15s, background 0.15s;
   font-size: 9px;
-  color: #fff;
+  color: var(--text-white);
 
   .vga-check-icon{
     font-size: 22px;
-    color: #fff;
+    color: var(--text-white);
     font-weight: 100;
   }
 

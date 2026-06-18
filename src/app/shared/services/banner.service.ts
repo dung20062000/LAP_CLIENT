@@ -6,7 +6,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { BannerSlide } from '../components/slide-banner/slide-banner.component';
+import { BannerSlide } from '../../features/auth/pages/login';
 
 /**
  * Người tạo: DungBT

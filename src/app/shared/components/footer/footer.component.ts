@@ -1,8 +1,3 @@
-/**
- * Người tạo: DungBT
- * Ngày tạo: 28/05/2026
- * Mô tả: Footer - Thông tin công ty, chi nhánh, hotline và các link social.
- */
 import { Component } from '@angular/core';
 import { TranslatePipe } from '../../pipes/translate.pipe';
 

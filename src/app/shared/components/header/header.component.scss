@@ -467,7 +467,7 @@
     justify-content: space-between;
   }
 }
-@media (max-width: 900px) {
+@media (max-width: 1200px) {
   .header-container {
     padding: 0 16px;
     gap: 12px;
@@ -554,7 +554,7 @@
 
     .nav-link {
       font-size: 16px;
-      padding: 12px 16px;
+      padding: 6px 8px;
     }
 
     .mobile-actions {

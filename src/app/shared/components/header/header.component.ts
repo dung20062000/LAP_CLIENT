@@ -1,8 +1,3 @@
-/**
- * Người tạo: DungBT
- * Ngày tạo: 28/05/2026
- * Mô tả: Header - Tiêu đề trang, có overlay menu (mobile/tablet), chọn ngôn ngữ, hotline và nút đăng xuất.
- */
 import { Component, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
@@ -44,7 +39,7 @@ export class HeaderComponent {
   // Số hotline hiển thị trên header.
   hotline = '19006464';
   // Đường dẫn Zalo OA của BA GPS.
-  zaloUrl = 'https://zalo.me/19006464';
+  zaloUrl = 'https://zalo.me/1958838581480438876';
 
   /**
    * Người tạo: DungBT

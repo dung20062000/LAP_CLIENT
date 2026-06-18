@@ -1,14 +1,3 @@
-/**
- * Người tạo: DungBT
- * Ngày tạo: 04/06/2026
- * Mô tả: Trang chính Xem Ảnh Phương Tiện.
- *        - Phối hợp MediaFilterComponent, MediaImageCardComponent,
- *          MediaDetailDialogComponent và PrimeNG Paginator.
- *        - Gọi MediaService.searchImages() khi submit bộ lọc hoặc đổi trang.
- *        - Container height: 100%; overflow-y: auto để fit vừa 1 màn hình.
- *        - Layout grid: 4 cột (col-md-3), 5 cột (col-20), 6 cột (col-md-2).
- *          Mặc định 6 cột.
- */
 import {
   Component,
   ChangeDetectionStrategy,
@@ -32,7 +21,13 @@ import { MediaDetailDialogComponent } from '../../components/media-detail-dialog
 /**
  * Người tạo: DungBT
  * Ngày tạo: 04/06/2026
- * Trang chính quản lý trạng thái và điều phối các sub-component.
+ * Mô tả: Trang chính Xem Ảnh Phương Tiện.
+ *        - Phối hợp MediaFilterComponent, MediaImageCardComponent,
+ *          MediaDetailDialogComponent và PrimeNG Paginator.
+ *        - Gọi MediaService.searchImages() khi submit bộ lọc hoặc đổi trang.
+ *        - Container height: 100%; overflow-y: auto để fit vừa 1 màn hình.
+ *        - Layout grid: 4 cột (col-md-3), 5 cột (col-20), 6 cột (col-md-2).
+ *          Mặc định 6 cột.
  */
 @Component({
   selector: 'app-media-gallery-page',
@@ -71,7 +66,7 @@ export class MediaGalleryPageComponent {
   activeLayout: 4 | 5 | 6 = 6;
 
   // Paginator state
-  currentPage = 0;   // p-paginator dùng 0-based
+  currentPage = 0; // p-paginator dùng 0-based
   rows = 50;
   rowsPerPageOptions = [10, 20, 50, 100];
 
@@ -161,7 +156,7 @@ export class MediaGalleryPageComponent {
     if (this.currentParams) {
       this.currentParams = {
         ...this.currentParams,
-        pageNumber: (event.page ?? 0) + 1,  // API 1-based (từ 1 trở đi)
+        pageNumber: (event.page ?? 0) + 1, // API 1-based (từ 1 trở đi)
         pageSize: event.rows ?? 50,
       };
       this.loadImages();
@@ -178,9 +173,15 @@ export class MediaGalleryPageComponent {
   onLayoutChange(cols: 4 | 5 | 6): void {
     this.activeLayout = cols;
     switch (cols) {
-      case 4: this.layoutClass = 'col-md-3'; break;
-      case 5: this.layoutClass = 'col-20';   break;
-      case 6: this.layoutClass = 'col-md-2'; break;
+      case 4:
+        this.layoutClass = 'col-md-3';
+        break;
+      case 5:
+        this.layoutClass = 'col-20';
+        break;
+      case 6:
+        this.layoutClass = 'col-md-2';
+        break;
     }
     this.cdr.markForCheck();
   }

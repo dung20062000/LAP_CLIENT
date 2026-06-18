@@ -1,15 +1,3 @@
-/**
- * Người tạo: DungBT
- * Ngày tạo: 04/06/2026
- * Mô tả: Dialog xem ảnh chi tiết – custom slideshow (không dùng p-galleria
- *        để tránh lỗi two-way binding với ChangeDetectionStrategy.OnPush).
- *        - @Input() images: MediaImageItem[]         – danh sách ảnh trang hiện tại
- *        - @Input() activeIndex: number              – index ảnh được click mở
- *        - @Input() visible: boolean                 – trạng thái hiển thị
- *        - @Output() visibleChange: EventEmitter<boolean> – emit khi đóng dialog
- *        - Hỗ trợ circular navigation, autoPlay (timer 3s).
- *        - Caption overlay: biển số, thời gian, kênh, địa chỉ, tốc độ, nút download.
- */
 import {
   Component,
   Input,
@@ -39,7 +27,14 @@ const FAKE_ADDRESSES = [
 /**
  * Người tạo: DungBT
  * Ngày tạo: 04/06/2026
- * Component dialog xem ảnh chi tiết
+ * Mô tả: Dialog xem ảnh chi tiết – custom slideshow (không dùng p-galleria
+ * để tránh lỗi two-way binding với ChangeDetectionStrategy.OnPush).
+ * @Input() images: MediaImageItem[] – danh sách ảnh trang hiện tại
+ * @Input() activeIndex: number      – index ảnh được click mở
+ * @Input() visible: boolean         – trạng thái hiển thị
+ * @Output() visibleChange: EventEmitter<boolean> – emit khi đóng dialog
+ * @Hỗ trợ circular navigation, autoPlay (timer 3s).
+ * @Caption overlay: biển số, thời gian, kênh, địa chỉ, tốc độ, nút download.
  */
 @Component({
   selector: 'app-media-detail-dialog',
@@ -176,22 +171,23 @@ export class MediaDetailDialogComponent implements OnChanges, OnDestroy {
     if (!image?.url) return;
 
     fetch(image.url)
-      .then(res => res.blob())
-      .then(blob => {
+      .then((res) => res.blob())
+      .then((blob) => {
         const blobUrl = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = blobUrl;
 
         // Tạo tên file từ URL hoặc dùng tên mặc định
         const fileName = image.url.split('/').pop()?.split('?')[0] || 'photo.jpg';
-        a.download = fileName.endsWith('.jpg') || fileName.endsWith('.png') ? fileName : `${fileName}.jpg`;
+        a.download =
+          fileName.endsWith('.jpg') || fileName.endsWith('.png') ? fileName : `${fileName}.jpg`;
 
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
         window.URL.revokeObjectURL(blobUrl);
       })
-      .catch(err => {
+      .catch((err) => {
         console.warn('CORS block or network error, falling back to window.open', err);
         window.open(image.url, '_blank');
       });

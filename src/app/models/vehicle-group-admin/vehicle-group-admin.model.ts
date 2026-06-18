@@ -8,7 +8,11 @@
  *        - AssignGroupsRequest  ← AssignGroupsRequest
  */
 
-/** Người dùng trong danh sách cột 1. Map từ UserDto BE */
+/**
+ * Người tạo: DungBT
+ * Ngày tạo: 18/06/2026
+ * Người dùng trong danh sách cột 1. Map từ UserDto BE
+ */
 export interface UserDto {
   userId: string;
   username: string;
@@ -18,6 +22,8 @@ export interface UserDto {
 }
 
 /**
+ * Người tạo: DungBT
+ * Ngày tạo: 18/06/2026
  * Node trong cây nhóm phương tiện cho PrimeNG Tree.
  * Map từ VehicleGroupNodeDto BE.
  * Thêm thuộc tính isDirty (FE-only) để đánh dấu node vừa được chuyển sang cột assigned
@@ -34,7 +40,11 @@ export interface VehicleGroupNode {
   isDirty?: boolean;
 }
 
-/** Request gán nhóm xe. Map từ AssignGroupsRequest BE */
+/**
+ * Người tạo: DungBT
+ * Ngày tạo: 18/06/2026
+ * Request gán nhóm xe. Map từ AssignGroupsRequest BE
+ */
 export interface AssignGroupsRequest {
   groupIds: number[];
 }

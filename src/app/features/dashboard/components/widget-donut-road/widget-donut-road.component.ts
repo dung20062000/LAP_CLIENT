@@ -1,11 +1,12 @@
-/**
- * Người tạo: DungBT
- * Ngày tạo: 01/06/2026
- * Mô tả: Widget Donut Chart – Phương tiện đang trên đường.
- *        Hiển thị phân bổ xe đang di chuyển phân loại theo trạng thái có/không hàng.
- *        Số tổng hiển thị ở giữa biểu đồ.
- */
-import { Component, Input, OnChanges, OnDestroy, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnDestroy,
+  SimpleChanges,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+} from '@angular/core';
 
 import { NgxEchartsDirective } from 'ngx-echarts';
 import type { EChartsOption } from 'echarts';
@@ -16,7 +17,9 @@ const MOBILE_BREAKPOINT = 576;
 /**
  * Người tạo: DungBT
  * Ngày tạo: 01/06/2026
- * Widget Donut phân bổ xe đang di chuyển (có hàng / không hàng).
+ * Mô tả: Widget Donut Chart – Phương tiện đang trên đường.
+ *        Hiển thị phân bổ xe đang di chuyển phân loại theo trạng thái có/không hàng.
+ *        Số tổng hiển thị ở giữa biểu đồ.
  */
 @Component({
   selector: 'app-widget-donut-road',

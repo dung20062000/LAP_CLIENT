@@ -1,13 +1,3 @@
-/**
- * Người tạo: DungBT
- * Ngày tạo: 04/06/2026
- * Mô tả: Bộ lọc màn hình Xem Ảnh Phương Tiện.
- *        - TreeSelect nhóm PT → khi chọn/bỏ chọn sẽ gọi service lấy danh sách xe.
- *        - Dropdown xe (có filter), MultiSelect kênh (Kênh 1..4).
- *        - Calendar ngày + 2 Calendar giờ bắt đầu/kết thúc (timeOnly).
- *        - Logic disable: ngày kết thúc không được cách ngày bắt đầu quá 30 ngày.
- *        - Emit sự kiện (search) kèm MediaSearchParams ra page cha khi bấm Tìm kiếm.
- */
 import {
   Component,
   OnInit,
@@ -29,19 +19,18 @@ import { TreeNode, MessageService } from 'primeng/api';
 
 import { getHttpErrorMessage } from '../../../../shared/utils/http-error';
 import { MediaService } from '../../../../services/media';
-import {
-  VehicleItem,
-  MediaChannel,
-  MediaSearchParams,
-  SortOption,
-} from '../../../../models/media';
+import { VehicleItem, MediaChannel, MediaSearchParams, SortOption } from '../../../../models/media';
 
 /**
  * Người tạo: DungBT
  * Ngày tạo: 04/06/2026
- * Component bộ lọc tìm kiếm ảnh phương tiện.
- */
-@Component({
+ * Mô tả: Bộ lọc màn hình Xem Ảnh Phương Tiện.
+ *        - TreeSelect nhóm PT → khi chọn/bỏ chọn sẽ gọi service lấy danh sách xe.
+ *        - Dropdown xe (có filter), MultiSelect kênh (Kênh 1..4).
+ *        - Calendar ngày + 2 Calendar giờ bắt đầu/kết thúc (timeOnly).
+ *        - Logic disable: ngày kết thúc không được cách ngày bắt đầu quá 30 ngày.
+ *        - Emit sự kiện (search) kèm MediaSearchParams ra page cha khi bấm Tìm kiếm.
+ */ @Component({
   selector: 'app-media-filter',
   standalone: true,
   imports: [
@@ -300,7 +289,7 @@ export class MediaFilterComponent implements OnInit {
     const allLeaves = this.getAllLeafNodes(this.vehicleGroups);
     if (allLeaves.length === 0) return false;
     const selected = this.selectedGroups || [];
-    const selectedLeaves = selected.filter(n => !n.children || n.children.length === 0);
+    const selectedLeaves = selected.filter((n) => !n.children || n.children.length === 0);
     return allLeaves.length === selectedLeaves.length;
   }
 
@@ -337,14 +326,16 @@ export class MediaFilterComponent implements OnInit {
     if (this.isAllChannelsSelected()) {
       this.selectedChannels = [];
     } else {
-      this.selectedChannels = this.channelOptions.map(c => c.value);
+      this.selectedChannels = this.channelOptions.map((c) => c.value);
     }
     this.cdr.markForCheck();
   }
 
   // Kiểm tra xem tất cả các kênh đã được chọn hay chưa.
   isAllChannelsSelected(): boolean {
-    return this.channelOptions.length > 0 && this.selectedChannels.length === this.channelOptions.length;
+    return (
+      this.channelOptions.length > 0 && this.selectedChannels.length === this.channelOptions.length
+    );
   }
 
   //Đếm số lượng node lá (nhóm phương tiện con).
@@ -480,14 +471,17 @@ export class MediaFilterComponent implements OnInit {
     if (!this.selectedDate) return this.showError('Vui lòng chọn ngày');
 
     const date = new Date(this.selectedDate);
-    if (isNaN(date.getTime())) return this.showError('Ngày chọn không đúng định dạng hoặc không hợp lệ');
+    if (isNaN(date.getTime()))
+      return this.showError('Ngày chọn không đúng định dạng hoặc không hợp lệ');
     if (date > this.today) return this.showError('Ngày chọn không được vượt quá ngày hiện tại');
 
     if (!this.startTime) return this.showError('Vui lòng chọn giờ bắt đầu');
-    if (isNaN(new Date(this.startTime).getTime())) return this.showError('Giờ bắt đầu không đúng định dạng hoặc không hợp lệ');
+    if (isNaN(new Date(this.startTime).getTime()))
+      return this.showError('Giờ bắt đầu không đúng định dạng hoặc không hợp lệ');
 
     if (!this.endTime) return this.showError('Vui lòng chọn giờ kết thúc');
-    if (isNaN(new Date(this.endTime).getTime())) return this.showError('Giờ kết thúc không đúng định dạng hoặc không hợp lệ');
+    if (isNaN(new Date(this.endTime).getTime()))
+      return this.showError('Giờ kết thúc không đúng định dạng hoặc không hợp lệ');
 
     // Ghép ngày và giờ thành datetime Date objects
     const start = new Date(date);
@@ -498,8 +492,10 @@ export class MediaFilterComponent implements OnInit {
 
     // So sánh thời gian
     if (start > end) return this.showError('Giờ bắt đầu không được lớn hơn giờ kết thúc');
-    if (start > new Date()) return this.showError('Giờ bắt đầu không được lớn hơn thời gian hiện tại');
-    if (end > new Date()) return this.showError('Giờ kết thúc không được lớn hơn thời gian hiện tại');
+    if (start > new Date())
+      return this.showError('Giờ bắt đầu không được lớn hơn thời gian hiện tại');
+    if (end > new Date())
+      return this.showError('Giờ kết thúc không được lớn hơn thời gian hiện tại');
 
     const params: MediaSearchParams = {
       vehiclePlate: this.selectedVehicle.vehiclePlate,

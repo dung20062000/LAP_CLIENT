@@ -1,13 +1,3 @@
-/**
- * Người tạo: DungBT
- * Ngày tạo: 11/06/2026
- * Mô tả: Trang quản trị gán nhóm xe cho người dùng.
- *        Layout 3 cột: Danh sách User | Nhóm chưa gán | Nhóm đã gán
- *        - Cột 1: Bootstrap List Group + search client-side.
- *        - Cột 2 & 3: PrimeNG Tree với checkbox, search, nút điều hướng giữa 2 cột.
- *        - Nút Lưu/Hủy sticky bottom; enable khi có thay đổi.
- *        - ChangeDetectionStrategy.OnPush để tối ưu hiệu suất.
- */
 import {
   Component,
   ChangeDetectionStrategy,
@@ -27,7 +17,6 @@ import { ButtonModule } from 'primeng/button';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
 
-
 import { getHttpErrorMessage } from '../../../../shared/utils/http-error';
 import { VehicleGroupAdminService } from '../../../../services/vehicle-group-admin';
 import { UserDto, VehicleGroupNode } from '../../../../models/vehicle-group-admin';
@@ -35,19 +24,17 @@ import { UserDto, VehicleGroupNode } from '../../../../models/vehicle-group-admi
 /**
  * Người tạo: DungBT
  * Ngày tạo: 11/06/2026
- * Page component chính quản lý toàn bộ state và điều phối 3 cột.
+ * Mô tả: Trang quản trị gán nhóm xe cho người dùng.
+ *        Layout 3 cột: Danh sách User | Nhóm chưa gán | Nhóm đã gán
+ *        - Cột 1: Bootstrap List Group + search client-side.
+ *        - Cột 2 & 3: PrimeNG Tree với checkbox, search, nút điều hướng giữa 2 cột.
+ *        - Nút Lưu/Hủy sticky bottom; enable khi có thay đổi.
+ *        - ChangeDetectionStrategy.OnPush để tối ưu hiệu suất.
  */
 @Component({
   selector: 'app-vehicle-group-admin-page',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    TreeModule,
-    ButtonModule,
-    ConfirmDialogModule,
-    ToastModule,
-  ],
+  imports: [CommonModule, FormsModule, TreeModule, ButtonModule, ConfirmDialogModule, ToastModule],
   providers: [ConfirmationService],
   templateUrl: './vehicle-group-admin-page.component.html',
   styleUrl: './vehicle-group-admin-page.component.scss',
@@ -128,7 +115,8 @@ export class VehicleGroupAdminPageComponent implements OnInit {
     this.usersLoading = true;
     this.cdr.markForCheck();
 
-    this.service.getUsers()
+    this.service
+      .getUsers()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (users) => {
@@ -155,9 +143,7 @@ export class VehicleGroupAdminPageComponent implements OnInit {
     const q = this.userSearchQuery.toLowerCase().trim();
     this.filteredUsers = q
       ? this.allUsers.filter(
-          (u) =>
-            u.username.toLowerCase().includes(q) ||
-            u.fullname.toLowerCase().includes(q)
+          (u) => u.username.toLowerCase().includes(q) || u.fullname.toLowerCase().includes(q),
         )
       : this.allUsers;
     this.cdr.markForCheck();
@@ -176,7 +162,6 @@ export class VehicleGroupAdminPageComponent implements OnInit {
     this.loadGroupsForUser(user.userId);
   }
 
-
   /**
    * Người tạo: DungBT
    * Ngày tạo: 11/06/2026
@@ -192,7 +177,7 @@ export class VehicleGroupAdminPageComponent implements OnInit {
 
     forkJoin({
       unassigned: this.service.getUnassignedGroups(userId),
-      assigned: this.service.getAssignedGroups(userId)
+      assigned: this.service.getAssignedGroups(userId),
     })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
@@ -270,7 +255,10 @@ export class VehicleGroupAdminPageComponent implements OnInit {
     this.originalUnassignedNodes = this.removeNodes(this.originalUnassignedNodes, selectedKeys);
 
     // Merge vào assigned
-    this.originalAssignedNodes = this.mergeNodes(this.originalAssignedNodes, this.cloneNodes(nodesToMove));
+    this.originalAssignedNodes = this.mergeNodes(
+      this.originalAssignedNodes,
+      this.cloneNodes(nodesToMove),
+    );
 
     // Cập nhật style
     this.originalUnassignedNodes = this.updateNodeStyles(this.originalUnassignedNodes, false);
@@ -308,7 +296,10 @@ export class VehicleGroupAdminPageComponent implements OnInit {
     this.originalAssignedNodes = this.removeNodes(this.originalAssignedNodes, selectedKeys);
 
     // Merge vào unassigned
-    this.originalUnassignedNodes = this.mergeNodes(this.originalUnassignedNodes, this.cloneNodes(nodesToMove));
+    this.originalUnassignedNodes = this.mergeNodes(
+      this.originalUnassignedNodes,
+      this.cloneNodes(nodesToMove),
+    );
 
     // Cập nhật style
     this.originalUnassignedNodes = this.updateNodeStyles(this.originalUnassignedNodes, false);
@@ -393,7 +384,6 @@ export class VehicleGroupAdminPageComponent implements OnInit {
     return result;
   }
 
-
   /**
    * Người tạo: DungBT
    * Ngày tạo: 11/06/2026
@@ -415,7 +405,8 @@ export class VehicleGroupAdminPageComponent implements OnInit {
     this.isSaving = true;
     this.cdr.markForCheck();
 
-    this.service.assignGroups(this.selectedUser.userId, { groupIds })
+    this.service
+      .assignGroups(this.selectedUser.userId, { groupIds })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
@@ -472,7 +463,6 @@ export class VehicleGroupAdminPageComponent implements OnInit {
       },
     });
   }
-
 
   /**
    * Người tạo: DungBT
@@ -733,9 +723,7 @@ export class VehicleGroupAdminPageComponent implements OnInit {
       return {
         ...node,
         styleClass: isDirtyNode ? 'node-dirty' : undefined,
-        children: node.children?.length
-          ? this.updateNodeStyles(node.children, isAssignedTree)
-          : [],
+        children: node.children?.length ? this.updateNodeStyles(node.children, isAssignedTree) : [],
       };
     });
   }
@@ -762,7 +750,8 @@ export class VehicleGroupAdminPageComponent implements OnInit {
       return false;
     };
 
-    this.isDirty = checkUnassigned(this.originalUnassignedNodes) || checkAssigned(this.originalAssignedNodes);
+    this.isDirty =
+      checkUnassigned(this.originalUnassignedNodes) || checkAssigned(this.originalAssignedNodes);
   }
 
   /** Helper: hiển thị toast lỗi */

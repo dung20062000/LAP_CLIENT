@@ -11,8 +11,12 @@
  *        - ApiResponse<T>        ← ApiResponse<T>
  */
 
-// Node cây nhóm phương tiện cho PrimeNG TreeSelect
-// Map từ VehicleGroupTreeDto (key, label, data, children)
+/**
+ * Người tạo: DungBT
+ * Ngày tạo: 18/06/2026
+ * Node cây nhóm phương tiện cho PrimeNG TreeSelect
+ * Map từ VehicleGroupTreeDto (key, label, data, children)
+ */
 export interface VehicleGroupTreeNode {
   key: string;
   label: string;
@@ -20,8 +24,12 @@ export interface VehicleGroupTreeNode {
   children: VehicleGroupTreeNode[];
 }
 
-// Thông tin xe dùng cho Dropdown
-// Map từ VehicleDto (id, vehiclePlate, privateCode, displayName)
+/**
+ * Người tạo: DungBT
+ * Ngày tạo: 18/06/2026
+ * Thông tin xe dùng cho Dropdown
+ * Map từ VehicleDto (id, vehiclePlate, privateCode, displayName)
+ */
 export interface VehicleItem {
   id: number;
   vehiclePlate: string;
@@ -31,14 +39,22 @@ export interface VehicleItem {
   displayName: string;
 }
 
-// Kênh camera (Kênh 1..4)
+/**
+ * Người tạo: DungBT
+ * Ngày tạo: 18/06/2026
+ * Kênh camera (Kênh 1..4)
+ */
 export interface MediaChannel {
   value: number;
   label: string;
 }
 
-// Một bức ảnh trả về từ API
-// Map từ ImageItemDto (channel, imageTime, url, latitude, longitude)
+/**
+ * Người tạo: DungBT
+ * Ngày tạo: 18/06/2026
+ * Một bức ảnh trả về từ API
+ * Map từ ImageItemDto (channel, imageTime, url, latitude, longitude)
+ */
 export interface MediaImageItem {
   channel: number;
   imageTime: string;
@@ -48,8 +64,12 @@ export interface MediaImageItem {
   speed: number;
 }
 
-// Params gửi lên khi tìm kiếm ảnh
-// Map từ ImageSearchRequest của LAP_API
+/**
+ * Người tạo: DungBT
+ * Ngày tạo: 18/06/2026
+ * Params gửi lên khi tìm kiếm ảnh
+ * Map từ ImageSearchRequest của LAP_API
+ */
 export interface MediaSearchParams {
   vehiclePlate: string | null;
   customerId: number;
@@ -63,14 +83,22 @@ export interface MediaSearchParams {
   pageSize: number;
 }
 
-// Kết quả phân trang trả về
-// Map từ ImageSearchResponse của LAP_API
+/**
+ * Người tạo: DungBT
+ * Ngày tạo: 18/06/2026
+ * Kết quả phân trang trả về
+ * Map từ ImageSearchResponse của LAP_API
+ */
 export interface MediaSearchResult {
   totalCount: number;
   items: MediaImageItem[];
 }
 
-// Option sort direction cho Dropdown
+/**
+ * Người tạo: DungBT
+ * Ngày tạo: 18/06/2026
+ * Option sort direction cho Dropdown
+ */
 export interface SortOption {
   label: string;
   value: 'desc' | 'asc';

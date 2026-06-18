@@ -1,12 +1,3 @@
-/**
- * Người tạo: DungBT
- * Ngày tạo: 04/06/2026
- * Mô tả: Service quản lý dữ liệu màn hình Xem Ảnh Phương Tiện.
- *        Kết nối LAP_API qua các endpoint:
- *        - getVehicleGroups()     → GET  /api/vehicles/groups
- *        - getVehiclesByGroups()  → GET  /api/vehicles?groupIds=...
- *        - searchImages()         → POST /api/vehicles/images/search
- */
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -23,7 +14,11 @@ import { environment } from '../../../environments/environment';
 /**
  * Người tạo: DungBT
  * Ngày tạo: 04/06/2026
- * Service singleton cung cấp dữ liệu cho màn hình Xem Ảnh Phương Tiện.
+ * Mô tả: Service quản lý dữ liệu màn hình Xem Ảnh Phương Tiện.
+ *        Kết nối LAP_API qua các endpoint:
+ *        - getVehicleGroups()     → GET  /api/vehicles/groups
+ *        - getVehiclesByGroups()  → GET  /api/vehicles?groupIds=...
+ *        - searchImages()         → POST /api/vehicles/images/search
  */
 @Injectable({
   providedIn: 'root',

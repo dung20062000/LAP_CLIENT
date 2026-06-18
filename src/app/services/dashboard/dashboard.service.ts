@@ -1,23 +1,5 @@
-/**
- * Người tạo: DungBT
- * Ngày tạo: 01/06/2026
- * Mô tả: Service quản lý dữ liệu Dashboard:
- *        - Mock data phương tiện & điểm đến
- *        - API tổng (getAllDashboardData) khi load trang lần đầu
- *        - API riêng từng widget (getOverviewData, getBorderData, getRoadData, getFactoryData, getPortData)
- *          được gọi khi ấn nút reload của từng widget
- *        - Mỗi widget có BehaviorSubject trigger & loading state độc lập
- *        - Auto-refresh mỗi 5 phút qua RxJS timer
- *        - Lưu/đọc cấu hình layout widget theo userId từ localStorage
- *        - BehaviorSubject quản lý bộ lọc xe đang chọn (theo Vehicle.id)
- */
 import { Injectable } from '@angular/core';
-import {
-  BehaviorSubject,
-  timer,
-  Observable,
-  of,
-} from 'rxjs';
+import { BehaviorSubject, timer, Observable, of } from 'rxjs';
 import { map, shareReplay, delay, tap } from 'rxjs/operators';
 import {
   Vehicle,
@@ -35,8 +17,8 @@ const REFRESH_INTERVAL_MS = 5 * 60 * 1000; // 5 phút
 const LAYOUT_STORAGE_PREFIX = 'dashboard_layout_';
 
 // Độ trễ giả lập network (ms) – mô phỏng API call
-const MOCK_API_DELAY_FULL = 800;    // API tổng
-const MOCK_API_DELAY_WIDGET = 500;  // API từng widget
+const MOCK_API_DELAY_FULL = 800; // API tổng
+const MOCK_API_DELAY_WIDGET = 500; // API từng widget
 
 // Dữ liệu giả lập điểm đến
 const MOCK_DESTINATIONS: Omit<Destination, 'vehicleCount'>[] = [
@@ -67,10 +49,26 @@ const MOCK_DESTINATIONS: Omit<Destination, 'vehicleCount'>[] = [
 
 // Dữ liệu giả lập tên lái xe
 const DRIVER_NAMES = [
-  'Nguyễn Văn An', 'Trần Văn Bình', 'Lê Minh Cường', 'Phạm Văn Dũng', 'Hoàng Văn Em',
-  'Nguyễn Thị Phương', 'Trần Văn Giang', 'Lê Văn Hùng', 'Phạm Minh Khoa', 'Đỗ Văn Long',
-  'Vũ Thị Mai', 'Bùi Văn Nam', 'Đặng Văn Oanh', 'Ngô Văn Phúc', 'Dương Thị Quỳnh',
-  'Trịnh Văn Sơn', 'Đinh Văn Tài', 'Lý Văn Uy', 'Hà Thị Vân', 'Cao Văn Xuân',
+  'Nguyễn Văn An',
+  'Trần Văn Bình',
+  'Lê Minh Cường',
+  'Phạm Văn Dũng',
+  'Hoàng Văn Em',
+  'Nguyễn Thị Phương',
+  'Trần Văn Giang',
+  'Lê Văn Hùng',
+  'Phạm Minh Khoa',
+  'Đỗ Văn Long',
+  'Vũ Thị Mai',
+  'Bùi Văn Nam',
+  'Đặng Văn Oanh',
+  'Ngô Văn Phúc',
+  'Dương Thị Quỳnh',
+  'Trịnh Văn Sơn',
+  'Đinh Văn Tài',
+  'Lý Văn Uy',
+  'Hà Thị Vân',
+  'Cao Văn Xuân',
 ];
 
 // Kiểu locationType hợp lệ
@@ -79,7 +77,15 @@ type LocationType = Vehicle['locationType'];
 /**
  * Người tạo: DungBT
  * Ngày tạo: 01/06/2026
- * Service singleton cung cấp dữ liệu Dashboard và quản lý trạng thái.
+ * Mô tả: Service quản lý dữ liệu Dashboard:
+ *        - Mock data phương tiện & điểm đến
+ *        - API tổng (getAllDashboardData) khi load trang lần đầu
+ *        - API riêng từng widget (getOverviewData, getBorderData, getRoadData, getFactoryData, getPortData)
+ *          được gọi khi ấn nút reload của từng widget
+ *        - Mỗi widget có BehaviorSubject trigger & loading state độc lập
+ *        - Auto-refresh mỗi 5 phút qua RxJS timer
+ *        - Lưu/đọc cấu hình layout widget theo userId từ localStorage
+ *        - BehaviorSubject quản lý bộ lọc xe đang chọn (theo Vehicle.id)
  */
 @Injectable({
   providedIn: 'root',
@@ -93,31 +99,31 @@ export class DashboardService {
   private cachedVehicles: Vehicle[] = [];
 
   // Loading state từng widget
-  private overviewLoadingSubject   = new BehaviorSubject<boolean>(false);
-  private borderLoadingSubject     = new BehaviorSubject<boolean>(false);
-  private roadLoadingSubject       = new BehaviorSubject<boolean>(false);
-  private factoryLoadingSubject    = new BehaviorSubject<boolean>(false);
-  private portLoadingSubject       = new BehaviorSubject<boolean>(false);
+  private overviewLoadingSubject = new BehaviorSubject<boolean>(false);
+  private borderLoadingSubject = new BehaviorSubject<boolean>(false);
+  private roadLoadingSubject = new BehaviorSubject<boolean>(false);
+  private factoryLoadingSubject = new BehaviorSubject<boolean>(false);
+  private portLoadingSubject = new BehaviorSubject<boolean>(false);
 
-  readonly overviewLoading$  = this.overviewLoadingSubject.asObservable();
-  readonly borderLoading$    = this.borderLoadingSubject.asObservable();
-  readonly roadLoading$      = this.roadLoadingSubject.asObservable();
-  readonly factoryLoading$   = this.factoryLoadingSubject.asObservable();
-  readonly portLoading$      = this.portLoadingSubject.asObservable();
+  readonly overviewLoading$ = this.overviewLoadingSubject.asObservable();
+  readonly borderLoading$ = this.borderLoadingSubject.asObservable();
+  readonly roadLoading$ = this.roadLoadingSubject.asObservable();
+  readonly factoryLoading$ = this.factoryLoadingSubject.asObservable();
+  readonly portLoading$ = this.portLoadingSubject.asObservable();
 
   // BehaviorSubject lưu dữ liệu riêng cho từng widget
-  private statsSubject           = new BehaviorSubject<DashboardStats | null>(null);
-  private borderVehiclesSubject  = new BehaviorSubject<Vehicle[]>([]);
-  private roadVehiclesSubject    = new BehaviorSubject<Vehicle[]>([]);
+  private statsSubject = new BehaviorSubject<DashboardStats | null>(null);
+  private borderVehiclesSubject = new BehaviorSubject<Vehicle[]>([]);
+  private roadVehiclesSubject = new BehaviorSubject<Vehicle[]>([]);
   private factoryVehiclesSubject = new BehaviorSubject<Vehicle[]>([]);
-  private portVehiclesSubject    = new BehaviorSubject<Vehicle[]>([]);
+  private portVehiclesSubject = new BehaviorSubject<Vehicle[]>([]);
 
   // Observable expose ra ngoài cho component
-  readonly statsData:           Observable<DashboardStats | null> = this.statsSubject.asObservable();
-  readonly borderVehiclesData:  Observable<Vehicle[]>            = this.borderVehiclesSubject.asObservable();
-  readonly roadVehiclesData:    Observable<Vehicle[]>            = this.roadVehiclesSubject.asObservable();
-  readonly factoryVehiclesData: Observable<Vehicle[]>            = this.factoryVehiclesSubject.asObservable();
-  readonly portVehiclesData:    Observable<Vehicle[]>            = this.portVehiclesSubject.asObservable();
+  readonly statsData: Observable<DashboardStats | null> = this.statsSubject.asObservable();
+  readonly borderVehiclesData: Observable<Vehicle[]> = this.borderVehiclesSubject.asObservable();
+  readonly roadVehiclesData: Observable<Vehicle[]> = this.roadVehiclesSubject.asObservable();
+  readonly factoryVehiclesData: Observable<Vehicle[]> = this.factoryVehiclesSubject.asObservable();
+  readonly portVehiclesData: Observable<Vehicle[]> = this.portVehiclesSubject.asObservable();
 
   // Dùng để trigger lấy vehicleOptions cho filter dropdown
   readonly allVehiclesDataStream: Observable<Vehicle[]> = this.statsData.pipe(
@@ -157,19 +163,19 @@ export class DashboardService {
     this.setAllLoading(true);
 
     const allVehicles = this.generateMockData();
-    const filtered    = this.applyFilter(allVehicles);
+    const filtered = this.applyFilter(allVehicles);
 
     const result = {
-      stats:   this.calcStats(filtered),
-      border:  filtered.filter(v => v.locationType === 'border'),
-      road:    filtered.filter(v => v.locationType === 'road'),
-      factory: filtered.filter(v => v.locationType === 'factory'),
-      port:    filtered.filter(v => v.locationType === 'port'),
+      stats: this.calcStats(filtered),
+      border: filtered.filter((v) => v.locationType === 'border'),
+      road: filtered.filter((v) => v.locationType === 'road'),
+      factory: filtered.filter((v) => v.locationType === 'factory'),
+      port: filtered.filter((v) => v.locationType === 'port'),
     };
 
     return of(result).pipe(
       delay(MOCK_API_DELAY_FULL),
-      tap(data => {
+      tap((data) => {
         this.statsSubject.next(data.stats);
         this.borderVehiclesSubject.next(data.border);
         this.roadVehiclesSubject.next(data.road);
@@ -190,12 +196,14 @@ export class DashboardService {
     // [API] getOverviewData – đang gọi API widget overview...
     this.overviewLoadingSubject.next(true);
 
-    const vehicles = this.applyFilter(this.cachedVehicles.length ? this.cachedVehicles : this.generateMockData());
-    const stats    = this.calcStats(vehicles);
+    const vehicles = this.applyFilter(
+      this.cachedVehicles.length ? this.cachedVehicles : this.generateMockData(),
+    );
+    const stats = this.calcStats(vehicles);
 
     return of(stats).pipe(
       delay(MOCK_API_DELAY_WIDGET),
-      tap(data => {
+      tap((data) => {
         this.statsSubject.next(data);
         this.overviewLoadingSubject.next(false);
         // [API] getOverviewData – hoàn thành.
@@ -257,11 +265,16 @@ export class DashboardService {
   refreshWidget(widgetId: string): Observable<unknown> {
     // [API] refreshWidget
     switch (widgetId) {
-      case 'overview':    return this.getOverviewData();
-      case 'donut-border': return this.getBorderData();
-      case 'donut-road':   return this.getRoadData();
-      case 'bar-factory':  return this.getFactoryData();
-      case 'bar-port':     return this.getPortData();
+      case 'overview':
+        return this.getOverviewData();
+      case 'donut-border':
+        return this.getBorderData();
+      case 'donut-road':
+        return this.getRoadData();
+      case 'bar-factory':
+        return this.getFactoryData();
+      case 'bar-port':
+        return this.getPortData();
       default:
         console.warn(`[API] refreshWidget: widgetId "${widgetId}" không tồn tại.`);
         return of(null);
@@ -279,10 +292,10 @@ export class DashboardService {
     // Re-distribute dữ liệu theo bộ lọc mới
     const filtered = this.applyFilter(this.cachedVehicles);
     this.statsSubject.next(this.calcStats(filtered));
-    this.borderVehiclesSubject.next(filtered.filter(v => v.locationType === 'border'));
-    this.roadVehiclesSubject.next(filtered.filter(v => v.locationType === 'road'));
-    this.factoryVehiclesSubject.next(filtered.filter(v => v.locationType === 'factory'));
-    this.portVehiclesSubject.next(filtered.filter(v => v.locationType === 'port'));
+    this.borderVehiclesSubject.next(filtered.filter((v) => v.locationType === 'border'));
+    this.roadVehiclesSubject.next(filtered.filter((v) => v.locationType === 'road'));
+    this.factoryVehiclesSubject.next(filtered.filter((v) => v.locationType === 'factory'));
+    this.portVehiclesSubject.next(filtered.filter((v) => v.locationType === 'port'));
   }
 
   /**
@@ -294,7 +307,7 @@ export class DashboardService {
     if (this.cachedVehicles.length === 0) {
       this.generateMockData();
     }
-    return this.cachedVehicles.map(v => ({ value: v.id, label: v.licensePlate }));
+    return this.cachedVehicles.map((v) => ({ value: v.id, label: v.licensePlate }));
   }
 
   /**
@@ -306,8 +319,8 @@ export class DashboardService {
   getDestinationChartData(vehicles: Vehicle[]): DestinationChartItem[] {
     const countMap: Record<string, { count: number; type: DestinationChartItem['type'] }> = {};
     vehicles
-      .filter(v => v.destinationName && v.locationType !== 'road')
-      .forEach(v => {
+      .filter((v) => v.destinationName && v.locationType !== 'road')
+      .forEach((v) => {
         const key = v.destinationName!;
         if (!countMap[key]) {
           countMap[key] = { count: 0, type: v.locationType as DestinationChartItem['type'] };
@@ -337,8 +350,8 @@ export class DashboardService {
 
       // Trộn cấu hình đã lưu với cấu hình mặc định để tự động bổ sung các widget bị thiếu trong localStorage
       const merged = [...savedWidgets];
-      defaults.forEach(def => {
-        if (!merged.some(w => w.widgetId === def.widgetId)) {
+      defaults.forEach((def) => {
+        if (!merged.some((w) => w.widgetId === def.widgetId)) {
           merged.push(def);
         }
       });
@@ -378,9 +391,14 @@ export class DashboardService {
    * @param size      Kích thước mới
    * @param currentWidgets Danh sách widget hiện tại
    */
-  updateWidgetSize(userId: string, widgetId: string, size: WidgetSize, currentWidgets: WidgetConfig[]): WidgetConfig[] {
+  updateWidgetSize(
+    userId: string,
+    widgetId: string,
+    size: WidgetSize,
+    currentWidgets: WidgetConfig[],
+  ): WidgetConfig[] {
     let exists = false;
-    const updated = currentWidgets.map(w => {
+    const updated = currentWidgets.map((w) => {
       if (w.widgetId === widgetId) {
         exists = true;
         return { ...w, size };
@@ -410,7 +428,7 @@ export class DashboardService {
     currentWidgets: WidgetConfig[],
   ): WidgetConfig[] {
     let exists = false;
-    const updated = currentWidgets.map(w => {
+    const updated = currentWidgets.map((w) => {
       if (w.widgetId === widgetId) {
         exists = true;
         return { ...w, collapsed };
@@ -424,6 +442,8 @@ export class DashboardService {
     return updated;
   }
   /**
+   * Người tạo: DungBT
+   * Ngày tạo: 18/06/2026
    * Helper dùng chung cho các API widget (getBorderData, getRoadData…).
    * Tạo mock data mới ngẫu nhiên cho loại locationType tương ứng,
    * cập nhật subject và tắt loading.
@@ -437,12 +457,12 @@ export class DashboardService {
     loadingSubject.next(true);
 
     // Tạo lại ngẫu nhiên toàn bộ data để lấy phần tương ứng
-    const all      = this.generateMockData();
-    const filtered = this.applyFilter(all).filter(v => v.locationType === type);
+    const all = this.generateMockData();
+    const filtered = this.applyFilter(all).filter((v) => v.locationType === type);
 
     return of(filtered).pipe(
       delay(MOCK_API_DELAY_WIDGET),
-      tap(data => {
+      tap((data) => {
         subject.next(data);
         loadingSubject.next(false);
         // [API] getWidgetData(type) – hoàn thành.
@@ -450,7 +470,11 @@ export class DashboardService {
     );
   }
 
-  //Bật hoặc tắt loading cho tất cả widget cùng lúc.
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 18/06/2026
+   * Bật hoặc tắt loading cho tất cả widget cùng lúc.
+   */
   private setAllLoading(state: boolean): void {
     this.overviewLoadingSubject.next(state);
     this.borderLoadingSubject.next(state);
@@ -459,10 +483,14 @@ export class DashboardService {
     this.portLoadingSubject.next(state);
   }
 
-  //Áp dụng bộ lọc selectedIds lên danh sách xe.
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 01/06/2026
+   * Áp dụng bộ lọc selectedIds lên danh sách xe.
+   */
   private applyFilter(vehicles: Vehicle[]): Vehicle[] {
     const ids = this.selectedIdsSubject.getValue();
-    return ids.length === 0 ? vehicles : vehicles.filter(v => ids.includes(v.id));
+    return ids.length === 0 ? vehicles : vehicles.filter((v) => ids.includes(v.id));
   }
 
   /**
@@ -478,10 +506,10 @@ export class DashboardService {
 
     // Phân bổ phương tiện theo loại điểm
     const distributions: { type: Vehicle['locationType']; destIds: number[]; count: number }[] = [
-      { type: 'border',  destIds: [1, 2, 3, 4, 5], count: 2 },
-      { type: 'port',    destIds: [6, 7, 8, 9, 10], count: 20 },
+      { type: 'border', destIds: [1, 2, 3, 4, 5], count: 2 },
+      { type: 'port', destIds: [6, 7, 8, 9, 10], count: 20 },
       { type: 'factory', destIds: [11, 12, 13, 14, 15, 16, 17, 18, 19, 20], count: 20 },
-      { type: 'road',    destIds: [], count: 2 },
+      { type: 'road', destIds: [], count: 2 },
     ];
 
     // Biển số xe bắt đầu từ 43C01338_C
@@ -496,7 +524,7 @@ export class DashboardService {
 
         if (dist.type !== 'road' && dist.destIds.length > 0) {
           destId = dist.destIds[Math.floor(Math.random() * dist.destIds.length)];
-          destName = MOCK_DESTINATIONS.find(d => d.id === destId)?.name;
+          destName = MOCK_DESTINATIONS.find((d) => d.id === destId)?.name;
         }
 
         const driverName = DRIVER_NAMES[Math.floor(Math.random() * DRIVER_NAMES.length)];
@@ -532,12 +560,12 @@ export class DashboardService {
   private calcStats(vehicles: Vehicle[]): DashboardStats {
     return {
       totalVehicles: vehicles.length,
-      loadedVehicles: vehicles.filter(v => v.hasLoad).length,
-      emptyVehicles: vehicles.filter(v => !v.hasLoad).length,
-      atBorder:  vehicles.filter(v => v.locationType === 'border').length,
-      onRoad:    vehicles.filter(v => v.locationType === 'road').length,
-      atPort:    vehicles.filter(v => v.locationType === 'port').length,
-      atFactory: vehicles.filter(v => v.locationType === 'factory').length,
+      loadedVehicles: vehicles.filter((v) => v.hasLoad).length,
+      emptyVehicles: vehicles.filter((v) => !v.hasLoad).length,
+      atBorder: vehicles.filter((v) => v.locationType === 'border').length,
+      onRoad: vehicles.filter((v) => v.locationType === 'road').length,
+      atPort: vehicles.filter((v) => v.locationType === 'port').length,
+      atFactory: vehicles.filter((v) => v.locationType === 'factory').length,
     };
   }
 
@@ -548,9 +576,9 @@ export class DashboardService {
    * @param vehicles Danh sách xe cần tính toán
    */
   private calcDestinations(vehicles: Vehicle[]): Destination[] {
-    return MOCK_DESTINATIONS.map(d => ({
+    return MOCK_DESTINATIONS.map((d) => ({
       ...d,
-      vehicleCount: vehicles.filter(v => v.destinationId === d.id).length,
+      vehicleCount: vehicles.filter((v) => v.destinationId === d.id).length,
     }));
   }
 
@@ -561,11 +589,11 @@ export class DashboardService {
    */
   private getDefaultLayoutConfig(): WidgetConfig[] {
     return [
-      { widgetId: 'overview',     size: 'large', collapsed: false },
+      { widgetId: 'overview', size: 'large', collapsed: false },
       { widgetId: 'donut-border', size: 'small', collapsed: false },
-      { widgetId: 'donut-road',   size: 'small', collapsed: false },
-      { widgetId: 'bar-factory',  size: 'small', collapsed: false },
-      { widgetId: 'bar-port',     size: 'large', collapsed: false },
+      { widgetId: 'donut-road', size: 'small', collapsed: false },
+      { widgetId: 'bar-factory', size: 'small', collapsed: false },
+      { widgetId: 'bar-port', size: 'large', collapsed: false },
     ];
   }
 }

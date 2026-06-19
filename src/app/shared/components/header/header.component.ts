@@ -5,6 +5,7 @@ import { ClickOutsideDirective } from './click-outside.directive';
 import { TranslationService } from '../../services/translation.service';
 import { AuthService } from '../../../services/auth';
 import { TranslatePipe } from '../../pipes/translate.pipe';
+import { TranslationKey } from '../../enums/translation-key.enum';
 
 /**
  * Người tạo: DungBT
@@ -12,7 +13,7 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
  * Item menu với label là translation key và href là đường dẫn.
  */
 interface MenuItem {
-  label: string;
+  label: TranslationKey | string;
   href: string;
 }
 
@@ -41,19 +42,21 @@ export class HeaderComponent {
   // Đường dẫn Zalo OA của BA GPS.
   zaloUrl = 'https://zalo.me/1958838581480438876';
 
+  readonly TranslationKey = TranslationKey;
+
   /**
    * Người tạo: DungBT
    * Ngày tạo: 28/05/2026
    * Menu gốc chứa translation key — chưa resolve ngôn ngữ.
    */
   private rawMenuItems: MenuItem[] = [
-    { label: 'nav.home', href: 'https://bagps.vn/' },
-    { label: 'nav.products', href: 'https://bagps.vn/san-pham-va-giai-phap' },
-    { label: 'nav.news', href: 'https://bagps.vn/tin-tuc-c10' },
-    { label: 'nav.payment', href: 'https://bagps.vn/huong-dan-dong-phi-dich-vu-ba-gps-d610' },
-    { label: 'nav.guide', href: 'https://badoc.bagroup.vn/x/SAGhBg' },
-    { label: 'nav.network', href: 'https://bagps.vn/mang-luoi' },
-    { label: 'nav.about', href: 'https://bagps.vn/gioi-thieu/' },
+    { label: TranslationKey.NavHome, href: 'https://bagps.vn/' },
+    { label: TranslationKey.NavProducts, href: 'https://bagps.vn/san-pham-va-giai-phap' },
+    { label: TranslationKey.NavNews, href: 'https://bagps.vn/tin-tuc-c10' },
+    { label: TranslationKey.NavPayment, href: 'https://bagps.vn/huong-dan-dong-phi-dich-vu-ba-gps-d610' },
+    { label: TranslationKey.NavGuide, href: 'https://badoc.bagroup.vn/x/SAGhBg' },
+    { label: TranslationKey.NavNetwork, href: 'https://bagps.vn/mang-luoi' },
+    { label: TranslationKey.NavAbout, href: 'https://bagps.vn/gioi-thieu/' },
   ];
 
   /**

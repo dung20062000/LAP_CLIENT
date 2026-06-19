@@ -1,6 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, of } from 'rxjs';
+import { TranslationKey } from '../enums/translation-key.enum';
 
 /**
  * Người tạo: DungBT
@@ -78,7 +79,7 @@ export class TranslationService {
    * Ví dụ: 'nav.home' -> đọc translations()['nav']['home'].
    * Trả về key gốc nếu không tìm thấy (fallback).
    */
-  translate(key: string): string {
+  translate(key: string | TranslationKey): string {
     const keys = key.split('.');
     let value: any = this.translations();
     for (const k of keys) {

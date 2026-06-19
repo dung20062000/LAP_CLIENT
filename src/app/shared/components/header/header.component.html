@@ -22,7 +22,7 @@
 
       @if (isLoggedIn() && currentUser()) {
         <div class="mobile-user-greeting">
-          {{ 'header.greeting' | translate }} <strong>{{ currentUser()!.fullName || currentUser()!.username }}</strong>
+          {{ TranslationKey.HeaderGreeting | translate }} <strong>{{ currentUser()!.fullName || currentUser()!.username }}</strong>
         </div>
       }
 
@@ -73,13 +73,13 @@
           target="_blank"
           rel="noopener noreferrer"
           [href]="zaloUrl"
-          [title]="'common.zalo' | translate"
+          [title]="TranslationKey.CommonZalo | translate"
         >
           <img src="https://img.icons8.com/color/48/zalo.png" alt="Zalo" width="22" height="22" />
-          <span class="btn-text">{{ 'common.zalo' | translate }}</span>
+          <span class="btn-text">{{ TranslationKey.CommonZalo | translate }}</span>
         </a>
 
-        <a class="hotline-btn" [title]="'common.hotline' | translate" [href]="'tel:' + hotline">
+        <a class="hotline-btn" [title]="TranslationKey.CommonHotline | translate" [href]="'tel:' + hotline">
           <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
             <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
           </svg>
@@ -88,9 +88,9 @@
       </div>
 
       @if (isLoggedIn()) {
-        <button class="mobile-logout-btn" [title]="'header.logout' | translate" (click)="onLogout(); closeMenu()">
+        <button class="mobile-logout-btn" [title]="TranslationKey.HeaderLogout | translate" (click)="onLogout(); closeMenu()">
           <i class="fas fa-sign-out-alt"></i>
-          <span>{{ 'header.logout' | translate }}</span>
+          <span>{{ TranslationKey.HeaderLogout | translate }}</span>
         </button>
       }
     </nav>
@@ -100,7 +100,7 @@
         class="zalo-btn"
         target="_blank"
         rel="noopener noreferrer"
-        title="Zalo"
+        [title]="TranslationKey.CommonZalo | translate"
         [href]="zaloUrl"
       >
         <img
@@ -109,10 +109,10 @@
           width="22"
           height="22"
         />
-        <span class="btn-text">{{ 'common.zalo' | translate }}</span>
+        <span class="btn-text">{{ TranslationKey.CommonZalo | translate }}</span>
       </a>
 
-      <a class="hotline-btn" title="Hotline" [href]="'tel:' + hotline">
+      <a class="hotline-btn" [title]="TranslationKey.CommonHotline | translate" [href]="'tel:' + hotline">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
           <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
         </svg>
@@ -128,7 +128,7 @@
             (click)="userMenuOpen = !userMenuOpen"
             (keydown.enter)="userMenuOpen = !userMenuOpen"
           >
-            {{ 'header.greeting' | translate }} <strong>{{ currentUser()!.fullName || currentUser()!.username }}</strong>
+            {{ TranslationKey.HeaderGreeting | translate }} <strong>{{ currentUser()!.fullName || currentUser()!.username }}</strong>
             <span class="user-arrow">
               <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
                 <path d="M7 10l5 5 5-5z"/>
@@ -165,7 +165,7 @@
         </div>
       }
 
-      <div class="lang-selector" [title]="'header.select_language' | translate" (clickOutside)="langOpen = false">
+      <div class="lang-selector" [title]="TranslationKey.HeaderSelectLanguage | translate" (clickOutside)="langOpen = false">
         <div
           class="lang-current"
           role="button"
@@ -209,7 +209,7 @@
         }
       </div>
       @if (isLoggedIn()) {
-        <button class="logout-btn" [title]="'header.logout' | translate" (click)="onLogout()">
+        <button class="logout-btn" [title]="TranslationKey.HeaderLogout | translate" (click)="onLogout()">
           <i class="fas fa-sign-out-alt"></i>
         </button>
       }

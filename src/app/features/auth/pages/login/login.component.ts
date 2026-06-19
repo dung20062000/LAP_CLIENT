@@ -10,6 +10,7 @@ import { FooterComponent } from '../../../../shared/components/footer/footer.com
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { TranslationService } from '../../../../shared/services/translation.service';
 import { BannerService } from '../../../../shared/services/banner.service';
+import { TranslationKey } from '../../../../shared/enums/translation-key.enum';
 
 /**
  * Người tạo: DungBT
@@ -61,6 +62,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   isLoading = signal(false);
   showPassword = signal(false);
   errorMessage = signal('');
+  readonly TranslationKey = TranslationKey;
 
   // --- Banner State ---
   readonly banners = toSignal(this.bannerService.getBanners(), {
@@ -231,14 +233,14 @@ export class LoginComponent implements OnInit, OnDestroy {
           this.router.navigate([returnUrl || '/public/dashboard']);
         } else {
           this.errorMessage.set(
-            this.translationService.translate('login.err_invalid_credentials') || response.message,
+            this.translationService.translate(TranslationKey.LoginErrInvalidCredentials) || response.message,
           );
         }
       },
       error: (err) => {
         this.isLoading.set(false);
         const msg =
-          err?.error?.message || this.translationService.translate('login.err_invalid_credentials');
+          err?.error?.message || this.translationService.translate(TranslationKey.LoginErrInvalidCredentials);
         this.errorMessage.set(msg);
       },
     });

@@ -2,10 +2,6 @@
  * Người tạo: DungBT
  * Ngày tạo: 11/06/2026
  * Mô tả: Các interface dùng cho màn hình Quản Trị Nhóm Phương Tiện.
- *        Map trực tiếp với DTOs của LAP_API:
- *        - UserDto              ← UserDto (Admin.Users)
- *        - VehicleGroupNode     ← VehicleGroupNodeDto (Vehicle.Groups)
- *        - AssignGroupsRequest  ← AssignGroupsRequest
  */
 
 /**

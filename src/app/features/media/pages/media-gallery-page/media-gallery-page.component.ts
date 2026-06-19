@@ -1,10 +1,5 @@
-import {
-  Component,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  inject,
-  DestroyRef,
-} from '@angular/core';
+// prettier-ignore
+import { Component, ChangeDetectionStrategy, ChangeDetectorRef, inject, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
@@ -32,13 +27,8 @@ import { MediaDetailDialogComponent } from '../../components/media-detail-dialog
 @Component({
   selector: 'app-media-gallery-page',
   standalone: true,
-  imports: [
-    CommonModule,
-    PaginatorModule,
-    MediaFilterComponent,
-    MediaImageCardComponent,
-    MediaDetailDialogComponent,
-  ],
+  // prettier-ignore
+  imports: [CommonModule, PaginatorModule, MediaFilterComponent, MediaImageCardComponent, MediaDetailDialogComponent],
   templateUrl: './media-gallery-page.component.html',
   styleUrl: './media-gallery-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush, // Chỉ chạy code khi có thay đổi

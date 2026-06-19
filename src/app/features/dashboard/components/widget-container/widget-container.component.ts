@@ -1,12 +1,5 @@
-import {
-  Component,
-  Input,
-  Output,
-  EventEmitter,
-  HostListener,
-  ElementRef,
-  ChangeDetectorRef,
-} from '@angular/core';
+// prettier-ignore
+import { Component, Input, Output, EventEmitter, HostListener, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { WidgetSize } from '../../../../models';
 

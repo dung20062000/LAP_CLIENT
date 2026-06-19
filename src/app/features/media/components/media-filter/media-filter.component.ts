@@ -1,13 +1,5 @@
-import {
-  Component,
-  OnInit,
-  Input,
-  Output,
-  EventEmitter,
-  inject,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-} from '@angular/core';
+// prettier-ignore
+import { Component, OnInit, Input, Output, EventEmitter, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TreeSelectModule } from 'primeng/treeselect';
@@ -33,15 +25,8 @@ import { VehicleItem, MediaChannel, MediaSearchParams, SortOption } from '../../
  */ @Component({
   selector: 'app-media-filter',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    TreeSelectModule,
-    NgSelectModule,
-    DatePicker,
-    ButtonModule,
-    Checkbox,
-  ],
+  // prettier-ignore
+  imports: [CommonModule, FormsModule, TreeSelectModule, NgSelectModule, DatePicker, ButtonModule, Checkbox],
   templateUrl: './media-filter.component.html',
   styleUrl: './media-filter.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -346,7 +331,11 @@ export class MediaFilterComponent implements OnInit {
   // Trạng thái expand/collapse toàn bộ tree nodes
   isAllExpanded = false;
 
-  // Mở rộng / Thu gọn toàn bộ các node trong TreeSelect.
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 10/06/2026
+   * Mở rộng / Thu gọn toàn bộ các node trong TreeSelect.
+   */
   toggleExpandAll(): void {
     this.isAllExpanded = !this.isAllExpanded;
     this.expandAllRecursive(this.vehicleGroups, this.isAllExpanded);

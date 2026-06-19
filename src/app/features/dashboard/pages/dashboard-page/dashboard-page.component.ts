@@ -1,25 +1,13 @@
-import {
-  Component,
-  OnInit,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  signal,
-  inject,
-  DestroyRef,
-} from '@angular/core';
+// prettier-ignore
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, signal, inject, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { Observable } from 'rxjs';
 
+// prettier-ignore
 import { AuthService, DashboardService } from '../../../../services';
-import {
-  WidgetConfig,
-  WidgetSize,
-  VehicleOption,
-  Vehicle,
-  Destination,
-  DashboardStats,
-} from '../../../../models';
+// prettier-ignore
+import { WidgetConfig, WidgetSize, VehicleOption, Vehicle, Destination, DashboardStats } from '../../../../models';
 
 import { WidgetContainerComponent } from '../../components/widget-container/widget-container.component';
 import { DashboardFilterComponent } from '../../components/dashboard-filter/dashboard-filter.component';

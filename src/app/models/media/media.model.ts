@@ -2,13 +2,6 @@
  * Người tạo: DungBT
  * Ngày tạo: 04/06/2026
  * Mô tả: Các interface/type dùng cho màn hình Xem Ảnh Phương Tiện.
- *        Map trực tiếp với DTOs của LAP_API:
- *        - VehicleGroupTreeNode  ← VehicleGroupTreeDto
- *        - VehicleItem           ← VehicleDto
- *        - MediaImageItem        ← ImageItemDto
- *        - MediaSearchParams     ← ImageSearchRequest
- *        - MediaSearchResult     ← ImageSearchResponse
- *        - ApiResponse<T>        ← ApiResponse<T>
  */
 
 /**

@@ -11,6 +11,11 @@ import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { TranslationService } from '../../../../shared/services/translation.service';
 import { BannerService } from '../../../../shared/services/banner.service';
 
+/**
+ * Người tạo: DungBT
+ * Ngày tạo: 19/06/2026
+ * Interface chứa thông tin banner slide.
+ */
 export interface BannerSlide {
   id: string | number;
   imageUrl: string;
@@ -21,6 +26,11 @@ export interface BannerSlide {
   active?: boolean;
 }
 
+/**
+ * Người tạo: DungBT
+ * Ngày tạo: 19/06/2026
+ * Interface chứa thông tin banner slide đã được resolve.
+ */
 export interface ResolvedBannerSlide extends Omit<BannerSlide, 'title' | 'shortContents'> {
   title: string;
   shortContents: string;
@@ -33,13 +43,7 @@ export interface ResolvedBannerSlide extends Omit<BannerSlide, 'title' | 'shortC
  */
 @Component({
   selector: 'app-login',
-  imports: [
-    ReactiveFormsModule,
-    CommonModule,
-    HeaderComponent,
-    FooterComponent,
-    TranslatePipe,
-  ],
+  imports: [ReactiveFormsModule, CommonModule, HeaderComponent, FooterComponent, TranslatePipe],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
@@ -105,7 +109,11 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.stopAutoPlay();
   }
 
-  // --- Banner Methods ---
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 19/06/2026
+   * Bắt đầu auto play banner.
+   */
   private startAutoPlay(): void {
     this.stopAutoPlay();
     if (this.hasSlides() && this.totalSlides() > 1) {
@@ -115,6 +123,11 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 19/06/2026
+   * Dừng auto play banner.
+   */
   private stopAutoPlay(): void {
     if (this.intervalId !== null) {
       clearInterval(this.intervalId);
@@ -122,39 +135,73 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 19/06/2026
+   * Đi đến slide index.
+   */
   private goToSlide(index: number): void {
     if (!this.hasSlides()) return;
     const maxIndex = this.totalSlides() - 1;
     this.currentIndex.set(Math.max(0, Math.min(index, maxIndex)));
   }
 
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 19/06/2026
+   * Đi đến slide tiếp theo.
+   */
   nextSlide(): void {
     if (!this.hasSlides()) return;
     this.goToSlide((this.currentIndex() + 1) % this.totalSlides());
   }
 
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 19/06/2026
+   * Đi đến slide trước đó.
+   */
   prevSlide(): void {
     if (!this.hasSlides()) return;
     const newIndex = this.currentIndex() - 1;
     this.goToSlide(newIndex < 0 ? this.totalSlides() - 1 : newIndex);
   }
 
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 19/06/2026
+   * Đi đến slide index và bắt đầu auto play.
+   */
   goToSlideByIndex(index: number): void {
     this.goToSlide(index);
     this.startAutoPlay();
   }
 
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 19/06/2026
+   * Dừng auto play khi hover vào banner.
+   */
   onMouseEnter(): void {
     this.isHovered.set(true);
     this.stopAutoPlay();
   }
 
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 19/06/2026
+   * Bắt đầu auto play khi rời khỏi banner.
+   */
   onMouseLeave(): void {
     this.isHovered.set(false);
     this.startAutoPlay();
   }
 
-  // --- Form Methods ---
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 19/06/2026
+   * Kiểm tra field có invalid không.
+   */
   isFieldInvalid(fieldName: string): boolean {
     const field = this.loginForm.get(fieldName);
     return !!(field && field.invalid && (field.touched || field.dirty));

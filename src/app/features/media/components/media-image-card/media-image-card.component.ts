@@ -19,7 +19,6 @@ const FAKE_ADDRESSES = [
  * @Input() index: number          – index trong danh sách
  * @Output() imageClick: EventEmitter<number> – emit index khi click ảnh
  * @Thumbnail với object-fit: cover, aspect-ratio 4:3.
- * @Metadata: thời gian, tốc độ (fake 0 km/h), kênh, địa chỉ (fake), nút download.
  */
 @Component({
   selector: 'app-media-image-card',

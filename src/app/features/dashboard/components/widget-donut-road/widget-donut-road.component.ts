@@ -1,12 +1,5 @@
-import {
-  Component,
-  Input,
-  OnChanges,
-  OnDestroy,
-  SimpleChanges,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-} from '@angular/core';
+// prettier-ignore
+import { Component, Input, OnChanges, OnDestroy, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 
 import { NgxEchartsDirective } from 'ngx-echarts';
 import type { EChartsOption } from 'echarts';
@@ -58,6 +51,11 @@ export class WidgetDonutRoadComponent implements OnChanges, OnDestroy {
     }
   }
 
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 01/06/2026
+   * Cập nhật trạng thái mobile
+   */
   private updateMobile(): void {
     const isNowMobile = window.innerWidth <= MOBILE_BREAKPOINT;
     // Chỉ build lại chart khi thay đổi trạng thái giữa mobile và desktop
@@ -69,6 +67,11 @@ export class WidgetDonutRoadComponent implements OnChanges, OnDestroy {
     }
   }
 
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 01/06/2026
+   * Xây dựng biểu đồ donut
+   */
   private buildChart(): void {
     const roadVehicles = this.vehicles.filter((v) => v.locationType === 'road');
 

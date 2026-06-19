@@ -1,12 +1,5 @@
-import {
-  Component,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  NgZone,
-  inject,
-  DestroyRef,
-  OnInit,
-} from '@angular/core';
+// prettier-ignore
+import { Component, ChangeDetectionStrategy, ChangeDetectorRef, NgZone, inject, DestroyRef, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { forkJoin } from 'rxjs';

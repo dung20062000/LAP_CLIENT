@@ -80,18 +80,28 @@ export class HeaderComponent {
       label: 'Tiếng Việt',
       flag: 'https://img.icons8.com/color/48/vietnam-circular.png',
     },
-    { code: 'en',
+    {
+      code: 'en',
       label: 'English',
       flag: 'https://img.icons8.com/color/48/usa-circular.png',
       href: 'https://bagps.vn/en/',
     },
   ];
 
-  // Lấy ngôn ngữ hiện tại từ TranslationService.
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 28/05/2026
+   * Lấy ngôn ngữ hiện tại từ TranslationService
+   */
   get currentLang(): string {
     return this.translationService.currentLang();
   }
 
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 28/05/2026
+   * Lấy thông tin ngôn ngữ hiện tại từ TranslationService
+   */
   readonly currentLangInfo = computed(
     () => this.languages.find((l) => l.code === this.currentLang) ?? this.languages[0],
   );
@@ -112,17 +122,29 @@ export class HeaderComponent {
     this.translationService.changeLanguage(code);
   }
 
-  // Toggle trạng thái mở/đóng menu mobile.
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 28/05/2026
+   * Toggle trạng thái mở/đóng menu mobile.
+   */
   toggleMenu(): void {
     this.isMenuOpen = !this.isMenuOpen;
   }
 
-  // Đóng menu mobile — dùng trong click-outside directive.
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 28/05/2026
+   * Đóng menu mobile — dùng trong click-outside directive.
+   */
   closeMenu(): void {
     this.isMenuOpen = false;
   }
 
-  // Xử lý đăng xuất qua AuthService.
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 28/05/2026
+   * Xử lý đăng xuất qua AuthService.
+   */
   onLogout(): void {
     this.authService.logout();
   }

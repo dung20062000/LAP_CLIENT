@@ -1,9 +1,3 @@
-/**
- * Người tạo: DungBT
- * Ngày tạo: 01/06/2026
- * Mô tả: Widget Tổng quan Công ty — hiển thị 3 card thống kê:
- *        Tổng phương tiện | Có hàng | Không hàng.
- */
 import { Component, Input, OnChanges, ChangeDetectionStrategy } from '@angular/core';
 
 import { DashboardStats } from '../../../../models';

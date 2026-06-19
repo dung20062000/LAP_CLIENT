@@ -1,19 +1,5 @@
-import {
-  Component,
-  OnInit,
-  OnChanges,
-  OnDestroy,
-  Input,
-  Output,
-  EventEmitter,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  SimpleChanges,
-  ElementRef,
-  HostListener,
-  ViewChild,
-  AfterViewInit,
-} from '@angular/core';
+// prettier-ignore
+import { Component, OnInit, OnChanges, OnDestroy, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, SimpleChanges, ElementRef, HostListener, ViewChild, AfterViewInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { VehicleOption } from '../../../../models';

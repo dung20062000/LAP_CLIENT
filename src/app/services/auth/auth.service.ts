@@ -7,6 +7,13 @@ import { LoginRequest, LoginResponse, ApiResponse, UserInfo } from '../../models
 // Hardcode credentials tạm thời — xóa khi backend API sẵn sàng.
 const HARDCODE_USERNAME = 'admin';
 const HARDCODE_PASSWORD = 'admin@123';
+
+/**
+ * Người tạo: DungBT
+ * Ngày tạo: 19/06/2026
+ * Mô tả: Service quản lý xác thực — đăng nhập, đăng xuất, lưu token,
+ *         khôi phục session từ localStorage/sessionStorage.
+ */
 @Injectable({
   providedIn: 'root',
 })

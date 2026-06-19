@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy, signal, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+// prettier-ignore
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../../services';
 import { LoginRequest } from '../../../../models';
 import { HeaderComponent } from '../../../../shared/components/header/header.component';
@@ -43,7 +43,7 @@ export interface ResolvedBannerSlide extends Omit<BannerSlide, 'title' | 'shortC
  */
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule, CommonModule, HeaderComponent, FooterComponent, TranslatePipe],
+  imports: [ReactiveFormsModule, HeaderComponent, FooterComponent, TranslatePipe],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
@@ -56,6 +56,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   private bannerService = inject(BannerService);
 
   loginForm!: FormGroup;
+  usernameControl!: AbstractControl | null;
+  passwordControl!: AbstractControl | null;
   isLoading = signal(false);
   showPassword = signal(false);
   errorMessage = signal('');
@@ -67,13 +69,11 @@ export class LoginComponent implements OnInit, OnDestroy {
   readonly currentIndex = signal(0);
   readonly isHovered = signal(false);
 
-  readonly currentLang = (): string => this.translationService.currentLang();
-
   private intervalId: ReturnType<typeof setInterval> | null = null;
   private readonly SLIDE_INTERVAL_MS = 100000;
 
   readonly resolvedSlides = computed<ResolvedBannerSlide[]>(() => {
-    const lang = this.currentLang() as 'vi' | 'en';
+    const lang = this.translationService.currentLang() as 'vi' | 'en';
     return this.banners().map((slide) => ({
       ...slide,
       title: slide.title[lang] ?? slide.title['vi'],
@@ -102,6 +102,8 @@ export class LoginComponent implements OnInit, OnDestroy {
       password: ['', [Validators.required, Validators.maxLength(200)]],
       rememberMe: [true],
     });
+    this.usernameControl = this.loginForm.get('username');
+    this.passwordControl = this.loginForm.get('password');
     this.startAutoPlay();
   }
 
@@ -199,43 +201,6 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   /**
    * Người tạo: DungBT
-   * Ngày tạo: 19/06/2026
-   * Kiểm tra field có invalid không.
-   */
-  isFieldInvalid(fieldName: string): boolean {
-    const field = this.loginForm.get(fieldName);
-    return !!(field && field.invalid && (field.touched || field.dirty));
-  }
-
-  /**
-   * Người tạo: DungBT
-   * Ngày tạo: 28/05/2026
-   * @param fieldName: tên field
-   * Trả về message lỗi đầu tiên của field dựa trên các validation rule.
-   * Message được resolve qua TranslationService theo ngôn ngữ hiện tại.
-   */
-  getFieldError(fieldName: string): string {
-    const field = this.loginForm.get(fieldName);
-    if (!field || !field.errors || !(field.touched || field.dirty)) return '';
-
-    if (field.errors['required']) {
-      return fieldName === 'username'
-        ? this.translationService.translate('login.err_username_required')
-        : this.translationService.translate('login.err_password_required');
-    }
-    if (field.errors['pattern']) {
-      return this.translationService.translate('login.err_username_pattern');
-    }
-    if (field.errors['maxlength']) {
-      return fieldName === 'username'
-        ? this.translationService.translate('login.err_username_maxlength')
-        : this.translationService.translate('login.err_password_maxlength');
-    }
-    return '';
-  }
-
-  /**
-   * Người tạo: DungBT
    * Ngày tạo: 28/05/2026
    * Xử lý submit form:
    * - Validate form, markAllAsTouched nếu invalid.
@@ -266,7 +231,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           this.router.navigate([returnUrl || '/public/dashboard']);
         } else {
           this.errorMessage.set(
-            response.message || this.translationService.translate('login.err_invalid_credentials'),
+            this.translationService.translate('login.err_invalid_credentials') || response.message,
           );
         }
       },

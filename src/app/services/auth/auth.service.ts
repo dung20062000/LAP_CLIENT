@@ -18,8 +18,6 @@ const HARDCODE_PASSWORD = 'admin@123';
   providedIn: 'root',
 })
 export class AuthService {
-  private readonly API_URL = '/api/auth';
-
   // Tín hiệu lưu thông tin user hiện tại.
   private currentUserSignal = signal<UserInfo | null>(null);
   // Tín hiệu lưu JWT token.
@@ -28,7 +26,6 @@ export class AuthService {
   // Public readonly signals cho các component đăng ký theo dõi.
   readonly currentUser = this.currentUserSignal.asReadonly();
   readonly isLoggedIn = computed(() => !!this.currentUserSignal());
-  readonly token = this.tokenSignal.asReadonly();
 
   // Kiểm tra môi trường browser để tránh lỗi ReferenceError trên SSR
   private isBrowser(): boolean {

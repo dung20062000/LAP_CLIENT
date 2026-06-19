@@ -72,7 +72,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   readonly isHovered = signal(false);
 
   private intervalId: ReturnType<typeof setInterval> | null = null;
-  private readonly SLIDE_INTERVAL_MS = 100000;
+  private readonly SLIDE_INTERVAL_MS = 5000;
 
   readonly resolvedSlides = computed<ResolvedBannerSlide[]>(() => {
     const lang = this.translationService.currentLang() as 'vi' | 'en';
@@ -233,14 +233,16 @@ export class LoginComponent implements OnInit, OnDestroy {
           this.router.navigate([returnUrl || '/public/dashboard']);
         } else {
           this.errorMessage.set(
-            this.translationService.translate(TranslationKey.LoginErrInvalidCredentials) || response.message,
+            this.translationService.translate(TranslationKey.LoginErrInvalidCredentials) ||
+              response.message,
           );
         }
       },
       error: (err) => {
         this.isLoading.set(false);
         const msg =
-          err?.error?.message || this.translationService.translate(TranslationKey.LoginErrInvalidCredentials);
+          err?.error?.message ||
+          this.translationService.translate(TranslationKey.LoginErrInvalidCredentials);
         this.errorMessage.set(msg);
       },
     });

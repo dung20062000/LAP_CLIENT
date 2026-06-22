@@ -102,26 +102,29 @@ export class DashboardPageComponent implements OnInit {
   private initStreams(): void {
     // Hàm hỗ trợ đăng ký luồng dữ liệu, gán biến và kích hoạt cập nhật giao diện
     const subscribeTo = <T>(source$: Observable<T>, assignFn: (val: T) => void): void => {
-      source$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(val => {
+      source$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((val) => {
         assignFn(val);
         this.cdr.markForCheck();
       });
     };
 
     // 1. Nhận dữ liệu của từng widget
-    subscribeTo(this.dashboardService.statsData, val => this.statsData = val);
-    subscribeTo(this.dashboardService.destinationsData, val => this.destinationsData = val);
-    subscribeTo(this.dashboardService.borderVehiclesData, val => this.borderVehiclesData = val);
-    subscribeTo(this.dashboardService.roadVehiclesData, val => this.roadVehiclesData = val);
-    subscribeTo(this.dashboardService.factoryVehiclesData, val => this.factoryVehiclesData = val);
-    subscribeTo(this.dashboardService.portVehiclesData, val => this.portVehiclesData = val);
+    subscribeTo(this.dashboardService.statsData, (val) => (this.statsData = val));
+    subscribeTo(this.dashboardService.destinationsData, (val) => (this.destinationsData = val));
+    subscribeTo(this.dashboardService.borderVehiclesData, (val) => (this.borderVehiclesData = val));
+    subscribeTo(this.dashboardService.roadVehiclesData, (val) => (this.roadVehiclesData = val));
+    subscribeTo(
+      this.dashboardService.factoryVehiclesData,
+      (val) => (this.factoryVehiclesData = val),
+    );
+    subscribeTo(this.dashboardService.portVehiclesData, (val) => (this.portVehiclesData = val));
 
     // 2. Nhận trạng thái loading của từng widget
-    subscribeTo(this.dashboardService.overviewLoading$, val => this.overviewLoading = val);
-    subscribeTo(this.dashboardService.borderLoading$, val => this.borderLoading = val);
-    subscribeTo(this.dashboardService.roadLoading$, val => this.roadLoading = val);
-    subscribeTo(this.dashboardService.factoryLoading$, val => this.factoryLoading = val);
-    subscribeTo(this.dashboardService.portLoading$, val => this.portLoading = val);
+    subscribeTo(this.dashboardService.overviewLoading$, (val) => (this.overviewLoading = val));
+    subscribeTo(this.dashboardService.borderLoading$, (val) => (this.borderLoading = val));
+    subscribeTo(this.dashboardService.roadLoading$, (val) => (this.roadLoading = val));
+    subscribeTo(this.dashboardService.factoryLoading$, (val) => (this.factoryLoading = val));
+    subscribeTo(this.dashboardService.portLoading$, (val) => (this.portLoading = val));
   }
 
   /**
@@ -184,7 +187,7 @@ export class DashboardPageComponent implements OnInit {
    */
   getWidgetConfig(widgetId: string): WidgetConfig {
     return (
-      this.widgetConfigs.find(w => w.widgetId === widgetId) || {
+      this.widgetConfigs.find((w) => w.widgetId === widgetId) || {
         widgetId,
         size: 'auto',
         collapsed: false,
@@ -223,8 +226,8 @@ export class DashboardPageComponent implements OnInit {
   private getMiddleWidgetColClasses(): Record<string, string> {
     const configs = {
       'donut-border': { default: 3, size: this.getWidgetConfig('donut-border').size || 'auto' },
-      'donut-road':   { default: 3, size: this.getWidgetConfig('donut-road').size   || 'auto' },
-      'bar-factory':  { default: 6, size: this.getWidgetConfig('bar-factory').size  || 'auto' },
+      'donut-road': { default: 3, size: this.getWidgetConfig('donut-road').size || 'auto' },
+      'bar-factory': { default: 6, size: this.getWidgetConfig('bar-factory').size || 'auto' },
     };
 
     const fixedWidths: Record<string, number> = {};
@@ -256,9 +259,9 @@ export class DashboardPageComponent implements OnInit {
     // 2. Phân bổ động cho các widget ở trạng thái 'auto'
     if (autoWidgets.length === 3) {
       return {
-        'donut-border': 'col-12 col-md-3',
-        'donut-road':   'col-12 col-md-3',
-        'bar-factory':  'col-12 col-md-6',
+        'donut-border': 'col-12 col-md-6 col-xl-3',
+        'donut-road': 'col-12 col-md-6 col-xl-3',
+        'bar-factory': 'col-12 col-xl-6',
       };
     }
 
@@ -291,11 +294,21 @@ export class DashboardPageComponent implements OnInit {
           result[id2] = `col-12 col-md-${col2}`;
         }
       } else {
-        // Không đủ không gian trên hàng hiện tại -> Để tự động xuống hàng theo kích thước mặc định
-        autoWidgets.forEach(id => {
-          const def = configs[id as keyof typeof configs].default;
-          result[id] = `col-12 col-md-${def}`;
-        });
+        // Không đủ không gian trên hàng hiện tại -> Chia theo tỉ lệ cho một hàng mới (12 cột)
+        if (autoWidgets.length === 1) {
+          result[autoWidgets[0]] = 'col-12 col-md-12';
+        } else {
+          const id1 = autoWidgets[0];
+          const id2 = autoWidgets[1];
+          const def1 = configs[id1 as keyof typeof configs].default;
+          const def2 = configs[id2 as keyof typeof configs].default;
+
+          let col1 = Math.round(12 * (def1 / (def1 + def2)));
+          let col2 = 12 - col1;
+
+          result[id1] = `col-12 col-md-${col1}`;
+          result[id2] = `col-12 col-md-${col2}`;
+        }
       }
     }
 

@@ -4,20 +4,28 @@
  * Mô tả: Các interface/type dùng cho Dashboard theo dõi trạng thái xe chở hàng.
  */
 
-//Kích thước widget
+/**
+ * Người tạo: DungBT
+ * Ngày tạo: 22/06/2026
+ * Kích thước widget 1: Tự động , 2 nhỏ, 3 trung bình, 4 lớn
+ */
 export enum WidgetSize {
   Auto = 1,
   Small = 2,
   Medium = 3,
-  Large = 4
+  Large = 4,
 }
 
-//Loại điểm đến
+/**
+ * Người tạo: DungBT
+ * Ngày tạo: 22/06/2026
+ * Loại điểm đến 1: Cửa khẩu, 2: Bãi cảng, 3: Nhà máy, 4: Trên đường
+ */
 export enum DestinationType {
   Border = 1,
   Port = 2,
   Factory = 3,
-  Road = 4
+  Road = 4,
 }
 
 /**

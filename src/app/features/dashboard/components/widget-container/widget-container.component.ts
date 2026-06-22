@@ -1,18 +1,5 @@
-/**
- * Người tạo: DungBT
- * Ngày tạo: 01/06/2026
- * Mô tả: Component dùng chung bọc ngoài các widget Dashboard.
- *        Quản lý: tiêu đề, collapse/expand, reload, tùy chọn độ rộng.
- */
-import {
-  Component,
-  Input,
-  Output,
-  EventEmitter,
-  HostListener,
-  ElementRef,
-  ChangeDetectorRef,
-} from '@angular/core';
+// prettier-ignore
+import { Component, Input, Output, EventEmitter, HostListener, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { WidgetSize } from '../../../../models';
 
@@ -97,7 +84,9 @@ export class WidgetContainerComponent {
    */
   updateSubmenuPosition(): void {
     requestAnimationFrame(() => {
-      const menu = this.el.nativeElement.querySelector('.widget-options-menu') as HTMLElement | null;
+      const menu = this.el.nativeElement.querySelector(
+        '.widget-options-menu',
+      ) as HTMLElement | null;
       if (menu) {
         const rect = menu.getBoundingClientRect();
         const viewportWidth = window.innerWidth;

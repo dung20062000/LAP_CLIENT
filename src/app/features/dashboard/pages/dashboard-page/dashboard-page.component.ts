@@ -1,33 +1,13 @@
-/**
- * Người tạo: DungBT
- * Ngày tạo: 01/06/2026
- * Mô tả: Dashboard Page – Màn hình chính theo dõi trạng thái xe chở hàng.
- *        - Gọi API tổng (getAllDashboardData) 1 lần khi load trang để lấy toàn bộ dữ liệu.
- *        - Khi ấn reload trên từng Widget, chỉ gọi API riêng của widget đó (refreshWidget).
- *        - Mỗi widget có loading state độc lập, hiển thị spinner khi đang reload.
- */
-import {
-  Component,
-  OnInit,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  signal,
-  inject,
-  DestroyRef,
-} from '@angular/core';
+// prettier-ignore
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, signal, inject, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { Observable } from 'rxjs';
 
+// prettier-ignore
 import { AuthService, DashboardService } from '../../../../services';
-import {
-  WidgetConfig,
-  WidgetSize,
-  VehicleOption,
-  Vehicle,
-  Destination,
-  DashboardStats,
-} from '../../../../models';
+// prettier-ignore
+import { WidgetConfig, WidgetSize, VehicleOption, Vehicle, Destination, DashboardStats } from '../../../../models';
 
 import { WidgetContainerComponent } from '../../components/widget-container/widget-container.component';
 import { DashboardFilterComponent } from '../../components/dashboard-filter/dashboard-filter.component';
@@ -39,7 +19,10 @@ import { WidgetBarPortComponent } from '../../components/widget-bar-port/widget-
 /**
  * Người tạo: DungBT
  * Ngày tạo: 01/06/2026
- * Component dashboard chính – theo dõi trạng thái xe chở hàng.
+ * Mô tả: Dashboard Page – Màn hình chính theo dõi trạng thái xe chở hàng.
+ *        - Gọi API tổng (getAllDashboardData) 1 lần khi load trang để lấy toàn bộ dữ liệu.
+ *        - Khi ấn reload trên từng Widget, chỉ gọi API riêng của widget đó (refreshWidget).
+ *        - Mỗi widget có loading state độc lập, hiển thị spinner khi đang reload.
  */
 @Component({
   selector: 'app-dashboard-page',

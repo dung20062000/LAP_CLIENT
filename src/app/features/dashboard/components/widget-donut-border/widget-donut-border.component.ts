@@ -1,19 +1,5 @@
-/**
- * Người tạo: DungBT
- * Ngày tạo: 01/06/2026
- * Mô tả: Widget Donut Chart – Phương tiện tại Cửa khẩu.
- *        Hiển thị phân bổ xe tại các cửa khẩu dạng hình vành khăn (Donut).
- *        Số tổng hiển thị ở giữa biểu đồ bằng graphic text.
- */
-import {
-  Component,
-  Input,
-  OnChanges,
-  OnDestroy,
-  SimpleChanges,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-} from '@angular/core';
+// prettier-ignore
+import { Component, Input, OnChanges, OnDestroy, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 
 import { NgxEchartsDirective } from 'ngx-echarts';
 import type { EChartsOption } from 'echarts';
@@ -24,7 +10,9 @@ const MOBILE_BREAKPOINT = 576;
 /**
  * Người tạo: DungBT
  * Ngày tạo: 01/06/2026
- * Widget Donut phân bổ xe tại các cửa khẩu.
+ * Mô tả: Widget Donut Chart – Phương tiện tại Cửa khẩu.
+ *        Hiển thị phân bổ xe tại các cửa khẩu dạng hình vành khăn (Donut).
+ *        Số tổng hiển thị ở giữa biểu đồ bằng graphic text.
  */
 @Component({
   selector: 'app-widget-donut-border',
@@ -62,6 +50,11 @@ export class WidgetDonutBorderComponent implements OnChanges, OnDestroy {
     }
   }
 
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 01/06/2026
+   * Cập nhật trạng thái mobile
+   */
   private updateMobile(): void {
     const isNowMobile = window.innerWidth <= MOBILE_BREAKPOINT;
     if (this.isMobile !== isNowMobile) {

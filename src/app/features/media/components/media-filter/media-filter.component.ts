@@ -474,8 +474,6 @@ export class MediaFilterComponent implements OnInit {
     if (start > end) return this.showError('Giờ bắt đầu không được lớn hơn giờ kết thúc');
     if (start > new Date())
       return this.showError('Giờ bắt đầu không được lớn hơn thời gian hiện tại');
-    if (end > new Date())
-      return this.showError('Giờ kết thúc không được lớn hơn thời gian hiện tại');
 
     const params: MediaSearchParams = {
       vehiclePlate: this.selectedVehicle.vehiclePlate,

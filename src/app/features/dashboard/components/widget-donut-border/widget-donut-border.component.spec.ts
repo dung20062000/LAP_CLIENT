@@ -16,14 +16,14 @@ describe('WidgetDonutBorderComponent', () => {
     licensePlate: '43C01338_C',
     driverName: 'Nguyễn Văn An',
     hasLoad: true,
-    locationType: 'border',
+    locationType: DestinationType.Border,
     ...overrides,
   });
 
   const makeDestination = (overrides: Partial<Destination>): Destination => ({
     id: 1,
     name: 'Cửa khẩu Mộc Bài',
-    type: 'border',
+    type: DestinationType.Border,
     vehicleCount: 0,
     ...overrides,
   });
@@ -64,8 +64,8 @@ describe('WidgetDonutBorderComponent', () => {
   describe('ngOnChanges()', () => {
     it('should rebuild chart when vehicles changes', () => {
       component.vehicles = [
-        makeVehicle({ id: 1, hasLoad: true, locationType: 'border' }),
-        makeVehicle({ id: 2, hasLoad: false, locationType: 'border' }),
+        makeVehicle({ id: 1, hasLoad: true, locationType: DestinationType.Border }),
+        makeVehicle({ id: 2, hasLoad: false, locationType: DestinationType.Border }),
       ];
       component.ngOnChanges({ vehicles: { currentValue: component.vehicles } } as any);
       const opts = component.chartOption as any;
@@ -90,13 +90,13 @@ describe('WidgetDonutBorderComponent', () => {
 
   describe('buildChart() – hasData', () => {
     it('should set hasData to true when vehicles has border vehicles', () => {
-      component.vehicles = [makeVehicle({ id: 1, locationType: 'border', hasLoad: true })];
+      component.vehicles = [makeVehicle({ id: 1, locationType: DestinationType.Border, hasLoad: true })];
       component.ngOnChanges({ vehicles: { currentValue: component.vehicles } } as any);
       expect(component.hasData).toBe(true);
     });
 
     it('should set hasData to false when no border vehicles', () => {
-      component.vehicles = [makeVehicle({ id: 1, locationType: 'factory' })];
+      component.vehicles = [makeVehicle({ id: 1, locationType: DestinationType.Factory })];
       component.ngOnChanges({ vehicles: { currentValue: component.vehicles } } as any);
       expect(component.hasData).toBe(false);
     });
@@ -113,9 +113,9 @@ describe('WidgetDonutBorderComponent', () => {
   describe('buildChart() – phân bổ có hàng / không hàng', () => {
     it('should count hasLoad=true as loaded in series data', () => {
       component.vehicles = [
-        makeVehicle({ id: 1, hasLoad: true, locationType: 'border' }),
-        makeVehicle({ id: 2, hasLoad: true, locationType: 'border' }),
-        makeVehicle({ id: 3, hasLoad: false, locationType: 'border' }),
+        makeVehicle({ id: 1, hasLoad: true, locationType: DestinationType.Border }),
+        makeVehicle({ id: 2, hasLoad: true, locationType: DestinationType.Border }),
+        makeVehicle({ id: 3, hasLoad: false, locationType: DestinationType.Border }),
       ];
       component.ngOnChanges({ vehicles: { currentValue: component.vehicles } } as any);
       const opts = component.chartOption as any;
@@ -127,8 +127,8 @@ describe('WidgetDonutBorderComponent', () => {
 
     it('should show label only when count > 0 for loaded', () => {
       component.vehicles = [
-        makeVehicle({ id: 1, hasLoad: true, locationType: 'border' }),
-        makeVehicle({ id: 2, hasLoad: true, locationType: 'border' }),
+        makeVehicle({ id: 1, hasLoad: true, locationType: DestinationType.Border }),
+        makeVehicle({ id: 2, hasLoad: true, locationType: DestinationType.Border }),
       ];
       component.ngOnChanges({ vehicles: { currentValue: component.vehicles } } as any);
       const opts = component.chartOption as any;
@@ -138,7 +138,7 @@ describe('WidgetDonutBorderComponent', () => {
 
     it('should hide label when loaded count is 0', () => {
       component.vehicles = [
-        makeVehicle({ id: 1, hasLoad: false, locationType: 'border' }),
+        makeVehicle({ id: 1, hasLoad: false, locationType: DestinationType.Border }),
       ];
       component.ngOnChanges({ vehicles: { currentValue: component.vehicles } } as any);
       const opts = component.chartOption as any;
@@ -147,7 +147,7 @@ describe('WidgetDonutBorderComponent', () => {
     });
 
     it('should use green color for loaded vehicles', () => {
-      component.vehicles = [makeVehicle({ id: 1, hasLoad: true, locationType: 'border' })];
+      component.vehicles = [makeVehicle({ id: 1, hasLoad: true, locationType: DestinationType.Border })];
       component.ngOnChanges({ vehicles: { currentValue: component.vehicles } } as any);
       const opts = component.chartOption as any;
       const loadedItem = opts.series[0].data[0];
@@ -155,7 +155,7 @@ describe('WidgetDonutBorderComponent', () => {
     });
 
     it('should use orange color for empty vehicles', () => {
-      component.vehicles = [makeVehicle({ id: 1, hasLoad: false, locationType: 'border' })];
+      component.vehicles = [makeVehicle({ id: 1, hasLoad: false, locationType: DestinationType.Border })];
       component.ngOnChanges({ vehicles: { currentValue: component.vehicles } } as any);
       const opts = component.chartOption as any;
       const emptyItem = opts.series[0].data.find((d: any) => d.name === 'Phương tiện không hàng');
@@ -167,7 +167,7 @@ describe('WidgetDonutBorderComponent', () => {
 
   describe('buildChart() – chartOption structure', () => {
     it('should use pie type with donut radius', () => {
-      component.vehicles = [makeVehicle({ id: 1, locationType: 'border' })];
+      component.vehicles = [makeVehicle({ id: 1, locationType: DestinationType.Border })];
       component.ngOnChanges({ vehicles: { currentValue: component.vehicles } } as any);
       const opts = component.chartOption as any;
       expect(opts.series[0].type).toBe('pie');
@@ -176,8 +176,8 @@ describe('WidgetDonutBorderComponent', () => {
 
     it('should display total vehicle count in graphic text', () => {
       component.vehicles = [
-        makeVehicle({ id: 1, hasLoad: true, locationType: 'border' }),
-        makeVehicle({ id: 2, hasLoad: false, locationType: 'border' }),
+        makeVehicle({ id: 1, hasLoad: true, locationType: DestinationType.Border }),
+        makeVehicle({ id: 2, hasLoad: false, locationType: DestinationType.Border }),
       ];
       component.ngOnChanges({ vehicles: { currentValue: component.vehicles } } as any);
       const opts = component.chartOption as any;
@@ -186,7 +186,7 @@ describe('WidgetDonutBorderComponent', () => {
     });
 
     it('should display "tổng xe" label in graphic text', () => {
-      component.vehicles = [makeVehicle({ id: 1, locationType: 'border' })];
+      component.vehicles = [makeVehicle({ id: 1, locationType: DestinationType.Border })];
       component.ngOnChanges({ vehicles: { currentValue: component.vehicles } } as any);
       const opts = component.chartOption as any;
       const labelGraphic = opts.graphic[1];
@@ -194,7 +194,7 @@ describe('WidgetDonutBorderComponent', () => {
     });
 
     it('should have legend at bottom with circle icon', () => {
-      component.vehicles = [makeVehicle({ id: 1, locationType: 'border' })];
+      component.vehicles = [makeVehicle({ id: 1, locationType: DestinationType.Border })];
       component.ngOnChanges({ vehicles: { currentValue: component.vehicles } } as any);
       const opts = component.chartOption as any;
       expect(opts.legend.bottom).toBe(0);
@@ -202,14 +202,14 @@ describe('WidgetDonutBorderComponent', () => {
     });
 
     it('should have transparent background', () => {
-      component.vehicles = [makeVehicle({ id: 1, locationType: 'border' })];
+      component.vehicles = [makeVehicle({ id: 1, locationType: DestinationType.Border })];
       component.ngOnChanges({ vehicles: { currentValue: component.vehicles } } as any);
       const opts = component.chartOption as any;
       expect(opts.backgroundColor).toBe('transparent');
     });
 
     it('should have tooltip with percentage formatter', () => {
-      component.vehicles = [makeVehicle({ id: 1, locationType: 'border' })];
+      component.vehicles = [makeVehicle({ id: 1, locationType: DestinationType.Border })];
       component.ngOnChanges({ vehicles: { currentValue: component.vehicles } } as any);
       const opts = component.chartOption as any;
       expect(opts.tooltip.trigger).toBe('item');
@@ -217,7 +217,7 @@ describe('WidgetDonutBorderComponent', () => {
     });
 
     it('should have series name in Vietnamese', () => {
-      component.vehicles = [makeVehicle({ id: 1, locationType: 'border' })];
+      component.vehicles = [makeVehicle({ id: 1, locationType: DestinationType.Border })];
       component.ngOnChanges({ vehicles: { currentValue: component.vehicles } } as any);
       const opts = component.chartOption as any;
       expect(opts.series[0].name).toBe('Phương tiện tại cửa khẩu');

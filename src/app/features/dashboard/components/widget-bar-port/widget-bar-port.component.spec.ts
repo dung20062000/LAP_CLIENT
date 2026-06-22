@@ -17,7 +17,7 @@ describe('WidgetBarPortComponent', () => {
     licensePlate: '43C01338_C',
     driverName: 'Nguyễn Văn An',
     hasLoad: true,
-    locationType: 'port',
+    locationType: DestinationType.Port,
     destinationId: 1,
     destinationName: 'Cảng Tân Cảng Cát Lái',
     ...overrides,

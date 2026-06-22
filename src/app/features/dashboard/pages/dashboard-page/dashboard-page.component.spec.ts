@@ -32,11 +32,11 @@ const mockVehicleOptions: VehicleOption[] = [
 ];
 
 const defaultWidgets: WidgetConfig[] = [
-  { widgetId: 'overview',     size: 'large', collapsed: false },
-  { widgetId: 'donut-border', size: 'small', collapsed: false },
-  { widgetId: 'donut-road',   size: 'small', collapsed: false },
-  { widgetId: 'bar-factory',  size: 'small', collapsed: false },
-  { widgetId: 'bar-port',     size: 'large', collapsed: false },
+  { widgetId: 'overview',     size: WidgetSize.Large, collapsed: false },
+  { widgetId: 'donut-border', size: WidgetSize.Small, collapsed: false },
+  { widgetId: 'donut-road',   size: WidgetSize.Small, collapsed: false },
+  { widgetId: 'bar-factory',  size: WidgetSize.Small, collapsed: false },
+  { widgetId: 'bar-port',     size: WidgetSize.Large, collapsed: false },
 ];
 
 interface MockDashboardService {
@@ -190,9 +190,9 @@ describe('DashboardPageComponent', () => {
   });
 
   it('should update widget size on onWidgetSizeChange', () => {
-    component.onWidgetSizeChange('overview', 'medium');
+    component.onWidgetSizeChange('overview', WidgetSize.Medium);
     const cfg = component.getWidgetConfig('overview');
-    expect(cfg.size).toBe('medium');
+    expect(cfg.size).toBe(WidgetSize.Medium);
   });
 
   it('should update widget collapsed on onWidgetCollapsedChange', () => {
@@ -242,14 +242,14 @@ describe('DashboardPageComponent', () => {
 
   it('should return col-12 col-md-4 for overview at small size', () => {
     component.widgetConfigs = defaultWidgets.map(w =>
-      w.widgetId === 'overview' ? { ...w, size: 'small' } : w
+      w.widgetId === 'overview' ? { ...w, size: WidgetSize.Small } : w
     );
     expect(component.getWidgetColClass('overview')).toBe('col-12 col-md-4');
   });
 
   it('should return col-12 col-md-8 for overview at medium size', () => {
     component.widgetConfigs = defaultWidgets.map(w =>
-      w.widgetId === 'overview' ? { ...w, size: 'medium' } : w
+      w.widgetId === 'overview' ? { ...w, size: WidgetSize.Medium } : w
     );
     expect(component.getWidgetColClass('overview')).toBe('col-12 col-md-8');
   });
@@ -261,13 +261,13 @@ describe('DashboardPageComponent', () => {
   it('should return config for known widgetId', () => {
     const cfg = component.getWidgetConfig('overview');
     expect(cfg.widgetId).toBe('overview');
-    expect(cfg.size).toBe('large');
+    expect(cfg.size).toBe(WidgetSize.Large);
   });
 
   it('should return default for unknown widgetId', () => {
     const cfg = component.getWidgetConfig('unknown');
     expect(cfg.widgetId).toBe('unknown');
-    expect(cfg.size).toBe('auto');
+    expect(cfg.size).toBe(WidgetSize.Auto);
     expect(cfg.collapsed).toBe(false);
   });
 

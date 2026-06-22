@@ -160,10 +160,10 @@ describe('DashboardService', () => {
         firstValueFrom(service.portVehiclesData),
       ]);
 
-      expect(border.every(v => v.locationType === 'border')).toBe(true);
-      expect(road.every(v => v.locationType === 'road')).toBe(true);
-      expect(factory.every(v => v.locationType === 'factory')).toBe(true);
-      expect(port.every(v => v.locationType === 'port')).toBe(true);
+      expect(border.every(v => v.locationType === DestinationType.Border)).toBe(true);
+      expect(road.every(v => v.locationType === DestinationType.Road)).toBe(true);
+      expect(factory.every(v => v.locationType === DestinationType.Factory)).toBe(true);
+      expect(port.every(v => v.locationType === DestinationType.Port)).toBe(true);
       vi.useRealTimers();
     });
   });
@@ -179,7 +179,7 @@ describe('DashboardService', () => {
 
       const vehicles = await firstValueFrom(service.borderVehiclesData);
       expect(vehicles.length).toBeGreaterThan(0);
-      expect(vehicles.every(v => v.locationType === 'border')).toBe(true);
+      expect(vehicles.every(v => v.locationType === DestinationType.Border)).toBe(true);
       vi.useRealTimers();
     });
 
@@ -190,7 +190,7 @@ describe('DashboardService', () => {
       await promise;
 
       const vehicles = await firstValueFrom(service.roadVehiclesData);
-      expect(vehicles.every(v => v.locationType === 'road')).toBe(true);
+      expect(vehicles.every(v => v.locationType === DestinationType.Road)).toBe(true);
       vi.useRealTimers();
     });
 
@@ -201,7 +201,7 @@ describe('DashboardService', () => {
       await promise;
 
       const vehicles = await firstValueFrom(service.factoryVehiclesData);
-      expect(vehicles.every(v => v.locationType === 'factory')).toBe(true);
+      expect(vehicles.every(v => v.locationType === DestinationType.Factory)).toBe(true);
       vi.useRealTimers();
     });
 
@@ -212,7 +212,7 @@ describe('DashboardService', () => {
       await promise;
 
       const vehicles = await firstValueFrom(service.portVehiclesData);
-      expect(vehicles.every(v => v.locationType === 'port')).toBe(true);
+      expect(vehicles.every(v => v.locationType === DestinationType.Port)).toBe(true);
       vi.useRealTimers();
     });
 
@@ -484,7 +484,7 @@ describe('DashboardService', () => {
       if (result.length > 0) {
         expect(typeof result[0].name).toBe('string');
         expect(typeof result[0].count).toBe('number');
-        expect(['border', 'port', 'factory']).toContain(result[0].type);
+        expect([DestinationType.Border, DestinationType.Port, DestinationType.Factory]).toContain(result[0].type);
       }
       vi.useRealTimers();
     });
@@ -496,37 +496,37 @@ describe('DashboardService', () => {
     it('should return default config when localStorage is empty', () => {
       const config = service.getLayoutConfig('user1');
       expect(config).toEqual([
-        { widgetId: 'overview',    size: 'large', collapsed: false },
-        { widgetId: 'donut-border', size: 'small', collapsed: false },
-        { widgetId: 'donut-road',   size: 'small', collapsed: false },
-        { widgetId: 'bar-factory',  size: 'small', collapsed: false },
-        { widgetId: 'bar-port',     size: 'large', collapsed: false },
+        { widgetId: 'overview',    size: WidgetSize.Large, collapsed: false },
+        { widgetId: 'donut-border', size: WidgetSize.Small, collapsed: false },
+        { widgetId: 'donut-road',   size: WidgetSize.Small, collapsed: false },
+        { widgetId: 'bar-factory',  size: WidgetSize.Small, collapsed: false },
+        { widgetId: 'bar-port',     size: WidgetSize.Large, collapsed: false },
       ]);
     });
 
     it('should return saved config from localStorage', () => {
       localStorage.setItem('dashboard_layout_user1', JSON.stringify({
         userId: 'user1',
-        widgets: [{ widgetId: 'overview', size: 'medium', collapsed: true }],
+        widgets: [{ widgetId: 'overview', size: WidgetSize.Medium, collapsed: true }],
         savedAt: new Date().toISOString(),
       }));
 
       const config = service.getLayoutConfig('user1');
-      expect(config.find(w => w.widgetId === 'overview')!.size).toBe('medium');
+      expect(config.find(w => w.widgetId === 'overview')!.size).toBe(WidgetSize.Medium);
       expect(config.find(w => w.widgetId === 'overview')!.collapsed).toBe(true);
     });
 
     it('should merge saved config with defaults (fill missing widgets)', () => {
       localStorage.setItem('dashboard_layout_user2', JSON.stringify({
         userId: 'user2',
-        widgets: [{ widgetId: 'overview', size: 'small', collapsed: true }],
+        widgets: [{ widgetId: 'overview', size: WidgetSize.Small, collapsed: true }],
         savedAt: new Date().toISOString(),
       }));
 
       const config = service.getLayoutConfig('user2');
       expect(config.length).toBe(5);
-      expect(config.find(w => w.widgetId === 'overview')!.size).toBe('small');
-      expect(config.find(w => w.widgetId === 'donut-border')!.size).toBe('small');
+      expect(config.find(w => w.widgetId === 'overview')!.size).toBe(WidgetSize.Small);
+      expect(config.find(w => w.widgetId === 'donut-border')!.size).toBe(WidgetSize.Small);
     });
 
     it('should return defaults when localStorage JSON is invalid', () => {
@@ -536,7 +536,7 @@ describe('DashboardService', () => {
     });
 
     it('should save layout config to localStorage', () => {
-      const widgets = [{ widgetId: 'overview', size: 'medium' as const, collapsed: false }];
+      const widgets = [{ widgetId: 'overview', size: WidgetSize.Medium, collapsed: false }];
       service.saveLayoutConfig('user4', widgets);
 
       const raw = localStorage.getItem('dashboard_layout_user4');
@@ -552,34 +552,34 @@ describe('DashboardService', () => {
         () => { throw new Error('QUOTA_EXCEEDED'); }
       );
       expect(() => {
-        service.saveLayoutConfig('user5', [{ widgetId: 'overview', size: 'auto' as const, collapsed: false }]);
+        service.saveLayoutConfig('user5', [{ widgetId: 'overview', size: WidgetSize.Auto, collapsed: false }]);
       }).not.toThrow();
       setItemSpy.mockRestore();
     });
 
     it('should update widget size and persist to localStorage', () => {
       const initial = [
-        { widgetId: 'overview', size: 'large' as const, collapsed: false },
-        { widgetId: 'donut-border', size: 'small' as const, collapsed: false },
+        { widgetId: 'overview', size: WidgetSize.Large, collapsed: false },
+        { widgetId: 'donut-border', size: WidgetSize.Small, collapsed: false },
       ];
       service.saveLayoutConfig('user6', initial);
 
-      const updated = service.updateWidgetSize('user6', 'overview', 'medium', initial);
-      expect(updated.find(w => w.widgetId === 'overview')!.size).toBe('medium');
+      const updated = service.updateWidgetSize('user6', 'overview', WidgetSize.Medium, initial);
+      expect(updated.find(w => w.widgetId === 'overview')!.size).toBe(WidgetSize.Medium);
 
       const saved = JSON.parse(localStorage.getItem('dashboard_layout_user6')!);
-      expect(saved.widgets.find((w: WidgetConfig) => w.widgetId === 'overview')!.size).toBe('medium');
+      expect(saved.widgets.find((w: WidgetConfig) => w.widgetId === 'overview')!.size).toBe(WidgetSize.Medium);
     });
 
     it('should add new widget if not found in updateWidgetSize', () => {
-      const initial = [{ widgetId: 'overview', size: 'large' as const, collapsed: false }];
-      const updated = service.updateWidgetSize('user7', 'donut-border', 'medium', initial);
+      const initial = [{ widgetId: 'overview', size: WidgetSize.Large, collapsed: false }];
+      const updated = service.updateWidgetSize('user7', 'donut-border', WidgetSize.Medium, initial);
       expect(updated.length).toBe(2);
-      expect(updated.find(w => w.widgetId === 'donut-border')!.size).toBe('medium');
+      expect(updated.find(w => w.widgetId === 'donut-border')!.size).toBe(WidgetSize.Medium);
     });
 
     it('should update widget collapsed and persist', () => {
-      const initial = [{ widgetId: 'overview', size: 'large' as const, collapsed: false }];
+      const initial = [{ widgetId: 'overview', size: WidgetSize.Large, collapsed: false }];
       service.saveLayoutConfig('user8', initial);
 
       const updated = service.updateWidgetCollapsed('user8', 'overview', true, initial);
@@ -595,7 +595,7 @@ describe('DashboardService', () => {
       expect(updated.length).toBe(1);
       expect(updated[0].widgetId).toBe('bar-port');
       expect(updated[0].collapsed).toBe(true);
-      expect(updated[0].size).toBe('auto');
+      expect(updated[0].size).toBe(WidgetSize.Auto);
     });
   });
 });

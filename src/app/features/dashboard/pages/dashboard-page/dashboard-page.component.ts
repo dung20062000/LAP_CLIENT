@@ -189,7 +189,7 @@ export class DashboardPageComponent implements OnInit {
     return (
       this.widgetConfigs.find((w) => w.widgetId === widgetId) || {
         widgetId,
-        size: 'auto',
+        size: WidgetSize.Auto,
         collapsed: false,
       }
     );
@@ -203,13 +203,13 @@ export class DashboardPageComponent implements OnInit {
    */
   getWidgetColClass(widgetId: string): string {
     const config = this.getWidgetConfig(widgetId);
-    const size = config.size || 'auto';
+    const size = config.size || WidgetSize.Auto;
 
     // overview và bar-port mặc định là full-width col-12
     if (widgetId === 'overview' || widgetId === 'bar-port') {
-      if (size === 'small') return 'col-12 col-md-4';
-      if (size === 'medium') return 'col-12 col-md-8';
-      if (size === 'large') return 'col-12';
+      if (size === WidgetSize.Small) return 'col-12 col-md-4';
+      if (size === WidgetSize.Medium) return 'col-12 col-md-8';
+      if (size === WidgetSize.Large) return 'col-12';
       return 'col-12'; // auto
     }
 
@@ -225,9 +225,9 @@ export class DashboardPageComponent implements OnInit {
    */
   private getMiddleWidgetColClasses(): Record<string, string> {
     const configs = {
-      'donut-border': { default: 3, size: this.getWidgetConfig('donut-border').size || 'auto' },
-      'donut-road': { default: 3, size: this.getWidgetConfig('donut-road').size || 'auto' },
-      'bar-factory': { default: 6, size: this.getWidgetConfig('bar-factory').size || 'auto' },
+      'donut-border': { default: 3, size: this.getWidgetConfig('donut-border').size || WidgetSize.Auto },
+      'donut-road': { default: 3, size: this.getWidgetConfig('donut-road').size || WidgetSize.Auto },
+      'bar-factory': { default: 6, size: this.getWidgetConfig('bar-factory').size || WidgetSize.Auto },
     };
 
     const fixedWidths: Record<string, number> = {};
@@ -235,13 +235,13 @@ export class DashboardPageComponent implements OnInit {
     let fixedSum = 0;
 
     for (const [id, cfg] of Object.entries(configs)) {
-      if (cfg.size === 'small') {
+      if (cfg.size === WidgetSize.Small) {
         fixedWidths[id] = 4;
         fixedSum += 4;
-      } else if (cfg.size === 'medium') {
+      } else if (cfg.size === WidgetSize.Medium) {
         fixedWidths[id] = 8;
         fixedSum += 8;
-      } else if (cfg.size === 'large') {
+      } else if (cfg.size === WidgetSize.Large) {
         fixedWidths[id] = 12;
         fixedSum += 12;
       } else {
@@ -256,7 +256,7 @@ export class DashboardPageComponent implements OnInit {
       result[id] = `col-12 col-md-${width}`;
     }
 
-    // 2. Phân bổ động cho các widget ở trạng thái 'auto'
+    // 2. Phân bổ động cho các widget ở trạng thái WidgetSize.Auto
     if (autoWidgets.length === 3) {
       return {
         'donut-border': 'col-12 col-md-6 col-xl-3',

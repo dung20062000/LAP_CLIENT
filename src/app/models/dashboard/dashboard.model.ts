@@ -5,10 +5,20 @@
  */
 
 //Kích thước widget
-export type WidgetSize = 'auto' | 'small' | 'medium' | 'large';
+export enum WidgetSize {
+  Auto = 1,
+  Small = 2,
+  Medium = 3,
+  Large = 4
+}
 
 //Loại điểm đến
-export type DestinationType = 'border' | 'port' | 'factory' | 'road';
+export enum DestinationType {
+  Border = 1,
+  Port = 2,
+  Factory = 3,
+  Road = 4
+}
 
 //Thông tin phương tiện
 export interface Vehicle {

@@ -92,6 +92,19 @@ export class MediaFilterComponent implements OnInit {
   // Ngày tối đa cho endDate (startDate + 30 ngày)
   maxEndDate: Date = new Date();
 
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 22/06/2026
+   * Kiểm tra giờ bắt đầu và giờ kết thúc có hợp lệ không.
+   * Trả về true nếu giờ bắt đầu lớn hơn giờ kết thúc.
+   */
+  get isTimeRangeInvalid(): boolean {
+    if (!this.startTime || !this.endTime) return false;
+    const startMin = this.startTime.getHours() * 60 + this.startTime.getMinutes();
+    const endMin = this.endTime.getHours() * 60 + this.endTime.getMinutes();
+    return startMin > endMin;
+  }
+
   ngOnInit(): void {
     // Load nhóm xe khi khởi tạo component
     this.loadVehicleGroups();

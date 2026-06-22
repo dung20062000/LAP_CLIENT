@@ -24,7 +24,7 @@ const WIDGET_OPTIONS_OPEN_EVENT = 'widget-options-open';
  * Component bao ngoài widget: header với Collapse, Reload, Options (kích thước).
  * @Input  title     – Tiêu đề hiển thị trên header
  * @Input  widgetId  – ID duy nhất của widget (dùng cho lưu layout)
- * @Input  size      – Kích thước hiện tại ('auto' | 'small' | 'medium' | 'large')
+ * @Input  size      – Kích thước hiện tại (WidgetSize.Auto | WidgetSize.Small | WidgetSize.Medium | WidgetSize.Large)
  * @Input  collapsed – Trạng thái thu gọn
  * @Input  loading   – Loading state từ bên ngoài (service), true = đang fetch API
  * @Output sizeChange   – Phát ra khi người dùng thay đổi kích thước
@@ -41,7 +41,7 @@ const WIDGET_OPTIONS_OPEN_EVENT = 'widget-options-open';
 export class WidgetContainerComponent {
   @Input() title = '';
   @Input() widgetId = '';
-  @Input() size: WidgetSize = 'auto';
+  @Input() size: WidgetSize = WidgetSize.Auto;
   @Input() collapsed = false;
   @Input() layoutClass = ''; // Nhận class col động từ component cha
   // Loading state từ bên ngoài – true khi service đang fetch API cho widget này
@@ -65,10 +65,10 @@ export class WidgetContainerComponent {
 
   // Các tùy chọn kích thước
   readonly sizeOptions: { label: string; value: WidgetSize }[] = [
-    { label: 'Tự động', value: 'auto' },
-    { label: 'Nhỏ', value: 'small' },
-    { label: 'Trung bình', value: 'medium' },
-    { label: 'Lớn', value: 'large' },
+    { label: 'Tự động', value: WidgetSize.Auto },
+    { label: 'Nhỏ', value: WidgetSize.Small },
+    { label: 'Trung bình', value: WidgetSize.Medium },
+    { label: 'Lớn', value: WidgetSize.Large },
   ];
 
   /**

@@ -17,7 +17,7 @@ import {
 
 import { NgxEchartsDirective } from 'ngx-echarts';
 import type { EChartsOption } from 'echarts';
-import { Vehicle } from '../../../../models';
+import { DestinationType, Vehicle } from '../../../../models';
 
 const MOBILE_BREAKPOINT = 576;
 
@@ -75,7 +75,7 @@ export class WidgetDonutRoadComponent implements OnChanges, OnDestroy {
   }
 
   private buildChart(): void {
-    const roadVehicles = this.vehicles.filter((v) => v.locationType === 'road');
+    const roadVehicles = this.vehicles.filter((v) => v.locationType === DestinationType.Road);
 
     let loadedCount = 0;
     let emptyCount = 0;

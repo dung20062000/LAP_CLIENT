@@ -17,7 +17,7 @@ describe('WidgetDonutRoadComponent', () => {
     licensePlate: '43C01338_C',
     driverName: 'Nguyễn Văn An',
     hasLoad: true,
-    locationType: 'road',
+    locationType: DestinationType.Road,
     ...overrides,
   });
 
@@ -69,7 +69,7 @@ describe('WidgetDonutRoadComponent', () => {
 
   describe('buildChart() – labelLine responsive (desktop vs mobile)', () => {
     it('should show labelLine on desktop (innerWidth > 576)', () => {
-      component.vehicles = [makeVehicle({ id: 1, hasLoad: true, locationType: 'road' })];
+      component.vehicles = [makeVehicle({ id: 1, hasLoad: true, locationType: DestinationType.Road })];
       component.ngOnChanges({ vehicles: { currentValue: component.vehicles } } as any);
       const opts = component.chartOption as any;
       expect(opts.series[0].labelLine.show).toBe(true);
@@ -81,7 +81,7 @@ describe('WidgetDonutRoadComponent', () => {
     it('should hide labelLine on mobile (innerWidth <= 576)', () => {
       window.innerWidth = 375;
       window.dispatchEvent(new Event('resize'));
-      component.vehicles = [makeVehicle({ id: 1, hasLoad: true, locationType: 'road' })];
+      component.vehicles = [makeVehicle({ id: 1, hasLoad: true, locationType: DestinationType.Road })];
       component.ngOnChanges({ vehicles: { currentValue: component.vehicles } } as any);
       const opts = component.chartOption as any;
       expect(opts.series[0].labelLine.show).toBe(false);
@@ -94,8 +94,8 @@ describe('WidgetDonutRoadComponent', () => {
       window.innerWidth = 375;
       window.dispatchEvent(new Event('resize'));
       component.vehicles = [
-        makeVehicle({ id: 1, hasLoad: true, locationType: 'road' }),
-        makeVehicle({ id: 2, hasLoad: false, locationType: 'road' }),
+        makeVehicle({ id: 1, hasLoad: true, locationType: DestinationType.Road }),
+        makeVehicle({ id: 2, hasLoad: false, locationType: DestinationType.Road }),
       ];
       component.ngOnChanges({ vehicles: { currentValue: component.vehicles } } as any);
       const opts = component.chartOption as any;
@@ -119,8 +119,8 @@ describe('WidgetDonutRoadComponent', () => {
   describe('ngOnChanges()', () => {
     it('should rebuild chart when vehicles changes', () => {
       component.vehicles = [
-        makeVehicle({ id: 1, hasLoad: true, locationType: 'road' }),
-        makeVehicle({ id: 2, hasLoad: false, locationType: 'road' }),
+        makeVehicle({ id: 1, hasLoad: true, locationType: DestinationType.Road }),
+        makeVehicle({ id: 2, hasLoad: false, locationType: DestinationType.Road }),
       ];
       component.ngOnChanges({ vehicles: { currentValue: component.vehicles } } as any);
       const opts = component.chartOption as any;
@@ -137,13 +137,13 @@ describe('WidgetDonutRoadComponent', () => {
 
   describe('buildChart() – hasData', () => {
     it('should set hasData to true when vehicles has road vehicles', () => {
-      component.vehicles = [makeVehicle({ id: 1, hasLoad: true, locationType: 'road' })];
+      component.vehicles = [makeVehicle({ id: 1, hasLoad: true, locationType: DestinationType.Road })];
       component.ngOnChanges({ vehicles: { currentValue: component.vehicles } } as any);
       expect(component.hasData).toBe(true);
     });
 
     it('should set hasData to false when no road vehicles', () => {
-      component.vehicles = [makeVehicle({ id: 1, hasLoad: true, locationType: 'border' })];
+      component.vehicles = [makeVehicle({ id: 1, hasLoad: true, locationType: DestinationType.Border })];
       component.ngOnChanges({ vehicles: { currentValue: component.vehicles } } as any);
       expect(component.hasData).toBe(false);
     });
@@ -160,9 +160,9 @@ describe('WidgetDonutRoadComponent', () => {
   describe('buildChart() – phân bổ có hàng / không hàng', () => {
     it('should count hasLoad=true as loaded in series data', () => {
       component.vehicles = [
-        makeVehicle({ id: 1, hasLoad: true, locationType: 'road' }),
-        makeVehicle({ id: 2, hasLoad: true, locationType: 'road' }),
-        makeVehicle({ id: 3, hasLoad: false, locationType: 'road' }),
+        makeVehicle({ id: 1, hasLoad: true, locationType: DestinationType.Road }),
+        makeVehicle({ id: 2, hasLoad: true, locationType: DestinationType.Road }),
+        makeVehicle({ id: 3, hasLoad: false, locationType: DestinationType.Road }),
       ];
       component.ngOnChanges({ vehicles: { currentValue: component.vehicles } } as any);
       const opts = component.chartOption as any;
@@ -173,7 +173,7 @@ describe('WidgetDonutRoadComponent', () => {
     });
 
     it('should use green color for loaded vehicles', () => {
-      component.vehicles = [makeVehicle({ id: 1, hasLoad: true, locationType: 'road' })];
+      component.vehicles = [makeVehicle({ id: 1, hasLoad: true, locationType: DestinationType.Road })];
       component.ngOnChanges({ vehicles: { currentValue: component.vehicles } } as any);
       const opts = component.chartOption as any;
       const loadedItem = opts.series[0].data[0];
@@ -181,7 +181,7 @@ describe('WidgetDonutRoadComponent', () => {
     });
 
     it('should use orange color for empty vehicles', () => {
-      component.vehicles = [makeVehicle({ id: 1, hasLoad: false, locationType: 'road' })];
+      component.vehicles = [makeVehicle({ id: 1, hasLoad: false, locationType: DestinationType.Road })];
       component.ngOnChanges({ vehicles: { currentValue: component.vehicles } } as any);
       const opts = component.chartOption as any;
       const emptyItem = opts.series[0].data.find((d: any) => d.name === 'Phương tiện không hàng');
@@ -190,8 +190,8 @@ describe('WidgetDonutRoadComponent', () => {
 
     it('should show label only when count > 0 on desktop', () => {
       component.vehicles = [
-        makeVehicle({ id: 1, hasLoad: true, locationType: 'road' }),
-        makeVehicle({ id: 2, hasLoad: false, locationType: 'road' }),
+        makeVehicle({ id: 1, hasLoad: true, locationType: DestinationType.Road }),
+        makeVehicle({ id: 2, hasLoad: false, locationType: DestinationType.Road }),
       ];
       component.ngOnChanges({ vehicles: { currentValue: component.vehicles } } as any);
       const opts = component.chartOption as any;
@@ -205,7 +205,7 @@ describe('WidgetDonutRoadComponent', () => {
 
   describe('buildChart() – chartOption structure', () => {
     it('should use pie type with donut radius', () => {
-      component.vehicles = [makeVehicle({ id: 1, locationType: 'road' })];
+      component.vehicles = [makeVehicle({ id: 1, locationType: DestinationType.Road })];
       component.ngOnChanges({ vehicles: { currentValue: component.vehicles } } as any);
       const opts = component.chartOption as any;
       expect(opts.series[0].type).toBe('pie');
@@ -214,8 +214,8 @@ describe('WidgetDonutRoadComponent', () => {
 
     it('should display total vehicle count in graphic text', () => {
       component.vehicles = [
-        makeVehicle({ id: 1, hasLoad: true, locationType: 'road' }),
-        makeVehicle({ id: 2, hasLoad: false, locationType: 'road' }),
+        makeVehicle({ id: 1, hasLoad: true, locationType: DestinationType.Road }),
+        makeVehicle({ id: 2, hasLoad: false, locationType: DestinationType.Road }),
       ];
       component.ngOnChanges({ vehicles: { currentValue: component.vehicles } } as any);
       const opts = component.chartOption as any;
@@ -224,7 +224,7 @@ describe('WidgetDonutRoadComponent', () => {
     });
 
     it('should display "đang di chuyển" label in graphic text', () => {
-      component.vehicles = [makeVehicle({ id: 1, locationType: 'road' })];
+      component.vehicles = [makeVehicle({ id: 1, locationType: DestinationType.Road })];
       component.ngOnChanges({ vehicles: { currentValue: component.vehicles } } as any);
       const opts = component.chartOption as any;
       const labelGraphic = opts.graphic[1];
@@ -232,7 +232,7 @@ describe('WidgetDonutRoadComponent', () => {
     });
 
     it('should have legend at bottom with circle icon', () => {
-      component.vehicles = [makeVehicle({ id: 1, locationType: 'road' })];
+      component.vehicles = [makeVehicle({ id: 1, locationType: DestinationType.Road })];
       component.ngOnChanges({ vehicles: { currentValue: component.vehicles } } as any);
       const opts = component.chartOption as any;
       expect(opts.legend.bottom).toBe(0);
@@ -240,14 +240,14 @@ describe('WidgetDonutRoadComponent', () => {
     });
 
     it('should have transparent background', () => {
-      component.vehicles = [makeVehicle({ id: 1, locationType: 'road' })];
+      component.vehicles = [makeVehicle({ id: 1, locationType: DestinationType.Road })];
       component.ngOnChanges({ vehicles: { currentValue: component.vehicles } } as any);
       const opts = component.chartOption as any;
       expect(opts.backgroundColor).toBe('transparent');
     });
 
     it('should have tooltip with percentage formatter', () => {
-      component.vehicles = [makeVehicle({ id: 1, locationType: 'road' })];
+      component.vehicles = [makeVehicle({ id: 1, locationType: DestinationType.Road })];
       component.ngOnChanges({ vehicles: { currentValue: component.vehicles } } as any);
       const opts = component.chartOption as any;
       expect(opts.tooltip.trigger).toBe('item');
@@ -255,7 +255,7 @@ describe('WidgetDonutRoadComponent', () => {
     });
 
     it('should have series name in Vietnamese', () => {
-      component.vehicles = [makeVehicle({ id: 1, locationType: 'road' })];
+      component.vehicles = [makeVehicle({ id: 1, locationType: DestinationType.Road })];
       component.ngOnChanges({ vehicles: { currentValue: component.vehicles } } as any);
       const opts = component.chartOption as any;
       expect(opts.series[0].name).toBe('Phương tiện đang trên đường');

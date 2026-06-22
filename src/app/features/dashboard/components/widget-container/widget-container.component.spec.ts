@@ -39,7 +39,7 @@ describe('WidgetContainerComponent', () => {
     });
 
     it('should have default size as auto', () => {
-      expect(component.size).toBe('auto');
+      expect(component.size).toBe(WidgetSize.Auto);
     });
 
     it('should have default collapsed as false', () => {
@@ -64,7 +64,7 @@ describe('WidgetContainerComponent', () => {
 
     it('should expose 4 size options', () => {
       expect(component.sizeOptions.length).toBe(4);
-      expect(component.sizeOptions.map(o => o.value)).toEqual(['auto', 'small', 'medium', 'large']);
+      expect(component.sizeOptions.map(o => o.value)).toEqual([WidgetSize.Auto, WidgetSize.Small, WidgetSize.Medium, WidgetSize.Large]);
     });
   });
 
@@ -154,29 +154,29 @@ describe('WidgetContainerComponent', () => {
 
   describe('onSelectSize()', () => {
     it('should update size property', () => {
-      component.onSelectSize('large');
-      expect(component.size).toBe('large');
+      component.onSelectSize(WidgetSize.Large);
+      expect(component.size).toBe(WidgetSize.Large);
     });
 
     it('should emit sizeChange with the new size', () => {
       let emitted: WidgetSize | null = null;
       component.sizeChange.subscribe(v => { emitted = v; });
 
-      component.onSelectSize('medium');
-      expect(emitted).toBe('medium');
+      component.onSelectSize(WidgetSize.Medium);
+      expect(emitted).toBe(WidgetSize.Medium);
     });
 
     it('should close options dropdown after selecting size', () => {
       component.showOptions = true;
-      component.onSelectSize('small');
+      component.onSelectSize(WidgetSize.Small);
       expect(component.showOptions).toBe(false);
     });
 
     it('should accept auto size', () => {
       let emitted: WidgetSize | null = null;
       component.sizeChange.subscribe(v => { emitted = v; });
-      component.onSelectSize('auto');
-      expect(emitted).toBe('auto');
+      component.onSelectSize(WidgetSize.Auto);
+      expect(emitted).toBe(WidgetSize.Auto);
     });
   });
 

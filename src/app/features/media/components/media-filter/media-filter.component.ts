@@ -95,6 +95,8 @@ export class MediaFilterComponent implements OnInit {
   ngOnInit(): void {
     // Load nhóm xe khi khởi tạo component
     this.loadVehicleGroups();
+    // Load xe theo nhóm khi khởi tạo component
+    this.loadVehiclesByGroups();
     // Khởi tạo maxEndDate = today + 0 (không giới hạn cho ngày đầu)
     this.updateMaxEndDate();
   }
@@ -367,17 +369,6 @@ export class MediaFilterComponent implements OnInit {
     const groupIds = selected
       .filter((n) => !n.children || n.children.length === 0)
       .map((n) => n.key as string);
-
-    if (groupIds.length === 0) {
-      this.vehicleList = [];
-      this.selectedVehicle = null;
-      this.channelOptions = [];
-      this.selectedChannels = [];
-      this.vehicleLoading = false;
-      this.searchSubmit.emit(null);
-      this.cdr.markForCheck();
-      return;
-    }
 
     this.vehicleLoading = true;
     this.selectedVehicle = null;

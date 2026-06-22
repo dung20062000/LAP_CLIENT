@@ -3,7 +3,7 @@ import { Component, Input, OnChanges, OnDestroy, SimpleChanges, ChangeDetectionS
 
 import { NgxEchartsDirective } from 'ngx-echarts';
 import type { EChartsOption } from 'echarts';
-import { Vehicle, Destination } from '../../../../models';
+import { Vehicle, Destination, DestinationType } from '../../../../models';
 
 const MOBILE_BREAKPOINT = 576;
 
@@ -81,7 +81,7 @@ export class WidgetDonutBorderComponent implements OnChanges, OnDestroy {
    */
   private buildChart(): void {
     // Lọc xe đang ở cửa khẩu
-    const borderVehicles = this.vehicles.filter((v) => v.locationType === 'border');
+    const borderVehicles = this.vehicles.filter((v) => v.locationType === DestinationType.Border);
 
     let loadedCount = 0;
     let emptyCount = 0;
@@ -159,23 +159,34 @@ export class WidgetDonutBorderComponent implements OnChanges, OnDestroy {
         {
           name: 'Phương tiện tại cửa khẩu',
           type: 'pie',
-          radius: ['50%', '75%'],
-          center: ['50%', '45%'],
-          avoidLabelOverlap: true,
+          radius: ['40%', '55%'], // tăng/giảm kích thước đường kính vòng tròn (lùi ra, tiến vào)
+          center: ['50%', '45%'], // căn chỉnh vị trí tâm vòng tròn (trục ngang, trục dọc)
+          avoidLabelOverlap: true, // tránh overlap label
           label: {
             show: true,
             position: 'outside',
             formatter: '{c} Phương tiện ({d}%)',
             color: '#666',
             fontSize: 11,
+            width: 120,
+            overflow: 'break',
+            lineHeight: 16,
           },
           labelLine: {
             show: showLabelLine,
-            length: 6, // Thu ngắn đường dẫn để nhãn sát biểu đồ hơn, tránh tràn viền gây dấu ba chấm
-            length2: 4,
+            length: 15,
+            length2: 5,
           },
-          labelLayout: {
-            y: 260, // Căn chỉnh nhãn về phía chân dưới biểu đồ
+          labelLayout: (params: any) => {
+            const is100Percent = loadedCount === 0 || emptyCount === 0;
+            if (is100Percent) {
+              return { y: '82%' };
+            }
+            const isLeft = params.labelRect.x < params.rect.x;
+            return {
+              y: '82%',
+              dx: isLeft ? 30 : -30, // Đẩy nhãn bên trái sang phải 30px, nhãn bên phải sang trái 30px
+            };
           },
           data: data,
         },

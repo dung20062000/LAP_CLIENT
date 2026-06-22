@@ -11,6 +11,7 @@ import {
   DashboardLayoutConfig,
   DestinationChartItem,
   WidgetSize,
+  DestinationType,
 } from '../../models/dashboard';
 
 // Hằng số
@@ -24,28 +25,28 @@ const MOCK_API_DELAY_WIDGET = 500; // API từng widget
 // Dữ liệu giả lập điểm đến
 const MOCK_DESTINATIONS: Omit<Destination, 'vehicleCount'>[] = [
   // Cửa khẩu
-  { id: 1, name: 'Cửa khẩu Mộc Bài', type: 'border' },
-  { id: 2, name: 'Cửa khẩu Lao Bảo', type: 'border' },
-  { id: 3, name: 'Cửa khẩu Cầu Treo', type: 'border' },
-  { id: 4, name: 'Cửa khẩu Hữu Nghị', type: 'border' },
-  { id: 5, name: 'Cửa khẩu Tân Thanh', type: 'border' },
+  { id: 1, name: 'Cửa khẩu Mộc Bài', type: DestinationType.Border },
+  { id: 2, name: 'Cửa khẩu Lao Bảo', type: DestinationType.Border },
+  { id: 3, name: 'Cửa khẩu Cầu Treo', type: DestinationType.Border },
+  { id: 4, name: 'Cửa khẩu Hữu Nghị', type: DestinationType.Border },
+  { id: 5, name: 'Cửa khẩu Tân Thanh', type: DestinationType.Border },
   // Bãi cảng
-  { id: 6, name: 'Cảng Tân Cảng Cát Lái', type: 'port' },
-  { id: 7, name: 'Cảng Hải Phòng', type: 'port' },
-  { id: 8, name: 'ICD Sóng Thần', type: 'port' },
-  { id: 9, name: 'Cảng VICT', type: 'port' },
-  { id: 10, name: 'Cảng Đà Nẵng', type: 'port' },
+  { id: 6, name: 'Cảng Tân Cảng Cát Lái', type: DestinationType.Port },
+  { id: 7, name: 'Cảng Hải Phòng', type: DestinationType.Port },
+  { id: 8, name: 'ICD Sóng Thần', type: DestinationType.Port },
+  { id: 9, name: 'Cảng VICT', type: DestinationType.Port },
+  { id: 10, name: 'Cảng Đà Nẵng', type: DestinationType.Port },
   // Nhà máy
-  { id: 11, name: 'Nhà máy Samsung', type: 'factory' },
-  { id: 12, name: 'Nhà máy VinFast', type: 'factory' },
-  { id: 13, name: 'Nhà máy Formosa', type: 'factory' },
-  { id: 14, name: 'Nhà máy Intel', type: 'factory' },
-  { id: 15, name: 'Nhà máy LG', type: 'factory' },
-  { id: 16, name: 'Nhà máy Toyota', type: 'factory' },
-  { id: 17, name: 'Nhà máy Pepsi', type: 'factory' },
-  { id: 18, name: 'Nhà máy Unilever', type: 'factory' },
-  { id: 19, name: 'KCN Bình Dương', type: 'factory' },
-  { id: 20, name: 'KCN Long An', type: 'factory' },
+  { id: 11, name: 'Nhà máy Samsung', type: DestinationType.Factory },
+  { id: 12, name: 'Nhà máy VinFast', type: DestinationType.Factory },
+  { id: 13, name: 'Nhà máy Formosa', type: DestinationType.Factory },
+  { id: 14, name: 'Nhà máy Intel', type: DestinationType.Factory },
+  { id: 15, name: 'Nhà máy LG', type: DestinationType.Factory },
+  { id: 16, name: 'Nhà máy Toyota', type: DestinationType.Factory },
+  { id: 17, name: 'Nhà máy Pepsi', type: DestinationType.Factory },
+  { id: 18, name: 'Nhà máy Unilever', type: DestinationType.Factory },
+  { id: 19, name: 'KCN Bình Dương', type: DestinationType.Factory },
+  { id: 20, name: 'KCN Long An', type: DestinationType.Factory },
 ];
 
 // Dữ liệu giả lập tên lái xe
@@ -168,10 +169,10 @@ export class DashboardService {
 
     const result = {
       stats: this.calcStats(filtered),
-      border: filtered.filter((v) => v.locationType === 'border'),
-      road: filtered.filter((v) => v.locationType === 'road'),
-      factory: filtered.filter((v) => v.locationType === 'factory'),
-      port: filtered.filter((v) => v.locationType === 'port'),
+      border: filtered.filter((v) => v.locationType === DestinationType.Border),
+      road: filtered.filter((v) => v.locationType === DestinationType.Road),
+      factory: filtered.filter((v) => v.locationType === DestinationType.Factory),
+      port: filtered.filter((v) => v.locationType === DestinationType.Port),
     };
 
     return of(result).pipe(
@@ -218,7 +219,11 @@ export class DashboardService {
    * [API WIDGET] Lấy dữ liệu widget PHƯƠNG TIỆN TẠI CỬA KHẨU.
    */
   getBorderData(): Observable<Vehicle[]> {
-    return this.getWidgetData('border', this.borderVehiclesSubject, this.borderLoadingSubject);
+    return this.getWidgetData(
+      DestinationType.Border,
+      this.borderVehiclesSubject,
+      this.borderLoadingSubject,
+    );
   }
 
   /**
@@ -227,7 +232,11 @@ export class DashboardService {
    * [API WIDGET] Lấy dữ liệu widget PHƯƠNG TIỆN ĐANG TRÊN ĐƯỜNG.
    */
   getRoadData(): Observable<Vehicle[]> {
-    return this.getWidgetData('road', this.roadVehiclesSubject, this.roadLoadingSubject);
+    return this.getWidgetData(
+      DestinationType.Road,
+      this.roadVehiclesSubject,
+      this.roadLoadingSubject,
+    );
   }
 
   /**
@@ -236,7 +245,11 @@ export class DashboardService {
    * [API WIDGET] Lấy dữ liệu widget PHƯƠNG TIỆN TẠI NHÀ MÁY.
    */
   getFactoryData(): Observable<Vehicle[]> {
-    return this.getWidgetData('factory', this.factoryVehiclesSubject, this.factoryLoadingSubject);
+    return this.getWidgetData(
+      DestinationType.Factory,
+      this.factoryVehiclesSubject,
+      this.factoryLoadingSubject,
+    );
   }
 
   /**
@@ -245,7 +258,11 @@ export class DashboardService {
    * [API WIDGET] Lấy dữ liệu widget PHƯƠNG TIỆN TẠI CẢNG.
    */
   getPortData(): Observable<Vehicle[]> {
-    return this.getWidgetData('port', this.portVehiclesSubject, this.portLoadingSubject);
+    return this.getWidgetData(
+      DestinationType.Port,
+      this.portVehiclesSubject,
+      this.portLoadingSubject,
+    );
   }
   /**
    * Người tạo: DungBT
@@ -293,10 +310,14 @@ export class DashboardService {
     // Re-distribute dữ liệu theo bộ lọc mới
     const filtered = this.applyFilter(this.cachedVehicles);
     this.statsSubject.next(this.calcStats(filtered));
-    this.borderVehiclesSubject.next(filtered.filter((v) => v.locationType === 'border'));
-    this.roadVehiclesSubject.next(filtered.filter((v) => v.locationType === 'road'));
-    this.factoryVehiclesSubject.next(filtered.filter((v) => v.locationType === 'factory'));
-    this.portVehiclesSubject.next(filtered.filter((v) => v.locationType === 'port'));
+    this.borderVehiclesSubject.next(
+      filtered.filter((v) => v.locationType === DestinationType.Border),
+    );
+    this.roadVehiclesSubject.next(filtered.filter((v) => v.locationType === DestinationType.Road));
+    this.factoryVehiclesSubject.next(
+      filtered.filter((v) => v.locationType === DestinationType.Factory),
+    );
+    this.portVehiclesSubject.next(filtered.filter((v) => v.locationType === DestinationType.Port));
   }
 
   /**
@@ -320,7 +341,7 @@ export class DashboardService {
   getDestinationChartData(vehicles: Vehicle[]): DestinationChartItem[] {
     const countMap: Record<string, { count: number; type: DestinationChartItem['type'] }> = {};
     vehicles
-      .filter((v) => v.destinationName && v.locationType !== 'road')
+      .filter((v) => v.destinationName && v.locationType !== DestinationType.Road)
       .forEach((v) => {
         const key = v.destinationName!;
         if (!countMap[key]) {
@@ -437,7 +458,7 @@ export class DashboardService {
       return w;
     });
     if (!exists) {
-      updated.push({ widgetId, size: 'auto', collapsed });
+      updated.push({ widgetId, size: WidgetSize.Auto, collapsed });
     }
     this.saveLayoutConfig(userId, updated);
     return updated;
@@ -507,10 +528,14 @@ export class DashboardService {
 
     // Phân bổ phương tiện theo loại điểm
     const distributions: { type: Vehicle['locationType']; destIds: number[]; count: number }[] = [
-      { type: 'border', destIds: [1, 2, 3, 4, 5], count: 2 },
-      { type: 'port', destIds: [6, 7, 8, 9, 10], count: 20 },
-      { type: 'factory', destIds: [11, 12, 13, 14, 15, 16, 17, 18, 19, 20], count: 20 },
-      { type: 'road', destIds: [], count: 2 },
+      { type: DestinationType.Border, destIds: [1, 2, 3, 4, 5], count: 2 },
+      { type: DestinationType.Port, destIds: [6, 7, 8, 9, 10], count: 20 },
+      {
+        type: DestinationType.Factory,
+        destIds: [11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+        count: 20,
+      },
+      { type: DestinationType.Road, destIds: [], count: 2 },
     ];
 
     // Biển số xe bắt đầu từ 43C01338_C
@@ -523,7 +548,7 @@ export class DashboardService {
         let destId: number | undefined;
         let destName: string | undefined;
 
-        if (dist.type !== 'road' && dist.destIds.length > 0) {
+        if (dist.type !== DestinationType.Road && dist.destIds.length > 0) {
           destId = dist.destIds[Math.floor(Math.random() * dist.destIds.length)];
           destName = MOCK_DESTINATIONS.find((d) => d.id === destId)?.name;
         }
@@ -532,7 +557,7 @@ export class DashboardService {
         const hasLoad = Math.random() > 0.45; // ~55% có hàng
 
         let finalDestName = destName;
-        if (dist.type === 'port' && destName) {
+        if (dist.type === DestinationType.Port && destName) {
           finalDestName = `${destName} (${driverName})`;
         }
 
@@ -563,10 +588,10 @@ export class DashboardService {
       totalVehicles: vehicles.length,
       loadedVehicles: vehicles.filter((v) => v.hasLoad).length,
       emptyVehicles: vehicles.filter((v) => !v.hasLoad).length,
-      atBorder: vehicles.filter((v) => v.locationType === 'border').length,
-      onRoad: vehicles.filter((v) => v.locationType === 'road').length,
-      atPort: vehicles.filter((v) => v.locationType === 'port').length,
-      atFactory: vehicles.filter((v) => v.locationType === 'factory').length,
+      atBorder: vehicles.filter((v) => v.locationType === DestinationType.Border).length,
+      onRoad: vehicles.filter((v) => v.locationType === DestinationType.Road).length,
+      atPort: vehicles.filter((v) => v.locationType === DestinationType.Port).length,
+      atFactory: vehicles.filter((v) => v.locationType === DestinationType.Factory).length,
     };
   }
 
@@ -590,11 +615,11 @@ export class DashboardService {
    */
   private getDefaultLayoutConfig(): WidgetConfig[] {
     return [
-      { widgetId: 'overview', size: 'large', collapsed: false },
-      { widgetId: 'donut-border', size: 'small', collapsed: false },
-      { widgetId: 'donut-road', size: 'small', collapsed: false },
-      { widgetId: 'bar-factory', size: 'small', collapsed: false },
-      { widgetId: 'bar-port', size: 'large', collapsed: false },
+      { widgetId: 'overview', size: WidgetSize.Large, collapsed: false },
+      { widgetId: 'donut-border', size: WidgetSize.Small, collapsed: false },
+      { widgetId: 'donut-road', size: WidgetSize.Small, collapsed: false },
+      { widgetId: 'bar-factory', size: WidgetSize.Small, collapsed: false },
+      { widgetId: 'bar-port', size: WidgetSize.Large, collapsed: false },
     ];
   }
 }

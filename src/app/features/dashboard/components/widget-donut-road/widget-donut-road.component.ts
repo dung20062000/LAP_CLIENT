@@ -5,7 +5,15 @@
  *        Hiển thị phân bổ xe đang di chuyển phân loại theo trạng thái có/không hàng.
  *        Số tổng hiển thị ở giữa biểu đồ.
  */
-import { Component, Input, OnChanges, OnDestroy, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnDestroy,
+  SimpleChanges,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+} from '@angular/core';
 
 import { NgxEchartsDirective } from 'ngx-echarts';
 import type { EChartsOption } from 'echarts';
@@ -145,22 +153,34 @@ export class WidgetDonutRoadComponent implements OnChanges, OnDestroy {
         {
           name: 'Phương tiện đang trên đường',
           type: 'pie',
-          radius: ['50%', '75%'],
-          center: ['50%', '45%'],
+          radius: ['40%', '55%'], // tăng/giảm kích thước đường kính vòng tròn (lùi ra, tiến vào)
+          center: ['50%', '45%'], // căn chỉnh vị trí tâm vòng tròn (trục ngang, trục dọc)
+          avoidLabelOverlap: true, // tránh overlap label
           label: {
             show: true,
             position: 'outside',
             formatter: '{c} Phương tiện ({d}%)',
             color: '#666',
             fontSize: 11,
+            width: 120,
+            overflow: 'break',
+            lineHeight: 16,
           },
           labelLine: {
             show: showLabelLine,
-            length: 6,
-            length2: 4,
+            length: 15,
+            length2: 5,
           },
-          labelLayout: {
-            y: 260,
+          labelLayout: (params: any) => {
+            const is100Percent = loadedCount === 0 || emptyCount === 0;
+            if (is100Percent) {
+              return { y: '82%' };
+            }
+            const isLeft = params.labelRect.x < params.rect.x;
+            return {
+              y: '82%',
+              dx: isLeft ? 30 : -30, // Đẩy nhãn bên trái sang phải 30px, nhãn bên phải sang trái 30px
+            };
           },
           data: data,
         },

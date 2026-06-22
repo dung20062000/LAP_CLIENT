@@ -105,6 +105,28 @@ export class MediaFilterComponent implements OnInit {
     return startMin > endMin;
   }
 
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 22/06/2026
+   * Lấy nhãn hiển thị cho danh sách nhóm phương tiện được chọn.
+   */
+  getSelectedGroupsLabel(): string {
+    const selected = this.selectedGroups || [];
+    if (selected.length === 0) {
+      return '';
+    }
+
+    const labels = selected.map((n) => n.label).filter(Boolean);
+    const fullText = labels.join(', ');
+
+    // Nếu chiều dài vượt quá 20 ký tự (ước lượng theo độ rộng ô nhập khoảng 200px)
+    // thì hiển thị số lượng mục được chọn
+    if (fullText.length > 50) {
+      return `${selected.length} mục được chọn`;
+    }
+    return fullText;
+  }
+
   ngOnInit(): void {
     // Load nhóm xe khi khởi tạo component
     this.loadVehicleGroups();

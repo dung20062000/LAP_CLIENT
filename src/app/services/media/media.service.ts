@@ -1,3 +1,13 @@
+import { Injectable, inject } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+
+// prettier-ignore
+import { VehicleGroupTreeNode, VehicleItem, MediaSearchParams, MediaSearchResult } from '../../models/media';
+import { ApiResponse } from '../../models/auth/auth.model';
+import { environment } from '../../../environments/environment';
+
 /**
  * Người tạo: DungBT
  * Ngày tạo: 04/06/2026
@@ -6,24 +16,6 @@
  *        - getVehicleGroups()     → GET  /api/vehicles/groups
  *        - getVehiclesByGroups()  → GET  /api/vehicles?groupIds=...
  *        - searchImages()         → POST /api/vehicles/images/search
- */
-import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import {
-  VehicleGroupTreeNode,
-  VehicleItem,
-  MediaSearchParams,
-  MediaSearchResult,
-} from '../../models/media';
-import { ApiResponse } from '../../models/auth/auth.model';
-import { environment } from '../../../environments/environment';
-
-/**
- * Người tạo: DungBT
- * Ngày tạo: 04/06/2026
- * Service singleton cung cấp dữ liệu cho màn hình Xem Ảnh Phương Tiện.
  */
 @Injectable({
   providedIn: 'root',

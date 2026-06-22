@@ -1,23 +1,5 @@
-/**
- * Người tạo: DungBT
- * Ngày tạo: 04/06/2026
- * Mô tả: Bộ lọc màn hình Xem Ảnh Phương Tiện.
- *        - TreeSelect nhóm PT → khi chọn/bỏ chọn sẽ gọi service lấy danh sách xe.
- *        - Dropdown xe (có filter), MultiSelect kênh (Kênh 1..4).
- *        - Calendar ngày + 2 Calendar giờ bắt đầu/kết thúc (timeOnly).
- *        - Logic disable: ngày kết thúc không được cách ngày bắt đầu quá 30 ngày.
- *        - Emit sự kiện (search) kèm MediaSearchParams ra page cha khi bấm Tìm kiếm.
- */
-import {
-  Component,
-  OnInit,
-  Input,
-  Output,
-  EventEmitter,
-  inject,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-} from '@angular/core';
+// prettier-ignore
+import { Component, OnInit, Input, Output, EventEmitter, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TreeSelectModule } from 'primeng/treeselect';
@@ -34,20 +16,17 @@ import { VehicleItem, MediaChannel, MediaSearchParams, SortOption } from '../../
 /**
  * Người tạo: DungBT
  * Ngày tạo: 04/06/2026
- * Component bộ lọc tìm kiếm ảnh phương tiện.
- */
-@Component({
+ * Mô tả: Bộ lọc màn hình Xem Ảnh Phương Tiện.
+ *        - TreeSelect nhóm PT → khi chọn/bỏ chọn sẽ gọi service lấy danh sách xe.
+ *        - Dropdown xe (có filter), MultiSelect kênh (Kênh 1..4).
+ *        - Calendar ngày + 2 Calendar giờ bắt đầu/kết thúc (timeOnly).
+ *        - Logic disable: ngày kết thúc không được cách ngày bắt đầu quá 30 ngày.
+ *        - Emit sự kiện (search) kèm MediaSearchParams ra page cha khi bấm Tìm kiếm.
+ */ @Component({
   selector: 'app-media-filter',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    TreeSelectModule,
-    NgSelectModule,
-    DatePicker,
-    ButtonModule,
-    Checkbox,
-  ],
+  // prettier-ignore
+  imports: [CommonModule, FormsModule, TreeSelectModule, NgSelectModule, DatePicker, ButtonModule, Checkbox],
   templateUrl: './media-filter.component.html',
   styleUrl: './media-filter.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -354,7 +333,11 @@ export class MediaFilterComponent implements OnInit {
   // Trạng thái expand/collapse toàn bộ tree nodes
   isAllExpanded = false;
 
-  // Mở rộng / Thu gọn toàn bộ các node trong TreeSelect.
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 10/06/2026
+   * Mở rộng / Thu gọn toàn bộ các node trong TreeSelect.
+   */
   toggleExpandAll(): void {
     this.isAllExpanded = !this.isAllExpanded;
     this.expandAllRecursive(this.vehicleGroups, this.isAllExpanded);

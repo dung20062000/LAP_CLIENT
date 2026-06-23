@@ -13,8 +13,6 @@ export interface UserDto {
   userId: string;
   username: string;
   fullname: string;
-  email?: string;
-  userType: number;
 }
 
 /**

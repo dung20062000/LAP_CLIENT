@@ -11,7 +11,7 @@ import { TreeNode, MessageService } from 'primeng/api';
 
 import { getHttpErrorMessage } from '../../../../shared/utils/http-error';
 import { MediaService } from '../../../../services/media';
-import { VehicleItem, MediaChannel, MediaSearchParams, SortOption } from '../../../../models/media';
+import { VehicleItem, MediaChannel, MediaSearchParams, SortOption, GalleryLayoutCols, GALLERY_LAYOUTS } from '../../../../models/media';
 
 /**
  * Người tạo: DungBT
@@ -37,8 +37,11 @@ export class MediaFilterComponent implements OnInit {
   private messageService = inject(MessageService);
 
   // Quản lý số cột của layout từ component cha
-  @Input() activeLayout: 4 | 5 | 6 = 6;
-  @Output() layoutChange = new EventEmitter<4 | 5 | 6>();
+  @Input() activeLayout: GalleryLayoutCols = 6;
+  @Output() layoutChange = new EventEmitter<GalleryLayoutCols>();
+
+  // Các tùy chọn layout được hỗ trợ
+  layouts = GALLERY_LAYOUTS;
 
   // Sự kiện phát ra params tìm kiếm cho page cha
   @Output() searchSubmit = new EventEmitter<MediaSearchParams | null>();
@@ -92,6 +95,41 @@ export class MediaFilterComponent implements OnInit {
   // Ngày tối đa cho endDate (startDate + 30 ngày)
   maxEndDate: Date = new Date();
 
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 22/06/2026
+   * Kiểm tra giờ bắt đầu và giờ kết thúc có hợp lệ không.
+   * Trả về true nếu giờ bắt đầu lớn hơn giờ kết thúc.
+   */
+  get isTimeRangeInvalid(): boolean {
+    if (!this.startTime || !this.endTime) return false;
+    const startMin = this.startTime.getHours() * 60 + this.startTime.getMinutes();
+    const endMin = this.endTime.getHours() * 60 + this.endTime.getMinutes();
+    return startMin > endMin;
+  }
+
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 22/06/2026
+   * Lấy nhãn hiển thị cho danh sách nhóm phương tiện được chọn.
+   */
+  getSelectedGroupsLabel(): string {
+    const selected = this.selectedGroups || [];
+    if (selected.length === 0) {
+      return '';
+    }
+
+    const labels = selected.map((n) => n.label).filter(Boolean);
+    const fullText = labels.join(', ');
+
+    // Nếu chiều dài vượt quá 20 ký tự (ước lượng theo độ rộng ô nhập khoảng 200px)
+    // thì hiển thị số lượng mục được chọn
+    if (fullText.length > 50) {
+      return `${selected.length} mục được chọn`;
+    }
+    return fullText;
+  }
+
   ngOnInit(): void {
     // Load nhóm xe khi khởi tạo component
     this.loadVehicleGroups();
@@ -129,7 +167,7 @@ export class MediaFilterComponent implements OnInit {
    * Ngày tạo: 04/06/2026
    * Thay đổi layout hiển thị ảnh
    */
-  changeLayout(cols: 4 | 5 | 6): void {
+  changeLayout(cols: GalleryLayoutCols): void {
     this.layoutChange.emit(cols);
   }
 
@@ -474,8 +512,6 @@ export class MediaFilterComponent implements OnInit {
     if (start > end) return this.showError('Giờ bắt đầu không được lớn hơn giờ kết thúc');
     if (start > new Date())
       return this.showError('Giờ bắt đầu không được lớn hơn thời gian hiện tại');
-    if (end > new Date())
-      return this.showError('Giờ kết thúc không được lớn hơn thời gian hiện tại');
 
     const params: MediaSearchParams = {
       vehiclePlate: this.selectedVehicle.vehiclePlate,

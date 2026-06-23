@@ -7,7 +7,12 @@ import { MessageService } from 'primeng/api';
 
 import { getHttpErrorMessage } from '../../../../shared/utils/http-error';
 import { MediaService } from '../../../../services/media';
-import { MediaSearchParams, MediaImageItem } from '../../../../models/media';
+import {
+  MediaSearchParams,
+  MediaImageItem,
+  GalleryLayoutCols,
+  LAYOUT_CLASS_MAP,
+} from '../../../../models/media';
 
 import { MediaFilterComponent } from '../../components/media-filter/media-filter.component';
 import { MediaImageCardComponent } from '../../components/media-image-card/media-image-card.component';
@@ -51,9 +56,9 @@ export class MediaGalleryPageComponent {
   currentParams: MediaSearchParams | null = null;
 
   // Layout class: 4→col-md-3, 5→col-20, 6→col-md-2
-  layoutClass = 'col-md-2';
+  layoutClass = LAYOUT_CLASS_MAP[6];
   // Số cột đang chọn
-  activeLayout: 4 | 5 | 6 = 6;
+  activeLayout: GalleryLayoutCols = 6;
 
   // Paginator state
   currentPage = 0; // p-paginator dùng 0-based
@@ -157,23 +162,30 @@ export class MediaGalleryPageComponent {
    * Người tạo: DungBT
    * Ngày tạo: 04/06/2026
    * Thay đổi số cột hiển thị trong grid.
-   * 4 cột → col-md-3, 5 cột → col-20, 6 cột → col-md-2.
-   * @param cols Số cột muốn hiển thị (4 | 5 | 6)
+   * @param cols Số cột muốn hiển thị
    */
-  onLayoutChange(cols: 4 | 5 | 6): void {
+  onLayoutChange(cols: GalleryLayoutCols): void {
     this.activeLayout = cols;
-    switch (cols) {
-      case 4:
-        this.layoutClass = 'col-md-3';
-        break;
-      case 5:
-        this.layoutClass = 'col-20';
-        break;
-      case 6:
-        this.layoutClass = 'col-md-2';
-        break;
-    }
+    this.layoutClass = LAYOUT_CLASS_MAP[cols];
     this.cdr.markForCheck();
+  }
+
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 23/06/2026
+   * Kiểm tra xem có trang trước đó không
+   */
+  get hasPrevPage(): boolean {
+    return this.currentPage > 0;
+  }
+
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 23/06/2026
+   * Kiểm tra xem có trang tiếp theo không
+   */
+  get hasNextPage(): boolean {
+    return (this.currentPage + 1) * this.rows < this.totalRecords;
   }
 
   /**
@@ -186,6 +198,30 @@ export class MediaGalleryPageComponent {
     this.activeIndex = index;
     this.dialogVisible = true;
     this.cdr.markForCheck();
+  }
+
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 23/06/2026
+   * Load trang tiếp theo khi đang xem ảnh trong dialog
+   */
+  onDialogLoadNextPage(): void {
+    if (!this.currentParams || !this.hasNextPage) return;
+    this.currentPage++;
+    this.currentParams = { ...this.currentParams, pageNumber: this.currentPage + 1 };
+    this.loadImages();
+  }
+
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 23/06/2026
+   * Load trang trước đó khi đang xem ảnh trong dialog
+   */
+  onDialogLoadPrevPage(): void {
+    if (!this.currentParams || !this.hasPrevPage) return;
+    this.currentPage--;
+    this.currentParams = { ...this.currentParams, pageNumber: this.currentPage + 1 };
+    this.loadImages();
   }
 
   /**

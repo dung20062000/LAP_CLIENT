@@ -22,6 +22,13 @@
         (onNodeSelect)="onNodeSelect()"
         (onNodeUnselect)="onNodeUnselect()"
       >
+        <ng-template pTemplate="value">
+          @if (selectedGroups && selectedGroups.length > 0) {
+            <span>{{ getSelectedGroupsLabel() }}</span>
+          } @else {
+            <span class="p-placeholder">Chọn nhóm phương tiện</span>
+          }
+        </ng-template>
         <ng-template pTemplate="dropdownicon">
           <i class="fa-solid fa-caret-down"></i>
         </ng-template>
@@ -183,7 +190,7 @@
     </div>
 
     <!-- Giờ bắt đầu: timeOnly -->
-    <div class="filter-item filter-time" [class.has-value]="startTime" [class.no-value]="!startTime">
+    <div class="filter-item filter-time" [class.has-value]="startTime && !isTimeRangeInvalid" [class.no-value]="!startTime || isTimeRangeInvalid">
       <p-datepicker
         id="filter-time-start"
         placeholder="00:00"
@@ -199,7 +206,7 @@
     </div>
 
     <!-- Giờ kết thúc: timeOnly -->
-    <div class="filter-item filter-time" [class.has-value]="endTime" [class.no-value]="!endTime">
+    <div class="filter-item filter-time" [class.has-value]="endTime && !isTimeRangeInvalid" [class.no-value]="!endTime || isTimeRangeInvalid">
       <p-datepicker
         id="filter-time-end"
         placeholder="23:59"
@@ -227,35 +234,19 @@
       </button>
     </div>
 
-    <!-- Nút chọn số cột layout (4 / 5 / 6) -->
+    <!-- Nút chọn số cột layout -->
     <div class="filter-item layout-controls ml-auto">
-      <button
-        id="layout-btn-4"
-        class="btn btn-layout"
-        title="4 ảnh mỗi hàng"
-        [class.active]="activeLayout === 4"
-        (click)="changeLayout(4)"
-      >
-        4 <i class="fas fa-file-image"></i>
-      </button>
-      <button
-        id="layout-btn-5"
-        class="btn btn-layout"
-        title="5 ảnh mỗi hàng"
-        [class.active]="activeLayout === 5"
-        (click)="changeLayout(5)"
-      >
-        5 <i class="fas fa-file-image"></i>
-      </button>
-      <button
-        id="layout-btn-6"
-        class="btn btn-layout"
-        title="6 ảnh mỗi hàng"
-        [class.active]="activeLayout === 6"
-        (click)="changeLayout(6)"
-      >
-        6 <i class="fas fa-file-image"></i>
-      </button>
+      @for (cols of layouts; track cols) {
+        <button
+          class="btn btn-layout"
+          [id]="'layout-btn-' + cols"
+          [title]="cols + ' ảnh mỗi hàng'"
+          [class.active]="activeLayout === cols"
+          (click)="changeLayout(cols)"
+        >
+          {{ cols }} <i class="fas fa-file-image"></i>
+        </button>
+      }
     </div>
 
   </div>

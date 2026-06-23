@@ -96,5 +96,11 @@
   [images]="images"
   [activeIndex]="activeIndex"
   [visible]="dialogVisible"
+  [totalRecords]="totalRecords"
+  [currentPage]="currentPage"
+  [rows]="rows"
+  [loading]="loading"
   (visibleChange)="onDialogVisibleChange($event)"
+  (loadNextPage)="onDialogLoadNextPage()"
+  (loadPrevPage)="onDialogLoadPrevPage()"
 />

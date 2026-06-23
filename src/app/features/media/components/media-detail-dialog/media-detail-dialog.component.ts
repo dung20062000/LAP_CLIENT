@@ -40,7 +40,16 @@ export class MediaDetailDialogComponent implements OnChanges, OnDestroy {
   @Input() images: MediaImageItem[] = [];
   @Input() activeIndex: number = 0;
   @Input() visible: boolean = false;
+
+  // Các Input cho phân trang
+  @Input() totalRecords: number = 0;
+  @Input() currentPage: number = 0;
+  @Input() rows: number = 50;
+  @Input() loading: boolean = false;
+
   @Output() visibleChange = new EventEmitter<boolean>();
+  @Output() loadNextPage = new EventEmitter<void>();
+  @Output() loadPrevPage = new EventEmitter<void>();
 
   // Cho phép circular navigation (quay lại đầu khi ở cuối)
   circular = true;
@@ -51,6 +60,9 @@ export class MediaDetailDialogComponent implements OnChanges, OnDestroy {
   // Index hiện tại – hoàn toàn do component tự quản lý
   currentIndex: number = 0;
 
+  // Lưu hướng chuyển trang để sau khi fetch xong sẽ gán lại index phù hợp
+  pendingDirection: 'next' | 'prev' | null = null;
+
   // Timer handle cho autoPlay
   private autoPlayTimer: ReturnType<typeof setInterval> | null = null;
 
@@ -59,10 +71,53 @@ export class MediaDetailDialogComponent implements OnChanges, OnDestroy {
     return this.images[this.currentIndex];
   }
 
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 23/06/2026
+   * Kiểm tra xem có trang tiếp theo không
+   */
+  get hasNextPage(): boolean {
+    return (this.currentPage + 1) * this.rows < this.totalRecords;
+  }
+
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 23/06/2026
+   * Kiểm tra xem có trang trước không
+   */
+  get hasPrevPage(): boolean {
+    return this.currentPage > 0;
+  }
+
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 23/06/2026
+   * Lấy index hiện tại trong tổng số ảnh
+   */
+  get globalCurrentIndex(): number {
+    return this.currentPage * this.rows + this.currentIndex + 1;
+  }
+
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 23/06/2026
+   * Xử lý khi component nhận inputs thay đổi
+   */
   ngOnChanges(changes: SimpleChanges): void {
     // Khi mở dialog hoặc activeIndex thay đổi, đồng bộ lại
     if (changes['activeIndex'] || changes['visible']) {
       this.currentIndex = this.activeIndex;
+      this.cdr.markForCheck();
+    }
+
+    // Nếu images thay đổi (ví dụ: chuyển trang), reset lại currentIndex
+    if (changes['images'] && !changes['images'].isFirstChange() && this.visible) {
+      if (this.pendingDirection === 'next') {
+        this.currentIndex = 0;
+      } else if (this.pendingDirection === 'prev') {
+        this.currentIndex = this.images.length > 0 ? this.images.length - 1 : 0;
+      }
+      this.pendingDirection = null;
       this.cdr.markForCheck();
     }
   }
@@ -77,9 +132,12 @@ export class MediaDetailDialogComponent implements OnChanges, OnDestroy {
    * Chuyển sang ảnh trước.
    */
   prev(): void {
-    if (this.images.length === 0) return;
+    if (this.images.length === 0 || this.loading) return;
     if (this.currentIndex > 0) {
       this.currentIndex--;
+    } else if (this.hasPrevPage) {
+      this.pendingDirection = 'prev';
+      this.loadPrevPage.emit();
     } else if (this.circular) {
       this.currentIndex = this.images.length - 1;
     }
@@ -92,9 +150,12 @@ export class MediaDetailDialogComponent implements OnChanges, OnDestroy {
    * Chuyển sang ảnh tiếp theo.
    */
   next(): void {
-    if (this.images.length === 0) return;
+    if (this.images.length === 0 || this.loading) return;
     if (this.currentIndex < this.images.length - 1) {
       this.currentIndex++;
+    } else if (this.hasNextPage) {
+      this.pendingDirection = 'next';
+      this.loadNextPage.emit();
     } else if (this.circular) {
       this.currentIndex = 0;
     }

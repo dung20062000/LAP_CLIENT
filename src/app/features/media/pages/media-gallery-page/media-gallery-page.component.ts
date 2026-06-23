@@ -7,7 +7,12 @@ import { MessageService } from 'primeng/api';
 
 import { getHttpErrorMessage } from '../../../../shared/utils/http-error';
 import { MediaService } from '../../../../services/media';
-import { MediaSearchParams, MediaImageItem, GalleryLayoutCols, LAYOUT_CLASS_MAP } from '../../../../models/media';
+import {
+  MediaSearchParams,
+  MediaImageItem,
+  GalleryLayoutCols,
+  LAYOUT_CLASS_MAP,
+} from '../../../../models/media';
 
 import { MediaFilterComponent } from '../../components/media-filter/media-filter.component';
 import { MediaImageCardComponent } from '../../components/media-image-card/media-image-card.component';
@@ -167,6 +172,24 @@ export class MediaGalleryPageComponent {
 
   /**
    * Người tạo: DungBT
+   * Ngày tạo: 23/06/2026
+   * Kiểm tra xem có trang trước đó không
+   */
+  get hasPrevPage(): boolean {
+    return this.currentPage > 0;
+  }
+
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 23/06/2026
+   * Kiểm tra xem có trang tiếp theo không
+   */
+  get hasNextPage(): boolean {
+    return (this.currentPage + 1) * this.rows < this.totalRecords;
+  }
+
+  /**
+   * Người tạo: DungBT
    * Ngày tạo: 04/06/2026
    * Mở dialog xem chi tiết ảnh tại index được click.
    * @param index Index của ảnh trong mảng images
@@ -175,6 +198,30 @@ export class MediaGalleryPageComponent {
     this.activeIndex = index;
     this.dialogVisible = true;
     this.cdr.markForCheck();
+  }
+
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 23/06/2026
+   * Load trang tiếp theo khi đang xem ảnh trong dialog
+   */
+  onDialogLoadNextPage(): void {
+    if (!this.currentParams || !this.hasNextPage) return;
+    this.currentPage++;
+    this.currentParams = { ...this.currentParams, pageNumber: this.currentPage + 1 };
+    this.loadImages();
+  }
+
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 23/06/2026
+   * Load trang trước đó khi đang xem ảnh trong dialog
+   */
+  onDialogLoadPrevPage(): void {
+    if (!this.currentParams || !this.hasPrevPage) return;
+    this.currentPage--;
+    this.currentParams = { ...this.currentParams, pageNumber: this.currentPage + 1 };
+    this.loadImages();
   }
 
   /**

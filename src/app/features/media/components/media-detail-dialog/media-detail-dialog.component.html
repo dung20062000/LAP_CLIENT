@@ -16,13 +16,18 @@
       <div class="custom-slideshow">
 
         <!-- Nút Prev -->
-        <button class="slide-nav slide-prev" [disabled]="!circular && currentIndex === 0" (click)="prev()">
+        <button class="slide-nav slide-prev" [disabled]="(!circular && currentIndex === 0 && !hasPrevPage) || loading" (click)="prev()">
           <!-- <i class="fas fa-chevron-left"></i> -->
           <span class="material-symbols-outlined">arrow_back_ios</span>
         </button>
 
         <!-- Ảnh hiện tại -->
-        <div class="galleria-item">
+        <div class="galleria-item" style="position: relative;">
+          @if (loading) {
+            <div class="loading-overlay" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.5); z-index: 10;">
+              <i class="fas fa-spinner fa-spin fa-3x text-white"></i>
+            </div>
+          }
           <img
             class="galleria-image"
             [src]="currentImage.url"
@@ -31,7 +36,7 @@
         </div>
 
         <!-- Nút Next -->
-        <button class="slide-nav slide-next" [disabled]="!circular && currentIndex === images.length - 1" (click)="next()">
+        <button class="slide-nav slide-next" [disabled]="(!circular && currentIndex === images.length - 1 && !hasNextPage) || loading" (click)="next()">
           <!-- <i class="fas fa-chevron-right"></i> -->
           <span class="material-symbols-outlined">arrow_forward_ios</span>
         </button>
@@ -52,7 +57,7 @@
             {{ autoPlay ? 'Dừng' : 'Xem ảnh tự động' }}
           </button>
           <span class="caption-counter">
-            {{ currentIndex + 1 }}/{{ images.length }} ảnh
+            {{ globalCurrentIndex }}/{{ totalRecords }} ảnh
           </span>
         </div>
 

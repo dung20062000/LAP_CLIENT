@@ -6,14 +6,10 @@ import { PaginatorModule, PaginatorState } from 'primeng/paginator';
 import { MessageService } from 'primeng/api';
 
 import { getHttpErrorMessage } from '../../../../shared/utils/http-error';
+import { PAGE_SIZE_OPTIONS } from '../../../../shared/utils/constants';
 import { MediaService } from '../../../../services/media';
-import {
-  MediaSearchParams,
-  MediaImageItem,
-  GalleryLayoutCols,
-  LAYOUT_CLASS_MAP,
-} from '../../../../models/media';
-
+// prettier-ignore
+import { MediaSearchParams, MediaImageItem, GalleryLayoutCols, LAYOUT_CLASS_MAP } from '../../../../models/media';
 import { MediaFilterComponent } from '../../components/media-filter/media-filter.component';
 import { MediaImageCardComponent } from '../../components/media-image-card/media-image-card.component';
 import { MediaDetailDialogComponent } from '../../components/media-detail-dialog/media-detail-dialog.component';
@@ -63,7 +59,7 @@ export class MediaGalleryPageComponent {
   // Paginator state
   currentPage = 0; // p-paginator dùng 0-based
   rows = 50;
-  rowsPerPageOptions = [10, 20, 50, 100];
+  rowsPerPageOptions = PAGE_SIZE_OPTIONS;
 
   // Dialog state
   dialogVisible = false;

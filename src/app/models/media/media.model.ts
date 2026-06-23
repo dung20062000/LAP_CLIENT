@@ -96,3 +96,17 @@ export interface SortOption {
   label: string;
   value: 'desc' | 'asc';
 }
+
+/**
+ * Người tạo: DungBT
+ * Ngày tạo: 23/06/2026
+ * Cấu hình layout hiển thị lưới ảnh
+ */
+export const GALLERY_LAYOUTS = [4, 5, 6] as const;
+export type GalleryLayoutCols = (typeof GALLERY_LAYOUTS)[number];
+
+export const LAYOUT_CLASS_MAP: Record<GalleryLayoutCols, string> = {
+  4: 'col-md-3',
+  5: 'col-20',
+  6: 'col-md-2',
+};

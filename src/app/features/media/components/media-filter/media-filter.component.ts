@@ -11,7 +11,7 @@ import { TreeNode, MessageService } from 'primeng/api';
 
 import { getHttpErrorMessage } from '../../../../shared/utils/http-error';
 import { MediaService } from '../../../../services/media';
-import { VehicleItem, MediaChannel, MediaSearchParams, SortOption } from '../../../../models/media';
+import { VehicleItem, MediaChannel, MediaSearchParams, SortOption, GalleryLayoutCols, GALLERY_LAYOUTS } from '../../../../models/media';
 
 /**
  * Người tạo: DungBT
@@ -37,8 +37,11 @@ export class MediaFilterComponent implements OnInit {
   private messageService = inject(MessageService);
 
   // Quản lý số cột của layout từ component cha
-  @Input() activeLayout: 4 | 5 | 6 = 6;
-  @Output() layoutChange = new EventEmitter<4 | 5 | 6>();
+  @Input() activeLayout: GalleryLayoutCols = 6;
+  @Output() layoutChange = new EventEmitter<GalleryLayoutCols>();
+
+  // Các tùy chọn layout được hỗ trợ
+  layouts = GALLERY_LAYOUTS;
 
   // Sự kiện phát ra params tìm kiếm cho page cha
   @Output() searchSubmit = new EventEmitter<MediaSearchParams | null>();
@@ -164,7 +167,7 @@ export class MediaFilterComponent implements OnInit {
    * Ngày tạo: 04/06/2026
    * Thay đổi layout hiển thị ảnh
    */
-  changeLayout(cols: 4 | 5 | 6): void {
+  changeLayout(cols: GalleryLayoutCols): void {
     this.layoutChange.emit(cols);
   }
 

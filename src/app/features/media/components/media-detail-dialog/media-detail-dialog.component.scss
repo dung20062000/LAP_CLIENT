@@ -75,8 +75,8 @@
   width: 40px;
   height: 40px;
   border: none;
-  border-radius: 4px;
-  background-color: var(--primary-color-darker);
+  // background-color: var(--primary-color-darker);
+  background-color: #187F9E;
   color: var(--text-white);
   font-size: 16px;
   cursor: pointer;
@@ -84,6 +84,10 @@
   align-items: center;
   justify-content: center;
   transition: background 0.2s, opacity 0.2s;
+
+  span{
+    font-weight: 100;
+  }
 
   &:hover:not(:disabled) {
     opacity: 0.8;
@@ -95,8 +99,8 @@
   }
 }
 
-.slide-prev { left: 12px; }
-.slide-next { right: 12px; }
+.slide-prev { left: 0; }
+.slide-next { right: 0; }
 
 
 // Ảnh trong galleria
@@ -208,6 +212,9 @@
   flex: 0 0 100%;
   max-width: 100%;
   box-sizing: border-box;
+}
+.pl-0{
+  padding-left: 0px !important;
 }
 
 .detail-item {

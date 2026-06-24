@@ -53,7 +53,10 @@ export class HeaderComponent {
     { label: TranslationKey.NavHome, href: 'https://bagps.vn/' },
     { label: TranslationKey.NavProducts, href: 'https://bagps.vn/san-pham-va-giai-phap' },
     { label: TranslationKey.NavNews, href: 'https://bagps.vn/tin-tuc-c10' },
-    { label: TranslationKey.NavPayment, href: 'https://bagps.vn/huong-dan-dong-phi-dich-vu-ba-gps-d610' },
+    {
+      label: TranslationKey.NavPayment,
+      href: 'https://bagps.vn/huong-dan-dong-phi-dich-vu-ba-gps-d610',
+    },
     { label: TranslationKey.NavGuide, href: 'https://badoc.bagroup.vn/x/SAGhBg' },
     { label: TranslationKey.NavNetwork, href: 'https://bagps.vn/mang-luoi' },
     { label: TranslationKey.NavAbout, href: 'https://bagps.vn/gioi-thieu/' },
@@ -111,8 +114,7 @@ export class HeaderComponent {
 
   // Trạng thái mở dropdown ngôn ngữ.
   langOpen = false;
-  // Trạng thái mở dropdown thông tin user.
-  userMenuOpen = false;
+
   // Trạng thái mở menu mobile (hamburger).
   isMenuOpen = false;
 

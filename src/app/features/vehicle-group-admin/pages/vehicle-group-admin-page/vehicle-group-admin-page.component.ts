@@ -710,8 +710,10 @@ export class VehicleGroupAdminPageComponent implements OnInit {
   private updateNodeStyles(nodes: TreeNode[], isAssignedTree: boolean): TreeNode[] {
     return nodes.map((node) => {
       const isDirtyNode = isAssignedTree
-        ? this.initialUnassignedKeys.has(node.key as string)
-        : this.initialAssignedKeys.has(node.key as string);
+        ? this.initialUnassignedKeys.has(node.key as string) &&
+          !this.initialAssignedKeys.has(node.key as string)
+        : this.initialAssignedKeys.has(node.key as string) &&
+          !this.initialUnassignedKeys.has(node.key as string);
 
       return {
         ...node,
@@ -729,7 +731,11 @@ export class VehicleGroupAdminPageComponent implements OnInit {
   private checkDirtyState(): void {
     const checkUnassigned = (nodes: TreeNode[]): boolean => {
       for (const n of nodes) {
-        if (this.initialAssignedKeys.has(n.key as string)) return true;
+        if (
+          this.initialAssignedKeys.has(n.key as string) &&
+          !this.initialUnassignedKeys.has(n.key as string)
+        )
+          return true;
         if (n.children?.length && checkUnassigned(n.children)) return true;
       }
       return false;
@@ -737,7 +743,11 @@ export class VehicleGroupAdminPageComponent implements OnInit {
 
     const checkAssigned = (nodes: TreeNode[]): boolean => {
       for (const n of nodes) {
-        if (this.initialUnassignedKeys.has(n.key as string)) return true;
+        if (
+          this.initialUnassignedKeys.has(n.key as string) &&
+          !this.initialAssignedKeys.has(n.key as string)
+        )
+          return true;
         if (n.children?.length && checkAssigned(n.children)) return true;
       }
       return false;

@@ -175,7 +175,7 @@ export class WidgetDonutBorderComponent implements OnChanges, OnDestroy {
             formatter: '{c} Phương tiện ({d}%)',
             color: '#666',
             fontSize: 11,
-            width: 120,
+            width: 150,
             overflow: 'break',
             lineHeight: 16,
           },
@@ -192,7 +192,7 @@ export class WidgetDonutBorderComponent implements OnChanges, OnDestroy {
             const isLeft = params.labelRect.x < params.rect.x;
             return {
               y: '82%',
-              dx: isLeft ? 30 : -30, // Đẩy nhãn bên trái sang phải 30px, nhãn bên phải sang trái 30px
+              dx: isLeft ? 40 : -40, // Đẩy nhãn bên trái sang phải 40px, nhãn bên phải sang trái 40px
             };
           },
           data: data,

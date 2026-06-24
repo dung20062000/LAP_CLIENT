@@ -16,9 +16,9 @@
         <div class="vga-panel-header">
           <span class="vga-panel-title">
             Danh sách người dùng
-            <!-- @if (!usersLoading) {
+            @if (!usersLoading) {
               <span class="vga-badge">({{ allUsers.length }})</span>
-            } -->
+            }
           </span>
         </div>
 
@@ -64,12 +64,12 @@
                   tabindex="0"
                   [class.active]="selectedUser?.userId === user.userId"
                   (click)="onSelectUser(user)"
-                  (keydown.enter)="onSelectUser(user)"
-                >
-                  <span class="vga-user-name">{{ user.fullname }}</span>
-                  @if (user.username) {
-                    <small class="vga-user-sub">({{ user.username }})</small>
-                  }
+                  (keydown.enter)="onSelectUser(user)">
+                  <span class="vga-user-name">{{ user.fullname }}
+                    @if(user.username){
+                      ({{ user.username }})
+                    }
+                  </span>
                 </li>
               }
             </ul>

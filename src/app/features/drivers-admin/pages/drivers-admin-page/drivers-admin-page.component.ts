@@ -18,6 +18,7 @@ import { DriversAdminService } from '../../../../services/drivers-admin';
 import { getHttpErrorMessage } from '../../../../shared/utils/http-error';
 // prettier-ignore
 import { DriverLookupDto, LicenseTypeLookupDto, DriverDto, UpdateDriverRequest, DriverListRequest, DriverSearchType } from '../../../../models/drivers-admin';
+// prettier-ignore
 import { NumbersOnlyDirective, VarcharOnlyDirective, NoAngleBracketsDirective } from '../../../../shared/directives/input-filters.directive';
 
 /**
@@ -224,7 +225,12 @@ export class DriversAdminPageComponent implements OnInit {
         Mobile: [driver.Mobile, [Validators.pattern(/^[0-9]{9,25}$/), Validators.maxLength(25)]],
         DriverLicense: [
           driver.DriverLicense,
-          [Validators.required, Validators.maxLength(32), Validators.pattern(/^[\x00-\x7F]*$/), this.noAngleBrackets()],
+          [
+            Validators.required,
+            Validators.maxLength(32),
+            Validators.pattern(/^[\x00-\x7F]*$/),
+            this.noAngleBrackets(),
+          ],
         ],
         IssueLicenseDate: [toDateInputValue(driver.IssueLicenseDate), [Validators.required]],
         ExpireLicenseDate: [toDateInputValue(driver.ExpireLicenseDate), [Validators.required]],

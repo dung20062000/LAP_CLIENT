@@ -62,6 +62,7 @@ export class DriversAdminService {
   getDriverList(request: DriverListRequest): Observable<DriverListResponse> {
     let params = new HttpParams();
     if (request.Keyword) params = params.set('Keyword', request.Keyword);
+    if (request.Type) params = params.set('Type', request.Type);
     if (request.Page) params = params.set('Page', request.Page.toString());
     if (request.PageSize) params = params.set('PageSize', request.PageSize.toString());
 

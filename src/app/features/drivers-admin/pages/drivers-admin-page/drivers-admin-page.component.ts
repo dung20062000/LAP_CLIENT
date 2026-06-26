@@ -18,6 +18,7 @@ import { DriversAdminService } from '../../../../services/drivers-admin';
 import { getHttpErrorMessage } from '../../../../shared/utils/http-error';
 // prettier-ignore
 import { DriverLookupDto, LicenseTypeLookupDto, DriverDto, UpdateDriverRequest, DriverListRequest, DriverSearchType } from '../../../../models/drivers-admin';
+import { NumbersOnlyDirective, VarcharOnlyDirective, NoAngleBracketsDirective } from '../../../../shared/directives/input-filters.directive';
 
 /**
  * Người tạo: DungBT
@@ -33,7 +34,7 @@ import { DriverLookupDto, LicenseTypeLookupDto, DriverDto, UpdateDriverRequest, 
   selector: 'app-drivers-admin-page',
   standalone: true,
   // prettier-ignore
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgSelectModule, ButtonModule, ConfirmDialogModule, ToastModule, PaginatorModule, TableModule,],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgSelectModule, ButtonModule, ConfirmDialogModule, ToastModule, PaginatorModule, TableModule, NumbersOnlyDirective, VarcharOnlyDirective, NoAngleBracketsDirective],
   providers: [ConfirmationService],
   templateUrl: './drivers-admin-page.component.html',
   styleUrls: ['./drivers-admin-page.component.scss'],
@@ -50,6 +51,7 @@ export class DriversAdminPageComponent implements OnInit {
 
   // Expose Math to template
   readonly Math = Math;
+  readonly todayDateString = format(new Date(), 'yyyy-MM-dd');
 
   // ── Dropdown data ──────────────────────────────────────────────────────────
   driverLookup: DriverLookupDto[] = [];
@@ -222,7 +224,7 @@ export class DriversAdminPageComponent implements OnInit {
         Mobile: [driver.Mobile, [Validators.pattern(/^[0-9]{9,25}$/), Validators.maxLength(25)]],
         DriverLicense: [
           driver.DriverLicense,
-          [Validators.required, Validators.maxLength(32), this.noAngleBrackets()],
+          [Validators.required, Validators.maxLength(32), Validators.pattern(/^[\x00-\x7F]*$/), this.noAngleBrackets()],
         ],
         IssueLicenseDate: [toDateInputValue(driver.IssueLicenseDate), [Validators.required]],
         ExpireLicenseDate: [toDateInputValue(driver.ExpireLicenseDate), [Validators.required]],
@@ -286,7 +288,10 @@ export class DriversAdminPageComponent implements OnInit {
     if (ctrl.errors?.['required']) return 'Bắt buộc nhập';
     if (ctrl.errors?.['maxlength'])
       return `Tối đa ${ctrl.errors['maxlength'].requiredLength} ký tự`;
-    if (ctrl.errors?.['pattern']) return 'SĐT chỉ nhập số, 9-15 ký tự';
+    if (ctrl.errors?.['pattern']) {
+      if (field === 'DriverLicense') return 'Chỉ được nhập ký tự không dấu (varchar)';
+      return 'SĐT chỉ nhập số, 9-25 ký tự';
+    }
     if (ctrl.errors?.['noAngleBrackets']) return ctrl.errors['noAngleBrackets'] as string;
     return 'Giá trị không hợp lệ';
   }

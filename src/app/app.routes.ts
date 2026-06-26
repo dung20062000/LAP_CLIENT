@@ -10,16 +10,14 @@ export const routes: Routes = [
   {
     path: 'login',
     loadComponent: () =>
-      import('./features/auth/pages/login/login.component').then(
-        (m) => m.LoginComponent
-      ),
+      import('./features/auth/pages/login/login.component').then((m) => m.LoginComponent),
     canActivate: [guestGuard],
   },
   {
     path: 'public',
     loadComponent: () =>
       import('./shared/components/layout/main-layout/main-layout.component').then(
-        (m) => m.MainLayoutComponent
+        (m) => m.MainLayoutComponent,
       ),
     canActivate: [authGuard],
     children: [
@@ -32,21 +30,28 @@ export const routes: Routes = [
         path: 'dashboard',
         loadComponent: () =>
           import('./features/dashboard/pages/dashboard-page/dashboard-page.component').then(
-            (m) => m.DashboardPageComponent
+            (m) => m.DashboardPageComponent,
           ),
       },
       {
         path: 'media',
         loadComponent: () =>
           import('./features/media/pages/media-gallery-page/media-gallery-page.component').then(
-            (m) => m.MediaGalleryPageComponent
+            (m) => m.MediaGalleryPageComponent,
           ),
       },
       {
         path: 'administration/vehicle-groups',
         loadComponent: () =>
           import('./features/vehicle-group-admin/pages/vehicle-group-admin-page/vehicle-group-admin-page.component').then(
-            (m) => m.VehicleGroupAdminPageComponent
+            (m) => m.VehicleGroupAdminPageComponent,
+          ),
+      },
+      {
+        path: 'administration/drivers',
+        loadComponent: () =>
+          import('./features/drivers-admin/pages/drivers-admin-page/drivers-admin-page.component').then(
+            (m) => m.DriversAdminPageComponent,
           ),
       },
     ],

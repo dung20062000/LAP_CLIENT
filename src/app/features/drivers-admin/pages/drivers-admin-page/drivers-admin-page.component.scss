@@ -1,0 +1,390 @@
+// Colors based on the screenshot
+$primary-blue: #1565c0;
+$light-blue: #3498db;
+$border-color: #dee2e6;
+$dirty-bg: #fff9c4;
+$invalid-bg: #fff5f5;
+$invalid-border: #d32f2f;
+$valid-border: #2e7d32;
+
+:host {
+  display: block;
+}
+
+.da-page {
+  // min-height: calc(100vh - 60px);
+
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg-white);
+  margin: 12px 12px 12px 12px;
+  border-radius: 4px;
+  padding: 16px 8px;
+  box-shadow: 0 4px 16px 0 rgba(100, 100, 100, 0.4);
+
+  /* ── Header ──────────────────────────────────────── */
+  .da-header {
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    .da-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-blue-dark, #007bff);
+      margin: 0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+  }
+
+  /* ── Filter Bar (Làm giống media-filter) ─────────── */
+  .media-filter {
+    padding: 8px 0;
+    margin-bottom: 12px;
+
+    .filter-row {
+      display: flex;
+      align-items: flex-end; /* Căn dưới cho các ô input và button bằng nhau */
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .filter-item {
+      display: flex;
+      flex-direction: column; /* Thêm column để label nằm trên */
+      align-items: flex-start;
+      font-size: 13px;
+      gap: 6px;
+
+      label {
+        font-weight: 500;
+        color: #495057;
+        margin-bottom: 0;
+        line-height: 1;
+      }
+    }
+
+    /* Các cột filter */
+    .filter-search, .filter-driver, .filter-license {
+      flex: 1 1 0%;
+      min-width: 150px;
+      width: 100%;
+    }
+
+    .filter-search {
+      .da-search-group {
+        display: flex;
+        align-items: center;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        background: #fff;
+        height: 34px;
+        width: 100%;
+
+        .da-search-input {
+          flex: 1;
+          border: none;
+          padding: 0 10px;
+          outline: none;
+          font-size: 13px;
+          min-width: 0;
+        }
+
+        .da-search-clear {
+          cursor: pointer;
+          color: #d32f2f;
+        }
+
+        .search-icon {
+          padding: 0 6px;
+          color: #6c757d;
+
+          i{
+            color: var(--text-gray, #6c757d);
+          }
+        }
+
+        .da-search-type-select {
+          width: 96px;
+          border-left: 1px solid #ced4da;
+          height: 100%;
+
+          ::ng-deep .ng-select-container {
+            border: none !important;
+            background-color: transparent !important;
+            min-height: 34px !important;
+            height: 34px;
+            box-shadow: none !important;
+          }
+        }
+      }
+    }
+
+    .filter-btn {
+      flex: 0 0 auto;
+
+      .btn-search {
+        background-color: var(--text-blue-dark);
+        color: #fff;
+        border: none;
+        height: 34px;
+        padding: 0 16px;
+        font-size: 13px;
+        font-weight: 500;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        transition: background-color 0.2s;
+
+        &:hover {
+          background-color: var(--bg-blue-hover);
+        }
+      }
+    }
+  }
+
+  /* ── Action Bar ──────────────────────────────────── */
+  .da-action-bar {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 8px;
+
+    .da-action-right {
+      display: flex;
+      gap: 8px;
+
+      .btn {
+        height: 32px;
+        padding: 0 6px;
+        font-size: 13px;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-weight: 500;
+        transition: all 0.2s;
+        border: none;
+        .icon-material{
+          font-size: 14px;
+        }
+      }
+
+      .da-btn-save {
+        background-color: var(--text-blue-dark);
+        color: #fff;
+        &:hover:not(:disabled) {
+          background-color: var(--bg-blue-hover);
+          color: var(--text-white);
+        }
+        &:disabled { opacity: 0.6; cursor: not-allowed; }
+      }
+
+      .da-btn-cancel {
+        background-color: #fff;
+        border: 1px solid var(--text-blue-dark);
+        color: var(--text-blue-dark);
+        &:hover {
+          background-color: var(--bg-blue-hover);
+          color: var(--text-white);
+        }
+      }
+
+      .da-btn-export {
+        background-color: var(--text-blue-dark);
+        color: #fff;
+        padding: 0 10px;
+        &:hover:not(:disabled) {
+          background-color: var(--bg-blue-hover);
+          color: var(--text-white);
+        }
+        &:disabled { opacity: 0.6; cursor: not-allowed; }
+      }
+    }
+  }
+
+  /* ── Table Area (p-table overrides) ──────────────── */
+  .da-table-wrapper {
+    overflow-x: auto;
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+
+    ::ng-deep .da-table {
+      .p-datatable-thead > tr > th {
+        background-color: $light-blue;
+        color: #fff;
+        font-weight: 600;
+        font-size: 13px;
+        padding: 8px;
+        text-align: center;
+        border: 1px solid #2980b9;
+        white-space: nowrap;
+
+        .da-required {
+          color: var(--text-danger);
+          margin-left: 2px;
+        }
+      }
+
+      .p-datatable-tbody > tr > td {
+        padding: 4px;
+        vertical-align: middle;
+        font-size: 13px;
+        border: 1px solid $border-color;
+
+        /* Column widths */
+        &.da-col-stt { width: 50px; text-align: center; }
+        &.da-col-name { min-width: 160px; }
+        &.da-col-phone { min-width: 130px; }
+        &.da-col-license { min-width: 140px; }
+        &.da-col-issue-date { min-width: 140px; }
+        &.da-col-expire-date { min-width: 140px; }
+        &.da-col-place { min-width: 140px; }
+        &.da-col-type { min-width: 130px; }
+        // &.da-col-updated { min-width: 140px; font-size: 11px; color: #555; }
+        &.da-col-action { width: 50px; text-align: center; }
+
+        .da-cell-readonly {
+          color: #333;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .da-input {
+          width: 100%;
+          border: 1px solid #ced4da;
+          border-radius: 4px;
+          padding: 4px 6px;
+          font-size: 13px;
+          outline: none;
+          transition: border-color 0.2s, box-shadow 0.2s;
+
+          &:focus {
+            border-color: #80bdff;
+            box-shadow: 0 0 0 0.2rem rgba(21, 101, 192, 0.1);
+          }
+
+          &.da-input-valid { border-left: 3px solid $valid-border !important; }
+          &.da-input-invalid { border-left: 3px solid $invalid-border !important; background-color: $invalid-bg; }
+          &.da-input-dirty { background-color: $dirty-bg !important; }
+        }
+
+        .da-select { cursor: pointer; height: 28px; padding: 2px 6px; }
+
+        .da-btn-delete {
+          color: $invalid-border;
+          background: transparent;
+          border: none;
+          padding: 4px;
+          cursor: pointer;
+          font-size: 14px;
+          border-radius: 4px;
+          &:hover { background-color: #fde8e8; }
+        }
+      }
+
+      // .p-datatable-tbody > tr:nth-child(even):not(.da-row-invalid) {
+      //   background-color: #f8faff;
+      // }
+
+      .p-datatable-tbody > tr.da-row-invalid {
+        background-color: $invalid-bg;
+      }
+    }
+  }
+
+  /* ── Loading ─────────────────────────────────────── */
+  .da-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    padding: 40px;
+    color: $primary-blue;
+    font-size: 14px;
+  }
+}
+
+
+// PAGINATOR (sticky bottom)
+.paginator-wrapper {
+  position: sticky;
+  bottom: 0;
+  z-index: 1000;
+  background-color: #fff;
+  border-top: 1px solid #dee2e6;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+
+  ::ng-deep {
+    .p-paginator {
+      padding: 4px 8px;
+      justify-content: flex-start;
+      background: transparent;
+      border: none;
+      font-size: 13px;
+
+      .p-paginator-first { order: 1; }
+      .p-paginator-prev { order: 2; }
+      .p-paginator-pages { order: 3; }
+      .p-paginator-next { order: 4; }
+      .p-paginator-last { order: 5; }
+
+      p-select, .p-paginator-rpp-dropdown, .p-paginator-rpp-options {
+        order: 6;
+        height: 30px;
+        font-size: 12px;
+
+        ::ng-deep .p-select-label {
+          padding: 4px 8px;
+          font-size: 12px;
+        }
+      }
+      &::after {
+        content: 'ảnh mỗi trang';
+        order: 7;
+        margin-left: 8px;
+        color: #6c757d;
+        font-size: 13px;
+        display: flex;
+        align-items: center;
+      }
+
+      .p-paginator-current {
+        order: 8;
+        margin-left: auto;
+        color: #6c757d;
+        font-size: 12px;
+      }
+
+      .p-paginator-pages {
+        .p-paginator-page {
+          width: 30px;
+          height: 30px;
+          min-width: 30px;
+          font-size: 12px;
+          border-radius: 4px;
+          color: var(--primary-color-darker);
+
+          &.p-paginator-page-selected{
+            background: var(--primary-color);
+            color: var(--text-white);
+            border-color: var(--primary-color);
+          }
+        }
+      }
+
+      .p-paginator-first,
+      .p-paginator-prev,
+      .p-paginator-next,
+      .p-paginator-last {
+        width: 30px;
+        height: 30px;
+        min-width: 30px;
+      }
+    }
+  }
+}

@@ -183,12 +183,18 @@
 
   <!-- LƯỚI DỮ LIỆU (p-table) -->
   @if (!isLoading) {
-    <div class="da-table-wrapper">
-      <form [formGroup]="form">
-        <p-table
-          styleClass="p-datatable-sm da-table"
-          [value]="driversArray.controls"
-        >
+    @if (totalRecord === 0) {
+      <div class="da-empty-container text-muted">
+        <i class="fas fa-inbox"></i>
+        <span>Không có dữ liệu</span>
+      </div>
+    } @else {
+      <div class="da-table-wrapper">
+        <form [formGroup]="form">
+          <p-table
+            styleClass="p-datatable-sm da-table"
+            [value]="driversArray.controls"
+          >
           <ng-template pTemplate="header">
             <tr>
               <th class="da-col-stt">STT</th>
@@ -363,50 +369,39 @@
               </td>
             </tr>
           </ng-template>
-
-          <ng-template pTemplate="empty">
-            <tr>
-              <td colspan="10" class="da-empty">
-                <i class="fas fa-inbox"></i>
-                <span>Không có dữ liệu</span>
-              </td>
-            </tr>
-          </ng-template>
         </p-table>
       </form>
     </div>
 
+    <!-- PAGINATOR -->
+    <div class="paginator-wrapper">
+      <p-paginator
+        id="driver-paginator"
+        currentPageReportTemplate="{first} - {last} / {totalRecords} dòng"
+        dropdownAppendTo="body"
+        layout="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown CurrentPageReport"
+        [rows]="pageSize"
+        [totalRecords]="totalRecord"
+        [rowsPerPageOptions]="pageSizeOptions"
+        [first]="(currentPage - 1) * pageSize"
+        [showCurrentPageReport]="true"
+        (onPageChange)="onPageChange($event)"
+      >
+        <ng-template pTemplate="firstpagelinkicon">
+          <i class="fas fa-step-backward" style="font-size: 11px;"></i>
+        </ng-template>
+        <ng-template pTemplate="previouspagelinkicon">
+          <i class="fas fa-caret-left" style="font-size: 13px;"></i>
+        </ng-template>
+        <ng-template pTemplate="nextpagelinkicon">
+          <i class="fas fa-caret-right" style="font-size: 13px;"></i>
+        </ng-template>
+        <ng-template pTemplate="lastpagelinkicon">
+          <i class="fas fa-step-forward" style="font-size: 11px;"></i>
+        </ng-template>
+      </p-paginator>
+    </div>
+    }
   }
 </div>
-
-<!-- PAGINATOR (sticky bottom) -->
-@if (totalRecord > 0) {
-  <div class="paginator-wrapper">
-    <p-paginator
-      id="driver-paginator"
-      currentPageReportTemplate="{first} - {last} / {totalRecords} dòng"
-      dropdownAppendTo="body"
-      layout="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown CurrentPageReport"
-      [rows]="pageSize"
-      [totalRecords]="totalRecord"
-      [rowsPerPageOptions]="pageSizeOptions"
-      [first]="(currentPage - 1) * pageSize"
-      [showCurrentPageReport]="true"
-      (onPageChange)="onPageChange($event)"
-    >
-      <ng-template pTemplate="firstpagelinkicon">
-        <i class="fas fa-step-backward" style="font-size: 11px;"></i>
-      </ng-template>
-      <ng-template pTemplate="previouspagelinkicon">
-        <i class="fas fa-caret-left" style="font-size: 13px;"></i>
-      </ng-template>
-      <ng-template pTemplate="nextpagelinkicon">
-        <i class="fas fa-caret-right" style="font-size: 13px;"></i>
-      </ng-template>
-      <ng-template pTemplate="lastpagelinkicon">
-        <i class="fas fa-step-forward" style="font-size: 11px;"></i>
-      </ng-template>
-    </p-paginator>
-  </div>
-}
 <p-confirmDialog class="confirm-dialog-custome" />

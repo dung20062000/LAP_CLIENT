@@ -268,8 +268,10 @@
               <!-- Ngày cấp -->
               <td class="da-col-issue-date">
                 <input
+                  #issueDate
                   type="date"
                   class="da-input"
+                  tabindex="0"
                   formControlName="IssueLicenseDate"
                   [max]="todayDateString"
                   [title]="getFieldError(rowCtrl, 'IssueLicenseDate') || getRowError(rowCtrl)"
@@ -278,13 +280,17 @@
                     'da-input-invalid': (rowCtrl.get('IssueLicenseDate')?.invalid && rowCtrl.get('IssueLicenseDate')?.touched) || (rowCtrl.errors?.['issueFuture'] && rowCtrl.touched) || (rowCtrl.errors?.['expireBeforeIssue'] && rowCtrl.touched),
                     'da-input-dirty': rowCtrl.get('IssueLicenseDate')?.dirty
                   }"
+                  (click)="issueDate.showPicker()"
+                  (keydown.enter)="issueDate.showPicker()"
                 />
               </td>
 
               <!-- Ngày hết hạn -->
               <td class="da-col-expire-date">
                 <input
+                  #expireDate
                   type="date"
+                  tabindex="0"
                   class="da-input"
                   formControlName="ExpireLicenseDate"
                   [title]="getFieldError(rowCtrl, 'ExpireLicenseDate') || getRowError(rowCtrl)"
@@ -293,6 +299,8 @@
                     'da-input-invalid': (rowCtrl.get('ExpireLicenseDate')?.invalid && rowCtrl.get('ExpireLicenseDate')?.touched) || (rowCtrl.errors?.['expireBeforeIssue'] && rowCtrl.touched),
                     'da-input-dirty': rowCtrl.get('ExpireLicenseDate')?.dirty
                   }"
+                  (click)="expireDate.showPicker()"
+                  (keydown.enter)="expireDate.showPicker()"
                 />
               </td>
 
@@ -316,21 +324,23 @@
 
               <!-- Loại bằng -->
               <td class="da-col-type">
-                <select
-                  class="da-input da-select"
+                <ng-select
+                  class="da-select-ng"
                   formControlName="LicenseType"
+                  appendTo="body"
+                  bindLabel="Name"
+                  bindValue="Value"
+                  placeholder="Chọn loại bằng"
+                  notFoundText="Không tìm thấy"
+                  [items]="licenseTypeLookup"
+                  [clearable]="false"
                   [title]="getFieldError(rowCtrl, 'LicenseType')"
                   [ngClass]="{
                     'da-input-valid': rowCtrl.get('LicenseType')?.valid && rowCtrl.get('LicenseType')?.touched,
                     'da-input-invalid': rowCtrl.get('LicenseType')?.invalid && rowCtrl.get('LicenseType')?.touched,
                     'da-input-dirty': rowCtrl.get('LicenseType')?.dirty
                   }"
-                >
-                  <option [ngValue]="null">Chọn loại bằng</option>
-                  @for (lt of licenseTypeLookup; track lt.Value) {
-                    <option [ngValue]="lt.Value">{{ lt.Name }}</option>
-                  }
-                </select>
+                />
               </td>
 
               <!-- Ngày cập nhật (chỉ xem) -->

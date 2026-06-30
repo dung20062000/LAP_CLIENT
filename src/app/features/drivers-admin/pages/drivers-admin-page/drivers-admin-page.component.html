@@ -366,10 +366,11 @@
                 <img
                     src="./icons/icons8-trash.svg"
                     alt="Xóa lái xe"
+                    title="Xóa lái xe"
                     class="icon-delete"
                     tabindex="0"
-                    (click)="onDelete(rowCtrl.get('Id')?.value, i)"
-                    (keydown.enter)="onDelete(rowCtrl.get('Id')?.value, i)"
+                    (click)="onDelete(rowCtrl.get('Id')?.value, i, rowCtrl.get('DisplayName')?.value)"
+                    (keydown.enter)="onDelete(rowCtrl.get('Id')?.value, i, rowCtrl.get('DisplayName')?.value)"
                   />
               </td>
             </tr>

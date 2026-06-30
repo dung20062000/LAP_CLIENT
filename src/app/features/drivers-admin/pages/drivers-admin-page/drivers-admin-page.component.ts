@@ -462,9 +462,9 @@ export class DriversAdminPageComponent implements OnInit {
    * @param id ID lái xe
    * @param index Vị trí trong FormArray (để xóa khỏi giao diện)
    */
-  onDelete(id: number, index: number): void {
+  onDelete(id: number, index: number, name?: string): void {
     this.confirmationService.confirm({
-      message: 'Bạn có chắc muốn xóa lái xe này không? Thao tác không thể hoàn tác.',
+      message: `Bạn có chắc muốn xóa lái xe "<b>${name}</b>" không?`,
       header: 'Xác nhận xóa',
       acceptLabel: 'Xóa',
       rejectLabel: 'Hủy',

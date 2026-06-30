@@ -18,6 +18,8 @@
   --border-color:  #dee2e6;
   --border-primary: #007bff;
   --border-dirty:  #f9a825;
+  --border-danger: #d32f2f;
+  --border-success: #2e7d32;
 
   /* Header primary color */
   --primary-color: #0394d6;
@@ -56,6 +58,7 @@
   --bg-green: #4db848;
   --bg-orange: #e67e22;
   --bg-yellow: #fff9c4;
+  --bg-invalid: #fff5f5;
 
   --bg-banner-overlay: rgba(0, 20, 60, 0.65);
   --bg-gray-light-2: #b9b9b9;
@@ -462,7 +465,7 @@ body:has(app-media-gallery-page) app-footer {
 }
 .da-select-ng.da-input-invalid .ng-select-container {
   border-left: 3px solid #d32f2f !important;
-  background-color: #fff5f5 !important;
+  background-color: var(--bg-invalid) !important;
 }
 .da-select-ng.da-input-dirty .ng-select-container {
   background-color: #fff9c4 !important;

@@ -132,6 +132,26 @@
         }
       }
     }
+
+    // Responsive
+    @media (max-width: 1199px) {
+      .filter-search {
+        flex: 0 0 100%;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .filter-driver, .filter-license, .filter-btn {
+        flex: 0 0 100%;
+      }
+      
+      .filter-btn {
+        .btn-search {
+          width: 100%;
+          justify-content: center;
+        }
+      }
+    }
   }
 
   // Action Bar

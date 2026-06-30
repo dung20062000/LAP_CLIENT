@@ -12,11 +12,8 @@ $valid-border: #2e7d32;
 }
 
 .da-page {
-  // min-height: calc(100vh - 60px);
-
   display: flex;
   flex-direction: column;
-  height: 100%;
   overflow: hidden;
   background: var(--bg-white);
   margin: 12px 12px 12px 12px;

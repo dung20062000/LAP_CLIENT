@@ -167,7 +167,12 @@
       }
       @if (hasData) {
         <button class="btn da-btn-export" type="button" title="Xuất Excel" [disabled]="isExporting" (click)="onExport()">
-          <i class="fas fa-file-excel"></i>
+          <img
+            src="./icons/icons8-excel-file.png"
+            alt="Xuất Excel"
+            class="icon-excel"
+            tabindex="0"
+          />
         </button>
       }
     </div>
@@ -358,14 +363,14 @@
 
               <!-- Xóa -->
               <td class="da-col-action text-center">
-                <button
-                  class="da-btn-delete"
-                  type="button"
-                  title="Xóa lái xe này"
-                  (click)="onDelete(rowCtrl.get('Id')?.value, i)"
-                >
-                  <i class="fas fa-trash"></i>
-                </button>
+                <img
+                    src="./icons/icons8-trash.svg"
+                    alt="Xóa lái xe"
+                    class="icon-delete"
+                    tabindex="0"
+                    (click)="onDelete(rowCtrl.get('Id')?.value, i)"
+                    (keydown.enter)="onDelete(rowCtrl.get('Id')?.value, i)"
+                  />
               </td>
             </tr>
           </ng-template>

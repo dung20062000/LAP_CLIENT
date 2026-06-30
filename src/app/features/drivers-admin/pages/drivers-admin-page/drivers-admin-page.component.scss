@@ -189,6 +189,13 @@
           color: var(--text-white);
         }
         &:disabled { opacity: 0.6; cursor: not-allowed; }
+        .icon-excel{
+          width: 16px;
+          height: 16px;
+          background-size: cover;
+          background-position: center;
+          background-repeat: no-repeat;
+        }
       }
     }
   }
@@ -232,7 +239,18 @@
         &.da-col-expire-date { min-width: 140px; }
         &.da-col-place { min-width: 140px; }
         &.da-col-type { min-width: 130px; }
-        &.da-col-action { width: 50px; text-align: center; }
+        &.da-col-action {
+          width: 60px;
+          text-align: center;
+          .icon-delete{
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+          }
+        }
 
         .da-cell-readonly {
           color: #333;

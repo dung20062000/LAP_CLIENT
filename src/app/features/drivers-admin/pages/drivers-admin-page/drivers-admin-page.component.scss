@@ -1,6 +1,5 @@
 // Colors based on the screenshot
 $primary-blue: #1565c0;
-$light-blue: #3498db;
 $border-color: #dee2e6;
 $dirty-bg: #fff9c4;
 $invalid-bg: #fff5f5;
@@ -211,7 +210,7 @@ $valid-border: #2e7d32;
 
     ::ng-deep .da-table {
       .p-datatable-thead > tr > th {
-        background-color: $light-blue;
+        background-color: var(--bagps-light-blue);
         color: #fff;
         font-weight: 600;
         font-size: 13px;
@@ -333,10 +332,28 @@ $valid-border: #2e7d32;
   border-left: 2px solid #dee2e6;
   border-bottom: 2px solid #dee2e6;
   border-right: 2px solid #dee2e6;
+  position: relative;
+
+  .reload-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--bagps-light-blue);
+    font-size: 11px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    z-index: 10;
+
+    &:hover {
+      transform: translateY(-50%) rotate(180deg);
+    }
+  }
 
   ::ng-deep {
     .p-paginator {
       padding: 4px 8px;
+      padding-right: 32px;
       justify-content: flex-start;
       background: var(--bg-grey);
       border: none;

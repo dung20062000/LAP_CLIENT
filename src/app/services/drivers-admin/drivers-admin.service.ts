@@ -4,13 +4,8 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { ApiResponse } from '../../models/auth/auth.model';
-import {
-  DriverLookupDto,
-  LicenseTypeLookupDto,
-  DriverListResponse,
-  DriverListRequest,
-  UpdateDriverRequest,
-} from '../../models/drivers-admin';
+// prettier-ignore
+import { DriverLookupDto, LicenseTypeLookupDto, DriverListResponse, DriverListRequest, UpdateDriverRequest, } from '../../models/drivers-admin';
 
 /**
  * Người tạo: DungBT

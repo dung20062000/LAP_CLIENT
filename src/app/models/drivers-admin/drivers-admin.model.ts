@@ -4,26 +4,42 @@
  * Mô tả: Các interface/model dùng cho màn hình Quản Lý Lái Xe.
  */
 
-/** Enum cho loại tìm kiếm lái xe */
+/**
+ * Người tạo: DungBT
+ * Ngày tạo: 01/07/2026
+ * Enum cho loại tìm kiếm lái xe
+ */
 export enum DriverSearchType {
   Name = 0,
   DriverLicense = 1,
 }
 
-/** Dropdown lái xe (GET /api/drivers/lookup) */
+/**
+ * Người tạo: DungBT
+ * Ngày tạo: 01/07/2026
+ * Dropdown lái xe (GET /api/drivers/lookup)
+ */
 export interface DriverLookupDto {
   Value: number;
   Label: string;
 }
 
-/** Dropdown loại bằng (GET /api/drivers/license-types-lookup) */
+/**
+ * Người tạo: DungBT
+ * Ngày tạo: 01/07/2026
+ * Dropdown loại bằng (GET /api/drivers/license-types-lookup)
+ */
 export interface LicenseTypeLookupDto {
   Value: number;
   Name: string;
   Code: string;
 }
 
-/** Dữ liệu một dòng lái xe trong lưới */
+/**
+ * Người tạo: DungBT
+ * Ngày tạo: 01/07/2026
+ * Dữ liệu một dòng lái xe trong lưới
+ */
 export interface DriverDto {
   Id: number;
   EmployeeCode: string;
@@ -39,13 +55,21 @@ export interface DriverDto {
   UpdatedDate: string | null; // ISO string từ API
 }
 
-/** Response phân trang cho lưới */
+/**
+ * Người tạo: DungBT
+ * Ngày tạo: 01/07/2026
+ * Response phân trang cho lưới
+ */
 export interface DriverListResponse {
   TotalRecord: number;
   Items: DriverDto[];
 }
 
-/** Request filter cho lưới và export */
+/**
+ * Người tạo: DungBT
+ * Ngày tạo: 01/07/2026
+ * Request filter cho lưới và export
+ */
 export interface DriverListRequest {
   Type?: DriverSearchType;
   Keyword?: string;
@@ -55,7 +79,11 @@ export interface DriverListRequest {
   PageSize?: number;
 }
 
-/** Payload batch update một dòng */
+/**
+ * Người tạo: DungBT
+ * Ngày tạo: 01/07/2026
+ * Payload batch update một dòng
+ */
 export interface UpdateDriverRequest {
   Id: number;
   DriverLicense?: string | null;

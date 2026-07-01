@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 // prettier-ignore
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, FormArray, Validators, AbstractControl, ValidationErrors, } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { forkJoin } from 'rxjs';
+import { catchError, forkJoin, of } from 'rxjs';
 import { format, parseISO, isValid, isAfter, startOfDay } from 'date-fns';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { ButtonModule } from 'primeng/button';
@@ -51,9 +51,6 @@ export class DriversAdminPageComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
   private messageService = inject(MessageService);
   private confirmationService = inject(ConfirmationService);
-
-  // Expose Math to template
-  readonly Math = Math;
   readonly todayDateString = format(new Date(), 'yyyy-MM-dd');
 
   // Dropdown data
@@ -123,13 +120,26 @@ export class DriversAdminPageComponent implements OnInit {
   /**
    * Người tạo: DungBT
    * Ngày tạo: 29/06/2026
-   * Tải đồng thời 2 dropdown (lái xe & loại bằng) bằng forkJoin.
+   * forkJoin để gọi 2 API cùng lúc
+   * Dùng takeUntilDestroyed để hủy observable khi component bị hủy
+   * Dùng zone.run để đảm bảo component được update
    * Sau đó load lưới.
    */
   private loadDropdowns(): void {
     forkJoin({
-      drivers: this.service.getDriverLookup(),
-      licenseTypes: this.service.getLicenseTypeLookup(),
+      // Nếu lỗi, trả về mảng rỗng [] để dropdown không bị crash và các API khác vẫn chạy
+      drivers: this.service.getDriverLookup().pipe(
+        catchError((err) => {
+          this.showError(getHttpErrorMessage(err, 'Không thể tải danh sách tài xế.'));
+          return of([]);
+        }),
+      ),
+      licenseTypes: this.service.getLicenseTypeLookup().pipe(
+        catchError((err) => {
+          this.showError(getHttpErrorMessage(err, 'Không thể tải loại giấy phép.'));
+          return of([]);
+        }),
+      ),
     })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
@@ -375,6 +385,7 @@ export class DriversAdminPageComponent implements OnInit {
    * Dùng date-fns format() để convert date input value thành ISO string.
    */
   onSave(): void {
+    // Lấy các row đã chỉnh sửa
     const dirtyRows = this.driversArray.controls.filter((row) => row.dirty);
     if (!dirtyRows.length) return;
 
@@ -396,6 +407,7 @@ export class DriversAdminPageComponent implements OnInit {
 
     const payload: UpdateDriverRequest[] = dirtyRows.map((row) => {
       const v = row.value;
+      // Hàm chuyển đổi ngày sang ISO string
       const toIso = (dateStr: string | null): string | null => {
         if (!dateStr) return null;
         const d = parseISO(dateStr);
@@ -477,6 +489,7 @@ export class DriversAdminPageComponent implements OnInit {
           .pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe({
             next: () => {
+              // xóa khỏi giao diện
               this.driversArray.removeAt(index);
               this.totalRecord--;
               this.messageService.add({
@@ -598,21 +611,11 @@ export class DriversAdminPageComponent implements OnInit {
    * Người tạo: DungBT
    * Ngày tạo: 29/06/2026
    * Ngày cập nhật hiển thị: ưu tiên UpdatedDate, fallback về không hiển thị gì
-   * Lưu ý: form chỉ chứa UpdatedDate, không có CreatedDate trong lưới này
+   * Lưu ý: form chỉ chứa UpdatedDate
    */
   getUpdatedDateDisplay(rowGroup: AbstractControl): string {
     const updatedDate = rowGroup.get('UpdatedDate')?.value as string | null;
     return this.formatDate(updatedDate, 'HH:mm dd/MM/yyyy');
-  }
-
-  /**
-   * Người tạo: DungBT
-   * Ngày tạo: 29/06/2026
-   * Lấy tên loại bằng từ ID
-   */
-  getLicenseTypeName(id: number | null): string {
-    if (id == null) return '';
-    return this.licenseTypeLookup.find((l) => l.Value === id)?.Name ?? '';
   }
 
   /**

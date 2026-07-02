@@ -10,6 +10,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
+import { DatePickerModule } from 'primeng/datepicker';
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
 import { TableModule } from 'primeng/table';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -37,7 +38,7 @@ import { PAGE_DEFAULT, PAGE_SIZE_DEFAULT, PAGE_SIZE_OPTIONS } from '../../../../
   selector: 'app-drivers-admin-page',
   standalone: true,
   // prettier-ignore
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgSelectModule, ButtonModule, ConfirmDialogModule, ToastModule, PaginatorModule, TableModule, NumbersOnlyDirective, VarcharOnlyDirective, NoAngleBracketsDirective],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgSelectModule, ButtonModule, ConfirmDialogModule, ToastModule, DatePickerModule, PaginatorModule, TableModule, NumbersOnlyDirective, VarcharOnlyDirective, NoAngleBracketsDirective],
   providers: [ConfirmationService],
   templateUrl: './drivers-admin-page.component.html',
   styleUrls: ['./drivers-admin-page.component.scss'],
@@ -52,6 +53,7 @@ export class DriversAdminPageComponent implements OnInit {
   private messageService = inject(MessageService);
   private confirmationService = inject(ConfirmationService);
   readonly todayDateString = format(new Date(), 'yyyy-MM-dd');
+  readonly todayDate = new Date();
 
   // Dropdown data
   driverLookup: DriverLookupDto[] = [];
@@ -228,10 +230,10 @@ export class DriversAdminPageComponent implements OnInit {
    * Dùng date-fns để parse ISO string thành value cho input type="date" (yyyy-MM-dd).
    */
   private createDriverRow(driver: DriverDto): FormGroup {
-    const toDateInputValue = (iso: string | null): string => {
-      if (!iso) return '';
+    const toDateInputValue = (iso: string | null): Date | null => {
+      if (!iso) return null;
       const d = parseISO(iso);
-      return isValid(d) ? format(d, 'yyyy-MM-dd') : '';
+      return isValid(d) ? d : null;
     };
 
     return this.fb.group(
@@ -288,21 +290,18 @@ export class DriversAdminPageComponent implements OnInit {
    */
   private dateRangeValidator() {
     return (group: AbstractControl): ValidationErrors | null => {
-      const issue = group.get('IssueLicenseDate')?.value as string;
-      const expire = group.get('ExpireLicenseDate')?.value as string;
+      const issueDate = group.get('IssueLicenseDate')?.value as Date | null;
+      const expireDate = group.get('ExpireLicenseDate')?.value as Date | null;
       const errors: ValidationErrors = {};
 
-      if (issue) {
-        const issueDate = parseISO(issue);
-        if (isValid(issueDate) && isAfter(startOfDay(issueDate), startOfDay(new Date()))) {
+      if (issueDate && isValid(issueDate)) {
+        if (isAfter(startOfDay(issueDate), startOfDay(new Date()))) {
           errors['issueFuture'] = 'Ngày cấp không được lớn hơn ngày hiện tại';
         }
       }
 
-      if (issue && expire) {
-        const issueDate = parseISO(issue);
-        const expireDate = parseISO(expire);
-        if (isValid(issueDate) && isValid(expireDate) && !isAfter(expireDate, issueDate)) {
+      if (issueDate && expireDate && isValid(issueDate) && isValid(expireDate)) {
+        if (!isAfter(startOfDay(expireDate), startOfDay(issueDate))) {
           errors['expireBeforeIssue'] = 'Ngày hết hạn phải sau ngày cấp';
         }
       }
@@ -322,7 +321,7 @@ export class DriversAdminPageComponent implements OnInit {
     const ctrl = rowGroup.get(field);
     if (!ctrl || !ctrl.invalid || !ctrl.touched) return '';
 
-    if (ctrl.errors?.['required']) return 'Bắt buộc nhập';
+    if (ctrl.errors?.['required']) return 'Giá trị không được để trống';
     if (ctrl.errors?.['maxlength'])
       return `Tối đa ${ctrl.errors['maxlength'].requiredLength} ký tự`;
     if (ctrl.errors?.['pattern']) {
@@ -343,6 +342,31 @@ export class DriversAdminPageComponent implements OnInit {
     if (rowGroup.errors['issueFuture']) return rowGroup.errors['issueFuture'] as string;
     if (rowGroup.errors['expireBeforeIssue']) return rowGroup.errors['expireBeforeIssue'] as string;
     return '';
+  }
+
+  getDateInputClass(
+    rowCtrl: AbstractControl,
+    field: 'IssueLicenseDate' | 'ExpireLicenseDate',
+  ): string {
+    let classes = 'da-input ';
+    const ctrl = rowCtrl.get(field);
+    const valid = ctrl?.valid && ctrl?.touched;
+    const invalid = ctrl?.invalid && ctrl?.touched;
+    const dirty = ctrl?.dirty;
+
+    const issueFuture = rowCtrl.errors?.['issueFuture'] && rowCtrl.touched;
+    const expireBeforeIssue = rowCtrl.errors?.['expireBeforeIssue'] && rowCtrl.touched;
+
+    if (field === 'IssueLicenseDate') {
+      if (valid && !issueFuture && !expireBeforeIssue) classes += 'da-input-valid ';
+      if (invalid || issueFuture || expireBeforeIssue) classes += 'da-input-invalid ';
+    } else {
+      if (valid && !expireBeforeIssue) classes += 'da-input-valid ';
+      if (invalid || expireBeforeIssue) classes += 'da-input-invalid ';
+    }
+
+    if (dirty) classes += 'da-input-dirty ';
+    return classes.trim();
   }
 
   // Actions
@@ -408,17 +432,22 @@ export class DriversAdminPageComponent implements OnInit {
     const payload: UpdateDriverRequest[] = dirtyRows.map((row) => {
       const v = row.value;
       // Hàm chuyển đổi ngày sang ISO string
-      const toIso = (dateStr: string | null): string | null => {
-        if (!dateStr) return null;
-        const d = parseISO(dateStr);
+      const toIso = (dateVal: Date | string | null): string | null => {
+        if (!dateVal) return null;
+        let d: Date;
+        if (typeof dateVal === 'string') {
+          d = parseISO(dateVal);
+        } else {
+          d = dateVal;
+        }
         return isValid(d) ? format(d, "yyyy-MM-dd'T'HH:mm:ss") : null;
       };
       return {
         Id: v.Id as number,
         DisplayName: v.DisplayName as string,
         DriverLicense: v.DriverLicense as string | null,
-        IssueLicenseDate: toIso(v.IssueLicenseDate as string | null),
-        ExpireLicenseDate: toIso(v.ExpireLicenseDate as string | null),
+        IssueLicenseDate: toIso(v.IssueLicenseDate),
+        ExpireLicenseDate: toIso(v.ExpireLicenseDate),
         IssueLicensePlace: v.IssueLicensePlace as string | null,
         LicenseType: v.LicenseType as number | null,
         Mobile: v.Mobile as string | null,

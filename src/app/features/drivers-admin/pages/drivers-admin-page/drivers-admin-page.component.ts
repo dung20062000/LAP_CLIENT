@@ -52,7 +52,6 @@ export class DriversAdminPageComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
   private messageService = inject(MessageService);
   private confirmationService = inject(ConfirmationService);
-  readonly todayDateString = format(new Date(), 'yyyy-MM-dd');
   readonly todayDate = new Date();
 
   // Dropdown data

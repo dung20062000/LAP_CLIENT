@@ -240,7 +240,7 @@ export class DriversAdminPageComponent implements OnInit {
         Id: [driver.Id],
         DisplayName: [
           driver.DisplayName,
-          [Validators.required, Validators.maxLength(100), this.noAngleBrackets()],
+          [Validators.required, Validators.maxLength(100), this.noAngleBrackets(), this.noWhitespaceValidator()],
         ],
         Mobile: [driver.Mobile, [Validators.pattern(/^[0-9]{9,25}$/), Validators.maxLength(25)]],
         DriverLicense: [
@@ -250,13 +250,14 @@ export class DriversAdminPageComponent implements OnInit {
             Validators.maxLength(32),
             Validators.pattern(/^[\x00-\x7F]*$/),
             this.noAngleBrackets(),
+            this.noWhitespaceValidator(),
           ],
         ],
         IssueLicenseDate: [toDateInputValue(driver.IssueLicenseDate), [Validators.required]],
         ExpireLicenseDate: [toDateInputValue(driver.ExpireLicenseDate), [Validators.required]],
         IssueLicensePlace: [
           driver.IssueLicensePlace,
-          [Validators.required, Validators.maxLength(150), this.noAngleBrackets()],
+          [Validators.required, Validators.maxLength(150), this.noAngleBrackets(), this.noWhitespaceValidator()],
         ],
         LicenseType: [driver.LicenseType, [Validators.required]],
         UpdatedDate: [driver.UpdatedDate],
@@ -277,6 +278,21 @@ export class DriversAdminPageComponent implements OnInit {
       const val = control.value as string;
       if (val && (val.includes('<') || val.includes('>'))) {
         return { noAngleBrackets: 'Không được chứa ký tự < hoặc >' };
+      }
+      return null;
+    };
+  }
+
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 03/07/2026
+   * Không cho phép chỉ nhập khoảng trắng (chống nhập chuỗi toàn dấu cách cho các trường bắt buộc)
+   */
+  private noWhitespaceValidator() {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const val = control.value;
+      if (typeof val === 'string' && val.length > 0 && val.trim().length === 0) {
+        return { whitespace: 'Không được chỉ nhập khoảng trắng' };
       }
       return null;
     };

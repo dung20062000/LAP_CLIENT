@@ -1,0 +1,301 @@
+<p-dialog
+  id="driver-form-dialog"
+  styleClass="dpm-dialog"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [style]="{ width: '680px', maxWidth: '95vw' }"
+  [visible]="true"
+  [closable]="true"
+  (onHide)="onClose()"
+>
+  <!-- HEADER -->
+  <ng-template pTemplate="header">
+    <div class="dpm-header-content">
+      @if (isCreateMode) {
+        <span>Thêm mới lái xe</span>
+      } @else if (isEditMode) {
+        <span>Chỉnh sửa lái xe</span>
+      } @else {
+        <span>Thông tin lái xe</span>
+      }
+    </div>
+  </ng-template>
+
+  <!-- NỘI DUNG -->
+  <ng-template pTemplate="content">
+    <!-- LOADING -->
+    @if (isLoading) {
+      <div class="dpm-loading">
+        <i class="fas fa-spinner fa-spin"></i>
+        <span>Đang tải...</span>
+      </div>
+    }
+
+    <!-- VIEW MODE -->
+    @if (!isLoading && isViewMode && driver) {
+      <div class="dpm-view-grid">
+        <div class="dpm-field">
+          <label for="dpm-displayname">Họ và tên</label>
+          <div class="dpm-value dpm-value--name">{{ driver.DisplayName }}</div>
+        </div>
+
+        <div class="dpm-field">
+          <label for="dpm-mobile">Số điện thoại</label>
+          <div class="dpm-value">{{ driver.Mobile || '—' }}</div>
+        </div>
+
+        <div class="dpm-field">
+          <label for="dpm-license">Số GPLX</label>
+          <div class="dpm-value">{{ driver.DriverLicense || '—' }}</div>
+        </div>
+
+        <div class="dpm-field">
+          <label for="dpm-license-type">Loại bằng</label>
+          <div class="dpm-value">
+            @if (driver.LicenseTypeName) {
+              <span class="dpm-badge">{{ driver.LicenseTypeName }}</span>
+            }
+          </div>
+        </div>
+
+        <div class="dpm-field">
+          <label for="dpm-issue-date">Ngày cấp</label>
+          <div class="dpm-value">{{ driver.IssueLicenseDate | formatDate }}</div>
+        </div>
+
+        <div class="dpm-field">
+          <label for="dpm-expire-date">Ngày hết hạn</label>
+          <div class="dpm-value" [class.dpm-value--expired]="driver.ExpireLicenseDate | isExpired">
+            {{ driver.ExpireLicenseDate | formatDate }}
+            @if (driver.ExpireLicenseDate | isExpired) {
+              <span class="dpm-expired-tag">Hết hạn</span>
+            }
+          </div>
+        </div>
+
+        <div class="dpm-field dpm-field--full">
+          <label for="dpm-issue-place">Nơi cấp</label>
+          <div class="dpm-value">{{ driver.IssueLicensePlace || '—' }}</div>
+        </div>
+
+        <div class="dpm-field dpm-field--full">
+          <label for="dpm-updated-date">Ngày cập nhật</label>
+          <div class="dpm-value dpm-value--muted">
+            {{ (driver.UpdatedDate | formatDate:'HH:mm dd/MM/yyyy') || '—' }}
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- EDIT / CREATE MODE -->
+    @if (!isLoading && (isEditMode || isCreateMode)) {
+      <form id="driver-form" [formGroup]="form">
+        <div class="dpm-form-grid">
+          <!-- Họ và tên -->
+          <div class="dpm-field dpm-field--full" [class.dpm-field--error]="f['DisplayName']?.invalid && f['DisplayName']?.touched">
+            <label for="dpm-displayname">
+              Họ và tên <span class="dpm-required">*</span>
+            </label>
+            <input
+              id="dpm-displayname"
+              type="text"
+              class="dpm-input"
+              formControlName="DisplayName"
+              placeholder="Nhập họ và tên"
+              appNoAngleBrackets
+              [maxLength]="100"
+              [class.dpm-input--invalid]="f['DisplayName']?.invalid && f['DisplayName']?.touched"
+            />
+            @if (f['DisplayName']?.invalid && f['DisplayName']?.touched) {
+              <span class="dpm-error-msg">{{ f['DisplayName']?.errors | formError:'DisplayName' }}</span>
+            }
+          </div>
+
+          <!-- Số điện thoại -->
+          <div class="dpm-field" [class.dpm-field--error]="f['Mobile']?.invalid && f['Mobile']?.touched">
+            <label for="dpm-mobile">Số điện thoại</label>
+            <input
+              id="dpm-mobile"
+              type="text"
+              class="dpm-input"
+              formControlName="Mobile"
+              placeholder="Nhập số điện thoại"
+              appNumbersOnly
+              [maxLength]="25"
+              [class.dpm-input--invalid]="f['Mobile']?.invalid && f['Mobile']?.touched"
+            />
+            @if (f['Mobile']?.invalid && f['Mobile']?.touched) {
+              <span class="dpm-error-msg">{{ f['Mobile']?.errors | formError:'Mobile' }}</span>
+            }
+          </div>
+
+          <!-- Số GPLX -->
+          <div class="dpm-field" [class.dpm-field--error]="f['DriverLicense']?.invalid && f['DriverLicense']?.touched">
+            <label for="dpm-license">Số GPLX <span class="dpm-required">*</span></label>
+            <input
+              id="dpm-license"
+              type="text"
+              class="dpm-input"
+              formControlName="DriverLicense"
+              placeholder="Nhập số GPLX"
+              appVarcharOnly
+              [maxLength]="32"
+              [class.dpm-input--invalid]="f['DriverLicense']?.invalid && f['DriverLicense']?.touched"
+            />
+            @if (f['DriverLicense']?.invalid && f['DriverLicense']?.touched) {
+              <span class="dpm-error-msg">{{ f['DriverLicense']?.errors | formError:'DriverLicense' }}</span>
+            }
+          </div>
+
+          <!-- Ngày cấp -->
+          <div
+            class="dpm-field"
+            [class.dpm-field--error]="
+              (f['IssueLicenseDate']?.invalid && f['IssueLicenseDate']?.touched) || (form.touched && form.errors?.['issueFuture'])
+            "
+          >
+            <label for="dpm-issue-date">Ngày cấp <span class="dpm-required">*</span></label>
+            <p-datepicker
+              formControlName="IssueLicenseDate"
+              dateFormat="dd/mm/yy"
+              placeholder="dd/mm/yyyy"
+              appendTo="body"
+              styleClass="dpm-datepicker"
+              panelStyleClass="da-datepicker-panel"
+              iconDisplay="input"
+              [maxDate]="todayDate"
+              [showIcon]="true"
+              [inputStyleClass]="f['IssueLicenseDate']?.invalid && f['IssueLicenseDate']?.touched ? 'dpm-input dpm-input--invalid' : 'dpm-input'"
+            >
+              <ng-template #inputicon let-clickCallBack="clickCallBack">
+                <span
+                  class="material-symbols-outlined iocn-date"
+                  tabindex="0"
+                  (click)="clickCallBack($event)"
+                  (keydown.enter)="clickCallBack($event)"
+                >
+                  event
+                </span>
+              </ng-template>
+            </p-datepicker>
+            @if ((f['IssueLicenseDate']?.invalid && f['IssueLicenseDate']?.touched) || (form.touched && form.errors?.['issueFuture'])) {
+              <span class="dpm-error-msg">
+                {{ (f['IssueLicenseDate']?.errors | formError:'IssueLicenseDate') || form.errors?.['issueFuture'] }}
+              </span>
+            }
+          </div>
+
+          <!-- Ngày hết hạn -->
+          <div
+            class="dpm-field"
+            [class.dpm-field--error]="
+              (f['ExpireLicenseDate']?.invalid && f['ExpireLicenseDate']?.touched) || (form.touched && form.errors?.['expireBeforeIssue'])
+            "
+          >
+            <label for="dpm-expire-date">Ngày hết hạn <span class="dpm-required">*</span></label>
+            <p-datepicker
+              formControlName="ExpireLicenseDate"
+              dateFormat="dd/mm/yy"
+              placeholder="dd/mm/yyyy"
+              appendTo="body"
+              styleClass="dpm-datepicker"
+              panelStyleClass="da-datepicker-panel"
+              iconDisplay="input"
+              [showIcon]="true"
+              [inputStyleClass]="f['ExpireLicenseDate']?.invalid && f['ExpireLicenseDate']?.touched ? 'dpm-input dpm-input--invalid' : 'dpm-input'"
+            >
+              <ng-template #inputicon let-clickCallBack="clickCallBack">
+                <span
+                  class="material-symbols-outlined iocn-date"
+                  tabindex="0"
+                  (click)="clickCallBack($event)"
+                  (keydown.enter)="clickCallBack($event)"
+                >
+                  event
+                </span>
+              </ng-template>
+            </p-datepicker>
+            @if (
+              (f['ExpireLicenseDate']?.invalid && f['ExpireLicenseDate']?.touched) ||
+              (form.touched && form.errors?.['expireBeforeIssue'])
+            ) {
+              <span class="dpm-error-msg">
+                {{ (f['ExpireLicenseDate']?.errors | formError:'ExpireLicenseDate') || form.errors?.['expireBeforeIssue'] }}
+              </span>
+            }
+          </div>
+
+          <!-- Loại bằng -->
+          <div class="dpm-field" [class.dpm-field--error]="f['LicenseType']?.invalid && f['LicenseType']?.touched">
+            <label for="dpm-license-type">Loại bằng <span class="dpm-required">*</span></label>
+            <ng-select
+              id="dpm-license-type"
+              class="dpm-ng-select"
+              formControlName="LicenseType"
+              bindLabel="Name"
+              bindValue="Value"
+              placeholder="Chọn loại bằng"
+              notFoundText="Không tìm thấy"
+              appendTo="body"
+              [items]="licenseTypeLookup"
+              [clearable]="false"
+              [class.dpm-ng-select--invalid]="f['LicenseType']?.invalid && f['LicenseType']?.touched"
+            />
+            @if (f['LicenseType']?.invalid && f['LicenseType']?.touched) {
+              <span class="dpm-error-msg">{{ f['LicenseType']?.errors | formError:'LicenseType' }}</span>
+            }
+          </div>
+
+          <!-- Nơi cấp -->
+          <div class="dpm-field dpm-field--full" [class.dpm-field--error]="f['IssueLicensePlace']?.invalid && f['IssueLicensePlace']?.touched">
+            <label for="dpm-issue-place">Nơi cấp <span class="dpm-required">*</span></label>
+            <input
+              id="dpm-issue-place"
+              type="text"
+              class="dpm-input"
+              formControlName="IssueLicensePlace"
+              placeholder="Nhập nơi cấp"
+              appNoAngleBrackets
+              [maxLength]="150"
+              [class.dpm-input--invalid]="f['IssueLicensePlace']?.invalid && f['IssueLicensePlace']?.touched"
+            />
+            @if (f['IssueLicensePlace']?.invalid && f['IssueLicensePlace']?.touched) {
+              <span class="dpm-error-msg">{{ f['IssueLicensePlace']?.errors | formError:'IssueLicensePlace' }}</span>
+            }
+          </div>
+        </div>
+      </form>
+    }
+  </ng-template>
+
+  <!-- FOOTER -->
+  <ng-template pTemplate="footer">
+    @if (isViewMode) {
+      <button class="dpm-btn dpm-btn--secondary" type="button" (click)="onClose()">
+        <i class="fas fa-times"></i> Đóng
+      </button>
+      <button class="dpm-btn dpm-btn--primary" type="button" (click)="switchToEditMode()">
+        <span class="material-symbols-outlined">edit</span> Sửa
+      </button>
+    } @else {
+      <button class="dpm-btn dpm-btn--secondary" type="button" (click)="onCancelEdit()">
+        <i class="fas fa-times"></i> Hủy
+      </button>
+      <button
+        class="dpm-btn dpm-btn--primary"
+        type="submit"
+        form="driver-form"
+        [disabled]="isSaving"
+        (click)="onSubmit()"
+      >
+        @if (isSaving) {
+          <i class="fas fa-spinner fa-spin"></i> Đang lưu...
+        } @else {
+          <span class="material-symbols-outlined">save</span>
+          {{ isCreateMode ? 'Tạo mới' : 'Lưu thay đổi' }}
+        }
+      </button>
+    }
+  </ng-template>
+</p-dialog>

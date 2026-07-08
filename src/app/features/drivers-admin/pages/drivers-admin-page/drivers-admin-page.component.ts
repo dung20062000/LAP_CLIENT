@@ -1,16 +1,14 @@
 // prettier-ignore
 import { Component, ChangeDetectionStrategy, ChangeDetectorRef, NgZone, inject, DestroyRef, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-// prettier-ignore
-import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, FormArray, Validators, AbstractControl, ValidationErrors, } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { catchError, forkJoin, of } from 'rxjs';
-import { format, parseISO, isValid, isAfter, startOfDay } from 'date-fns';
+import { format, parseISO, isValid } from 'date-fns';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
-import { DatePickerModule } from 'primeng/datepicker';
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
 import { TableModule } from 'primeng/table';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -18,19 +16,23 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { DriversAdminService } from '../../../../services/drivers-admin';
 import { getHttpErrorMessage } from '../../../../shared/utils/http-error';
 // prettier-ignore
-import { DriverLookupDto, LicenseTypeLookupDto, DriverDto, UpdateDriverRequest, DriverListRequest, DriverSearchType } from '../../../../models/drivers-admin';
-// prettier-ignore
-import { NumbersOnlyDirective, VarcharOnlyDirective, NoAngleBracketsDirective } from '../../../../shared/directives/input-filters.directive';
+import { DriverLookupDto, LicenseTypeLookupDto, DriverDto, DriverListRequest, DriverSearchType } from '../../../../models/drivers-admin';
 // prettier-ignore
 import { PAGE_DEFAULT, PAGE_SIZE_DEFAULT, PAGE_SIZE_OPTIONS } from '../../../../shared/utils/constants';
+import {
+  DriverFormModalComponent,
+  ModalMode,
+} from '../../components/driver-form-modal/driver-form-modal.component';
 
 /**
  * Người tạo: DungBT
  * Ngày tạo: 29/06/2026
  * Mô tả: Trang Quản Lý Thông Tin Lái Xe.
- *        - Bộ lọc: Keyword (tìm theo tên/GPLX), ng-select chọn lái xe, chọn loại bằng.
- *        - Lưới inline-edit dùng FormArray với validation per-row.
- *        - Batch update có transaction, soft delete có xác nhận.
+ *        - Bộ lọc: Keyword, ng-select chọn lái xe, chọn loại bằng.
+ *        - Lưới chỉ đọc, click tên mở popup xem chi tiết.
+ *        - Nút Sửa trong lưới mở popup chỉnh sửa.
+ *        - Nút Thêm mới mở popup tạo lái xe mới.
+ *        - Soft delete có xác nhận.
  *        - Xuất Excel qua blob.
  *        - Phân trang p-paginator.
  */
@@ -38,7 +40,7 @@ import { PAGE_DEFAULT, PAGE_SIZE_DEFAULT, PAGE_SIZE_OPTIONS } from '../../../../
   selector: 'app-drivers-admin-page',
   standalone: true,
   // prettier-ignore
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgSelectModule, ButtonModule, ConfirmDialogModule, ToastModule, DatePickerModule, PaginatorModule, TableModule, NumbersOnlyDirective, VarcharOnlyDirective, NoAngleBracketsDirective],
+  imports: [CommonModule, FormsModule, NgSelectModule, ButtonModule, ConfirmDialogModule, ToastModule, PaginatorModule, TableModule, DriverFormModalComponent],
   providers: [ConfirmationService],
   templateUrl: './drivers-admin-page.component.html',
   styleUrls: ['./drivers-admin-page.component.scss'],
@@ -46,22 +48,18 @@ import { PAGE_DEFAULT, PAGE_SIZE_DEFAULT, PAGE_SIZE_OPTIONS } from '../../../../
 })
 export class DriversAdminPageComponent implements OnInit {
   private service = inject(DriversAdminService);
-  private fb = inject(FormBuilder);
   private cdr = inject(ChangeDetectorRef);
   private zone = inject(NgZone);
   private destroyRef = inject(DestroyRef);
   private messageService = inject(MessageService);
   private confirmationService = inject(ConfirmationService);
-  readonly todayDate = new Date();
 
   // Dropdown data
   driverLookup: DriverLookupDto[] = [];
   licenseTypeLookup: LicenseTypeLookupDto[] = [];
 
   // Filter state
-  // Từ khoá tìm kiếm
   keyword = '';
-  // Loại tìm kiếm
   searchType: DriverSearchType = DriverSearchType.Name;
   searchTypeOptions = [
     { label: 'Tên lái xe', value: DriverSearchType.Name },
@@ -73,20 +71,11 @@ export class DriversAdminPageComponent implements OnInit {
   // Loại bằng được chọn trong ng-select
   selectedLicenseTypeIds: number[] = [];
 
-  // Grid / FormArray
-  form!: FormGroup;
-
-  // driversArray dùng để gán dữ liệu và nhận biết thay đổi
-  get driversArray(): FormArray {
-    return this.form.get('drivers') as FormArray;
-  }
-
-  // Raw data để so sánh khi cần reset
-  originalData: DriverDto[] = [];
+  // Grid data
+  drivers: DriverDto[] = [];
 
   // Loading / flags
   isLoading = false;
-  isSaving = false;
   isExporting = false;
 
   // Pagination
@@ -95,25 +84,22 @@ export class DriversAdminPageComponent implements OnInit {
   pageSize = PAGE_SIZE_DEFAULT;
   pageSizeOptions = PAGE_SIZE_OPTIONS;
 
-  // Placeholder cho ô tìm kiếm
+  // Modal state
+  modalVisible = false;
+  modalMode: ModalMode = 'view';
+  modalDriverId: number | null = null;
+
   get placeholder(): string {
     return this.searchType === DriverSearchType.Name
       ? 'Tìm theo tên lái xe...'
       : 'Tìm theo số GPLX...';
   }
 
-  // Kiểm tra form có thay đổi
-  get isFormDirty(): boolean {
-    return this.driversArray.dirty;
-  }
-
-  // Kiểm tra có data
   get hasData(): boolean {
-    return this.driversArray.length > 0;
+    return this.drivers.length > 0;
   }
 
   ngOnInit(): void {
-    this.form = this.fb.group({ drivers: this.fb.array([]) });
     this.loadDropdowns();
   }
 
@@ -179,8 +165,7 @@ export class DriversAdminPageComponent implements OnInit {
         next: (res) => {
           this.zone.run(() => {
             this.totalRecord = res.TotalRecord;
-            this.originalData = res.Items;
-            this.rebuildFormArray(res.Items);
+            this.drivers = res.Items;
             this.isLoading = false;
             this.cdr.markForCheck();
           });
@@ -211,186 +196,7 @@ export class DriversAdminPageComponent implements OnInit {
     };
   }
 
-  /**
-   * Người tạo: DungBT
-   * Ngày tạo: 29/06/2026
-   * Xây lại FormArray từ danh sách DriverDto.
-   * Mỗi row là một FormGroup với validators.
-   */
-  private rebuildFormArray(items: DriverDto[]): void {
-    const arr = this.fb.array(items.map((d) => this.createDriverRow(d)));
-    this.form.setControl('drivers', arr);
-  }
-
-  /**
-   * Người tạo: DungBT
-   * Ngày tạo: 29/06/2026
-   * Tạo FormGroup cho một dòng lái xe với đầy đủ validators.
-   * Dùng date-fns để parse ISO string thành value cho input type="date" (yyyy-MM-dd).
-   */
-  private createDriverRow(driver: DriverDto): FormGroup {
-    const toDateInputValue = (iso: string | null): Date | null => {
-      if (!iso) return null;
-      const d = parseISO(iso);
-      return isValid(d) ? d : null;
-    };
-
-    return this.fb.group(
-      {
-        Id: [driver.Id],
-        DisplayName: [
-          driver.DisplayName,
-          [Validators.required, Validators.maxLength(100), this.noAngleBrackets(), this.noWhitespaceValidator()],
-        ],
-        Mobile: [driver.Mobile, [Validators.pattern(/^[0-9]{9,25}$/), Validators.maxLength(25)]],
-        DriverLicense: [
-          driver.DriverLicense,
-          [
-            Validators.required,
-            Validators.maxLength(32),
-            Validators.pattern(/^[\x00-\x7F]*$/),
-            this.noAngleBrackets(),
-            this.noWhitespaceValidator(),
-          ],
-        ],
-        IssueLicenseDate: [toDateInputValue(driver.IssueLicenseDate), [Validators.required]],
-        ExpireLicenseDate: [toDateInputValue(driver.ExpireLicenseDate), [Validators.required]],
-        IssueLicensePlace: [
-          driver.IssueLicensePlace,
-          [Validators.required, Validators.maxLength(150), this.noAngleBrackets(), this.noWhitespaceValidator()],
-        ],
-        LicenseType: [driver.LicenseType, [Validators.required]],
-        UpdatedDate: [driver.UpdatedDate],
-      },
-      { validators: this.dateRangeValidator() },
-    );
-  }
-
-  // Custom Validators
-
-  /**
-   * Người tạo: DungBT
-   * Ngày tạo: 29/06/2026
-   * Không chứa ký tự < hoặc > (chống XSS)
-   */
-  private noAngleBrackets() {
-    return (control: AbstractControl): ValidationErrors | null => {
-      const val = control.value as string;
-      if (val && (val.includes('<') || val.includes('>'))) {
-        return { noAngleBrackets: 'Không được chứa ký tự < hoặc >' };
-      }
-      return null;
-    };
-  }
-
-  /**
-   * Người tạo: DungBT
-   * Ngày tạo: 03/07/2026
-   * Không cho phép chỉ nhập khoảng trắng (chống nhập chuỗi toàn dấu cách cho các trường bắt buộc)
-   */
-  private noWhitespaceValidator() {
-    return (control: AbstractControl): ValidationErrors | null => {
-      const val = control.value;
-      if (typeof val === 'string' && val.length > 0 && val.trim().length === 0) {
-        return { whitespace: 'Không được chỉ nhập khoảng trắng' };
-      }
-      return null;
-    };
-  }
-
-  /**
-   * Người tạo: DungBT
-   * Ngày tạo: 29/06/2026
-   * Ngày cấp <= hôm nay và Ngày hết hạn > Ngày cấp
-   */
-  private dateRangeValidator() {
-    return (group: AbstractControl): ValidationErrors | null => {
-      const issueDate = group.get('IssueLicenseDate')?.value as Date | null;
-      const expireDate = group.get('ExpireLicenseDate')?.value as Date | null;
-      const errors: ValidationErrors = {};
-
-      if (issueDate && isValid(issueDate)) {
-        if (isAfter(startOfDay(issueDate), startOfDay(new Date()))) {
-          errors['issueFuture'] = 'Ngày cấp không được lớn hơn ngày hiện tại';
-        }
-      }
-
-      if (issueDate && expireDate && isValid(issueDate) && isValid(expireDate)) {
-        if (!isAfter(startOfDay(expireDate), startOfDay(issueDate))) {
-          errors['expireBeforeIssue'] = 'Ngày hết hạn phải sau ngày cấp';
-        }
-      }
-
-      return Object.keys(errors).length ? errors : null;
-    };
-  }
-
-  // Validation helpers cho template
-
-  /**
-   * Người tạo: DungBT
-   * Ngày tạo: 29/06/2026
-   * Lấy thông báo lỗi của một control trong một row
-   */
-  getFieldError(rowGroup: AbstractControl, field: string): string {
-    const ctrl = rowGroup.get(field);
-    if (!ctrl || !ctrl.invalid || !ctrl.touched) return '';
-
-    if (ctrl.errors?.['required']) return 'Giá trị không được để trống';
-    if (ctrl.errors?.['maxlength'])
-      return `Tối đa ${ctrl.errors['maxlength'].requiredLength} ký tự`;
-    if (ctrl.errors?.['pattern']) {
-      if (field === 'DriverLicense') return 'Chỉ được nhập ký tự không dấu (varchar)';
-      return 'SĐT chỉ nhập số, 9-25 ký tự';
-    }
-    if (ctrl.errors?.['noAngleBrackets']) return ctrl.errors['noAngleBrackets'] as string;
-    return 'Giá trị không hợp lệ';
-  }
-
-  /**
-   * Người tạo: DungBT
-   * Ngày tạo: 29/06/2026
-   * Lấy thông báo lỗi cấp row (date range)
-   */
-  getRowError(rowGroup: AbstractControl): string {
-    if (!rowGroup.errors) return '';
-    if (rowGroup.errors['issueFuture']) return rowGroup.errors['issueFuture'] as string;
-    if (rowGroup.errors['expireBeforeIssue']) return rowGroup.errors['expireBeforeIssue'] as string;
-    return '';
-  }
-
-  getDateInputClass(
-    rowCtrl: AbstractControl,
-    field: 'IssueLicenseDate' | 'ExpireLicenseDate',
-  ): string {
-    let classes = 'da-input ';
-    const ctrl = rowCtrl.get(field);
-    const valid = ctrl?.valid && ctrl?.touched;
-    const invalid = ctrl?.invalid && ctrl?.touched;
-    const dirty = ctrl?.dirty;
-
-    const issueFuture = rowCtrl.errors?.['issueFuture'] && rowCtrl.touched;
-    const expireBeforeIssue = rowCtrl.errors?.['expireBeforeIssue'] && rowCtrl.touched;
-
-    if (field === 'IssueLicenseDate') {
-      if (valid && !issueFuture && !expireBeforeIssue) classes += 'da-input-valid ';
-      if (invalid || issueFuture || expireBeforeIssue) classes += 'da-input-invalid ';
-    } else {
-      if (valid && !expireBeforeIssue) classes += 'da-input-valid ';
-      if (invalid || expireBeforeIssue) classes += 'da-input-invalid ';
-    }
-
-    if (dirty) classes += 'da-input-dirty ';
-    return classes.trim();
-  }
-
-  // Actions
-
-  /**
-   * Người tạo: DungBT
-   * Ngày tạo: 29/06/2026
-   * Tìm kiếm: reset về trang 1
-   */
+  // Search
   onSearch(): void {
     this.loadGrid(1);
   }
@@ -417,107 +223,45 @@ export class DriversAdminPageComponent implements OnInit {
     this.loadGrid(newPage);
   }
 
-  /**
-   * Người tạo: DungBT
-   * Ngày tạo: 29/06/2026
-   * Lưu: Lấy các row dirty, validate, gửi batch update lên API.
-   * Dùng date-fns format() để convert date input value thành ISO string.
-   */
-  onSave(): void {
-    // Lấy các row đã chỉnh sửa
-    const dirtyRows = this.driversArray.controls.filter((row) => row.dirty);
-    if (!dirtyRows.length) return;
+  // Modal
 
-    // Kiểm tra nếu có row invalid
-    const invalidRows = dirtyRows.filter((row) => row.invalid);
-    if (invalidRows.length) {
-      // Touch tất cả controls trong row invalid để hiển thị lỗi
-      invalidRows.forEach((row) => {
-        Object.values((row as FormGroup).controls).forEach((c) => c.markAsTouched());
-      });
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Dữ liệu không hợp lệ',
-        detail: `Có ${invalidRows.length} dòng chứa lỗi. Vui lòng kiểm tra lại.`,
-      });
-      this.cdr.markForCheck();
-      return;
-    }
-
-    const payload: UpdateDriverRequest[] = dirtyRows.map((row) => {
-      const v = row.value;
-      // Hàm chuyển đổi ngày sang ISO string
-      const toIso = (dateVal: Date | string | null): string | null => {
-        if (!dateVal) return null;
-        let d: Date;
-        if (typeof dateVal === 'string') {
-          d = parseISO(dateVal);
-        } else {
-          d = dateVal;
-        }
-        return isValid(d) ? format(d, "yyyy-MM-dd'T'HH:mm:ss") : null;
-      };
-      return {
-        Id: v.Id as number,
-        DisplayName: v.DisplayName as string,
-        DriverLicense: v.DriverLicense as string | null,
-        IssueLicenseDate: toIso(v.IssueLicenseDate),
-        ExpireLicenseDate: toIso(v.ExpireLicenseDate),
-        IssueLicensePlace: v.IssueLicensePlace as string | null,
-        LicenseType: v.LicenseType as number | null,
-        Mobile: v.Mobile as string | null,
-      };
-    });
-
-    this.isSaving = true;
+  /** Click vào tên → mở popup xem chi tiết */
+  openViewModal(driver: DriverDto): void {
+    this.modalDriverId = driver.Id;
+    this.modalMode = 'view';
+    this.modalVisible = true;
     this.cdr.markForCheck();
-
-    this.service
-      .batchUpdate(payload)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: () => {
-          this.isSaving = false;
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Thành công',
-            detail: 'Lưu thông tin lái xe thành công.',
-          });
-          this.loadGrid();
-        },
-        error: (err) => {
-          this.isSaving = false;
-          this.showError(getHttpErrorMessage(err, 'Lỗi khi lưu dữ liệu.'));
-          this.cdr.markForCheck();
-        },
-      });
   }
 
-  /**
-   * Người tạo: DungBT
-   * Ngày tạo: 29/06/2026
-   * Hủy: Mở p-confirmDialog, nếu đồng ý reload lại dữ liệu gốc từ API.
-   */
-  onCancel(): void {
-    if (!this.isFormDirty) return;
-    this.confirmationService.confirm({
-      message: 'Bạn có chắc muốn hủy các thay đổi chưa lưu không?',
-      header: 'Xác nhận hủy',
-      acceptLabel: 'Xác nhận',
-      rejectLabel: 'Đóng',
-      acceptIcon: 'fas fa-check',
-      rejectIcon: 'fas fa-times',
-      accept: () => this.loadGrid(),
-    });
+  /** Nút Sửa trong lưới → mở popup chỉnh sửa ngay */
+  openEditModal(driver: DriverDto): void {
+    this.modalDriverId = driver.Id;
+    this.modalMode = 'edit';
+    this.modalVisible = true;
+    this.cdr.markForCheck();
   }
 
-  /**
-   * Người tạo: DungBT
-   * Ngày tạo: 29/06/2026
-   * Xóa mềm một dòng: mở xác nhận trước khi gọi API.
-   * @param id ID lái xe
-   * @param index Vị trí trong FormArray (để xóa khỏi giao diện)
-   */
+  /** Nút Thêm mới */
+  openCreateModal(): void {
+    this.modalDriverId = null;
+    this.modalMode = 'create';
+    this.modalVisible = true;
+    this.cdr.markForCheck();
+  }
+
+  onModalClosed(): void {
+    this.modalVisible = false;
+    this.cdr.markForCheck();
+  }
+
+  onModalSaved(): void {
+    this.modalVisible = false;
+    this.loadGrid();
+    this.cdr.markForCheck();
+  }
+
+  // Delete
+
   onDelete(id: number, index: number, name?: string): void {
     this.confirmationService.confirm({
       message: `Bạn có chắc muốn xóa lái xe "<b>${name}</b>" không?`,
@@ -533,8 +277,7 @@ export class DriversAdminPageComponent implements OnInit {
           .pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe({
             next: () => {
-              // xóa khỏi giao diện
-              this.driversArray.removeAt(index);
+              this.drivers = this.drivers.filter((_, i) => i !== index);
               this.totalRecord--;
               this.messageService.add({
                 severity: 'success',
@@ -649,17 +392,6 @@ export class DriversAdminPageComponent implements OnInit {
     if (!iso) return '';
     const d = parseISO(iso);
     return isValid(d) ? format(d, pattern) : '';
-  }
-
-  /**
-   * Người tạo: DungBT
-   * Ngày tạo: 29/06/2026
-   * Ngày cập nhật hiển thị: ưu tiên UpdatedDate, fallback về không hiển thị gì
-   * Lưu ý: form chỉ chứa UpdatedDate
-   */
-  getUpdatedDateDisplay(rowGroup: AbstractControl): string {
-    const updatedDate = rowGroup.get('UpdatedDate')?.value as string | null;
-    return this.formatDate(updatedDate, 'HH:mm dd/MM/yyyy');
   }
 
   /**

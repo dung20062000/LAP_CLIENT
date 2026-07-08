@@ -145,7 +145,7 @@
         </ng-select>
       </div>
 
-      <!-- Nút Tìm kiếm nằm ngang hàng -->
+      <!-- Nút Tìm kiếm -->
       <div class="filter-item filter-btn">
         <button class="btn btn-search" type="button" (click)="onSearch()">
           <i class="fas fa-search me-1"></i> Tìm kiếm
@@ -154,17 +154,9 @@
     </div>
   </div>
 
-  <!-- ACTION BAR (Phía bên phải, nằm dưới filter bar) -->
+  <!-- ACTION BAR -->
   <div class="da-action-bar">
     <div class="da-action-right">
-      @if (isFormDirty) {
-        <button class="btn da-btn-save" type="button" [disabled]="isSaving" (click)="onSave()">
-          <span class="material-symbols-outlined icon-material">save</span> {{ isSaving ? 'Đang lưu...' : 'Lưu thông tin' }}
-        </button>
-        <button class="btn da-btn-cancel" type="button" (click)="onCancel()">
-          <i class="fas fa-times"></i> Hủy
-        </button>
-      }
       @if (hasData) {
         <button class="btn da-btn-export" type="button" title="Xuất Excel" [disabled]="isExporting" (click)="onExport()">
           <img
@@ -175,6 +167,10 @@
           />
         </button>
       }
+      <!-- Nút Thêm mới -->
+      <button class="btn da-btn-add" type="button" id="btn-add-driver" title="Thêm mới lái xe" (click)="openCreateModal()">
+        <span class="material-symbols-outlined">person_add</span>
+      </button>
     </div>
   </div>
 
@@ -186,7 +182,7 @@
     </div>
   }
 
-  <!-- LƯỚI DỮ LIỆU (p-table) -->
+  <!-- LƯỚI DỮ LIỆU -->
   @if (!isLoading) {
     @if (totalRecord === 0) {
       <div class="da-empty-container text-muted">
@@ -195,235 +191,153 @@
       </div>
     } @else {
       <div class="da-table-wrapper">
-        <form [formGroup]="form">
-          <p-table
-            styleClass="p-datatable-sm da-table"
-            [value]="driversArray.controls"
-          >
+        <p-table
+          styleClass="p-datatable-sm da-table"
+          [value]="drivers"
+        >
           <ng-template pTemplate="header">
             <tr>
               <th class="da-col-stt">STT</th>
-              <th class="da-col-name">Họ và tên <span class="da-required">*</span></th>
+              <th class="da-col-name">Họ và tên</th>
               <th class="da-col-phone">Số điện thoại</th>
-              <th class="da-col-license">Số giấy phép lái xe <span class="da-required">*</span></th>
-              <th class="da-col-issue-date">Ngày cấp <span class="da-required">*</span></th>
-              <th class="da-col-expire-date">Ngày hết hạn <span class="da-required">*</span></th>
-              <th class="da-col-place">Nơi cấp <span class="da-required">*</span></th>
-              <th class="da-col-type">Loại bằng <span class="da-required">*</span></th>
+              <th class="da-col-license">Số giấy phép lái xe</th>
+              <th class="da-col-issue-date">Ngày cấp</th>
+              <th class="da-col-expire-date">Ngày hết hạn</th>
+              <th class="da-col-place">Nơi cấp</th>
+              <th class="da-col-type">Loại bằng</th>
               <th class="da-col-updated">Ngày cập nhật</th>
-              <th class="da-col-action">Xóa</th>
+              <th class="da-col-action">Thao tác</th>
             </tr>
           </ng-template>
 
-          <ng-template let-rowCtrl let-i="rowIndex" pTemplate="body">
-            <tr [formGroup]="rowCtrl" [class.da-row-invalid]="rowCtrl.invalid && rowCtrl.touched">
+          <ng-template let-driver let-i="rowIndex" pTemplate="body">
+            <tr>
               <!-- STT -->
               <td class="da-col-stt text-center">
                 {{ (currentPage - 1) * pageSize + i + 1 }}
               </td>
 
-              <!-- Họ và tên -->
+              <!-- Họ và tên — click để xem chi tiết -->
               <td class="da-col-name">
-                <input
-                  type="text"
-                  class="da-input"
-                  formControlName="DisplayName"
-                  appNoAngleBrackets
-                  placeholder="Nhập họ và tên"
-                  [title]="getFieldError(rowCtrl, 'DisplayName')"
-                  [maxLength]="100"
-                  [ngClass]="{
-                    'da-input-valid': rowCtrl.get('DisplayName')?.valid && rowCtrl.get('DisplayName')?.touched,
-                    'da-input-invalid': rowCtrl.get('DisplayName')?.invalid && rowCtrl.get('DisplayName')?.touched,
-                    'da-input-dirty': rowCtrl.get('DisplayName')?.dirty
-                  }"
-                />
+                <span
+                  class="da-name-link"
+                  role="button"
+                  tabindex="0"
+                  [title]="'Xem chi tiết: ' + driver.DisplayName"
+                  (click)="openViewModal(driver)"
+                  (keydown.enter)="openViewModal(driver)"
+                >
+                  {{ driver.DisplayName }}
+                </span>
               </td>
 
               <!-- Số điện thoại -->
               <td class="da-col-phone">
-                <input
-                  type="text"
-                  class="da-input"
-                  formControlName="Mobile"
-                  appNumbersOnly
-                  placeholder="Nhập SĐT"
-                  [title]="getFieldError(rowCtrl, 'Mobile')"
-                  [maxLength]="25"
-                  [ngClass]="{
-                    'da-input-valid': rowCtrl.get('Mobile')?.valid && rowCtrl.get('Mobile')?.touched,
-                    'da-input-invalid': rowCtrl.get('Mobile')?.invalid && rowCtrl.get('Mobile')?.touched,
-                    'da-input-dirty': rowCtrl.get('Mobile')?.dirty
-                  }"
-                />
+                <div class="da-cell-readonly">{{ driver.Mobile }}</div>
               </td>
 
               <!-- Số GPLX -->
               <td class="da-col-license">
-                <input
-                  type="text"
-                  class="da-input"
-                  formControlName="DriverLicense"
-                  appVarcharOnly
-                  placeholder="Số GPLX"
-                  [maxLength]="32"
-                  [title]="getFieldError(rowCtrl, 'DriverLicense')"
-                  [ngClass]="{
-                    'da-input-valid': rowCtrl.get('DriverLicense')?.valid && rowCtrl.get('DriverLicense')?.touched,
-                    'da-input-invalid': rowCtrl.get('DriverLicense')?.invalid && rowCtrl.get('DriverLicense')?.touched,
-                    'da-input-dirty': rowCtrl.get('DriverLicense')?.dirty
-                  }"
-                />
+                <div class="da-cell-readonly">{{ driver.DriverLicense }}</div>
               </td>
 
               <!-- Ngày cấp -->
-              <td class="da-col-issue-date">
-                <p-datepicker
-                  formControlName="IssueLicenseDate"
-                  dateFormat="dd/mm/yy"
-                  placeholder="dd/mm/yyyy"
-                  appendTo="body"
-                  styleClass="da-datepicker"
-                  panelStyleClass="da-datepicker-panel"
-                  iconDisplay="input"
-                  [maxDate]="todayDate"
-                  [showIcon]="true"
-                  [title]="getFieldError(rowCtrl, 'IssueLicenseDate') || getRowError(rowCtrl)"
-                  [inputStyleClass]="getDateInputClass(rowCtrl, 'IssueLicenseDate')"
-                >
-                  <ng-template #inputicon let-clickCallBack="clickCallBack">
-                    <span
-                      class="material-symbols-outlined iocn-date"
-                      tabindex="0"
-                      (click)="clickCallBack($event)"
-                      (keydown.enter)="clickCallBack($event)">
-                      event
-                    </span>
-                  </ng-template>
-                </p-datepicker>
+              <td class="da-col-issue-date text-center">
+                <div class="da-cell-readonly">{{ formatDate(driver.IssueLicenseDate) }}</div>
               </td>
 
               <!-- Ngày hết hạn -->
-              <td class="da-col-expire-date">
-                <p-datepicker
-                  formControlName="ExpireLicenseDate"
-                  dateFormat="dd/mm/yy"
-                  placeholder="dd/mm/yyyy"
-                  appendTo="body"
-                  styleClass="da-datepicker"
-                  panelStyleClass="da-datepicker-panel"
-                  iconDisplay="input"
-                  [showIcon]="true"
-                  [title]="getFieldError(rowCtrl, 'ExpireLicenseDate') || getRowError(rowCtrl)"
-                  [inputStyleClass]="getDateInputClass(rowCtrl, 'ExpireLicenseDate')"
-                >
-                <ng-template #inputicon let-clickCallBack="clickCallBack">
-                    <span
-                      class="material-symbols-outlined iocn-date"
-                      tabindex="0"
-                      (click)="clickCallBack($event)"
-                      (keydown.enter)="clickCallBack($event)">
-                      event
-                    </span>
-                  </ng-template>
-                </p-datepicker>
+              <td class="da-col-expire-date text-center">
+                <div class="da-cell-readonly">{{ formatDate(driver.ExpireLicenseDate) }}</div>
               </td>
 
               <!-- Nơi cấp -->
               <td class="da-col-place">
-                <input
-                  type="text"
-                  class="da-input"
-                  formControlName="IssueLicensePlace"
-                  appNoAngleBrackets
-                  placeholder="Nơi cấp"
-                  [maxLength]="150"
-                  [title]="getFieldError(rowCtrl, 'IssueLicensePlace')"
-                  [ngClass]="{
-                    'da-input-valid': rowCtrl.get('IssueLicensePlace')?.valid && rowCtrl.get('IssueLicensePlace')?.touched,
-                    'da-input-invalid': rowCtrl.get('IssueLicensePlace')?.invalid && rowCtrl.get('IssueLicensePlace')?.touched,
-                    'da-input-dirty': rowCtrl.get('IssueLicensePlace')?.dirty
-                  }"
-                />
+                <div class="da-cell-readonly">{{ driver.IssueLicensePlace }}</div>
               </td>
 
               <!-- Loại bằng -->
-              <td class="da-col-type">
-                <ng-select
-                  class="da-select-ng"
-                  formControlName="LicenseType"
-                  appendTo="body"
-                  bindLabel="Name"
-                  bindValue="Value"
-                  placeholder="Chọn loại bằng"
-                  notFoundText="Không tìm thấy"
-                  [items]="licenseTypeLookup"
-                  [clearable]="false"
-                  [title]="getFieldError(rowCtrl, 'LicenseType')"
-                  [ngClass]="{
-                    'da-input-valid': rowCtrl.get('LicenseType')?.valid && rowCtrl.get('LicenseType')?.touched,
-                    'da-input-invalid': rowCtrl.get('LicenseType')?.invalid && rowCtrl.get('LicenseType')?.touched,
-                    'da-input-dirty': rowCtrl.get('LicenseType')?.dirty
-                  }"
-                />
+              <td class="da-col-type text-center">
+                <div class="da-cell-readonly">{{ driver.LicenseTypeName }}</div>
               </td>
 
-              <!-- Ngày cập nhật (chỉ xem) -->
+              <!-- Ngày cập nhật -->
               <td class="da-col-updated text-center">
-                <div class="da-updated-date">
-                  {{ getUpdatedDateDisplay(rowCtrl) }}
-                </div>
+                <div class="da-updated-date">{{ formatDate(driver.UpdatedDate, 'HH:mm dd/MM/yyyy') }}</div>
               </td>
 
-              <!-- Xóa -->
+              <!-- Thao tác -->
               <td class="da-col-action text-center">
-                <img
-                    src="./icons/icons8-trash.svg"
-                    alt="Xóa lái xe"
+                <div class="da-actions">
+                  <!-- Nút Sửa -->
+                  <button
+                    class="da-btn-action da-btn-edit"
+                    type="button"
+                    title="Sửa lái xe"
+                    (click)="openEditModal(driver)"
+                  >
+                    <span class="material-symbols-outlined">edit</span>
+                  </button>
+                  <!-- Nút Xóa -->
+                  <button
+                    class="da-btn-action da-btn-delete"
+                    type="button"
                     title="Xóa lái xe"
-                    class="icon-delete"
-                    tabindex="0"
-                    (click)="onDelete(rowCtrl.get('Id')?.value, i, rowCtrl.get('DisplayName')?.value)"
-                    (keydown.enter)="onDelete(rowCtrl.get('Id')?.value, i, rowCtrl.get('DisplayName')?.value)"
-                  />
+                    (click)="onDelete(driver.Id, i, driver.DisplayName)"
+                  >
+                    <img src="./icons/icons8-trash.svg" alt="Xóa" class="icon-delete" />
+                  </button>
+                </div>
               </td>
             </tr>
           </ng-template>
         </p-table>
-      </form>
-    </div>
+      </div>
 
-    <!-- PAGINATOR -->
-    <div class="paginator-wrapper">
-      <p-paginator
-        id="driver-paginator"
-        currentPageReportTemplate="{first} - {last} / {totalRecords} dòng"
-        dropdownAppendTo="body"
-        layout="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown CurrentPageReport"
-        [rows]="pageSize"
-        [totalRecords]="totalRecord"
-        [rowsPerPageOptions]="pageSizeOptions"
-        [first]="(currentPage - 1) * pageSize"
-        [showCurrentPageReport]="true"
-        (onPageChange)="onPageChange($event)"
-      >
-        <ng-template pTemplate="firstpagelinkicon">
-          <i class="fas fa-step-backward" style="font-size: 11px;"></i>
-        </ng-template>
-        <ng-template pTemplate="previouspagelinkicon">
-          <i class="fas fa-caret-left" style="font-size: 13px;"></i>
-        </ng-template>
-        <ng-template pTemplate="nextpagelinkicon">
-          <i class="fas fa-caret-right" style="font-size: 13px;"></i>
-        </ng-template>
-        <ng-template pTemplate="lastpagelinkicon">
-          <i class="fas fa-step-forward" style="font-size: 11px;"></i>
-        </ng-template>
-      </p-paginator>
+      <!-- PAGINATOR -->
+      <div class="paginator-wrapper">
+        <p-paginator
+          id="driver-paginator"
+          currentPageReportTemplate="{first} - {last} / {totalRecords} dòng"
+          dropdownAppendTo="body"
+          layout="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown CurrentPageReport"
+          [rows]="pageSize"
+          [totalRecords]="totalRecord"
+          [rowsPerPageOptions]="pageSizeOptions"
+          [first]="(currentPage - 1) * pageSize"
+          [showCurrentPageReport]="true"
+          (onPageChange)="onPageChange($event)"
+        >
+          <ng-template pTemplate="firstpagelinkicon">
+            <i class="fas fa-step-backward" style="font-size: 11px;"></i>
+          </ng-template>
+          <ng-template pTemplate="previouspagelinkicon">
+            <i class="fas fa-caret-left" style="font-size: 13px;"></i>
+          </ng-template>
+          <ng-template pTemplate="nextpagelinkicon">
+            <i class="fas fa-caret-right" style="font-size: 13px;"></i>
+          </ng-template>
+          <ng-template pTemplate="lastpagelinkicon">
+            <i class="fas fa-step-forward" style="font-size: 11px;"></i>
+          </ng-template>
+        </p-paginator>
       <!-- icon reload trang -->
-      <i class="fas fa-sync reload-icon" title="Tải lại" tabindex="0" (click)="loadGrid()" (keydown.enter)="loadGrid()"></i>
-    </div>
+        <i class="fas fa-sync reload-icon" title="Tải lại" tabindex="0" (click)="loadGrid()" (keydown.enter)="loadGrid()"></i>
+      </div>
     }
   }
 </div>
+
+<!-- CONFIRM DIALOG -->
 <p-confirmDialog class="confirm-dialog-custome" />
+
+<!-- POPUP MODAL -->
+@if (modalVisible) {
+  <app-driver-form-modal
+    [driverId]="modalDriverId"
+    [initialMode]="modalMode"
+    [licenseTypeLookup]="licenseTypeLookup"
+    (closed)="onModalClosed()"
+    (saved)="onModalSaved()"
+  />
+}

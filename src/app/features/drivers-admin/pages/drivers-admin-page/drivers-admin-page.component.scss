@@ -200,6 +200,16 @@
         }
       }
 
+      .da-btn-add {
+        background-color: var(--text-blue-dark);
+        color: var(--text-white);
+        &:hover:not(:disabled) {
+          background-color: var(--bg-blue-hover);
+          color: var(--text-white);
+        }
+        .material-symbols-outlined { font-size: 18px; }
+      }
+
       .da-btn-export {
         background-color: var(--text-blue-dark);
         color: var(--text-white);
@@ -242,6 +252,19 @@
           color: var(--text-danger);
           margin-left: 2px;
         }
+
+        &.da-col-name{
+          text-align: left;
+        }
+        &.da-col-phone {
+          text-align: left;
+        }
+        &.da-col-license {
+          text-align: left;
+        }
+        &.da-col-place {
+          text-align: left;
+        }
       }
 
       .p-datatable-tbody > tr > td {
@@ -253,34 +276,64 @@
         // Column widths
         &.da-col-stt { width: 50px; text-align: center; }
         &.da-col-name { min-width: 160px; }
-        &.da-col-phone { min-width: 130px; }
+        &.da-col-phone { min-width: 120px; }
         &.da-col-license { min-width: 140px; }
-        &.da-col-issue-date {
-          min-width: 170px;
-          max-width: 170px;
-          .da-datepicker{
-            width: 100%;
-          }
-        }
-        &.da-col-expire-date {
-          min-width: 170px;
-          max-width: 170px;
-          .da-datepicker{
-            width: 100%;
-          }
-        }
-        &.da-col-place { min-width: 140px; }
-        &.da-col-type { min-width: 130px; }
+        &.da-col-issue-date { min-width: 110px; text-align: center; }
+        &.da-col-expire-date { min-width: 110px; text-align: center; }
+        &.da-col-place { min-width: 130px; }
+        &.da-col-type { min-width: 80px; text-align: center; }
+        &.da-col-updated { min-width: 110px; text-align: center; }
         &.da-col-action {
-          width: 60px;
+          width: 80px;
           text-align: center;
-          .icon-delete{
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
+        }
+
+        // Tên lái xe — clickable link
+        .da-name-link {
+          color: var(--text-blue-dark, #1565c0);
+          cursor: pointer;
+          font-weight: 500;
+          text-decoration: none;
+          transition: color 0.15s;
+          &:hover {
+            color: #0d47a1;
+            text-decoration: underline;
+          }
+        }
+
+        // Action buttons cell
+        .da-actions {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 4px;
+        }
+
+        .da-btn-action {
+          width: 28px;
+          height: 28px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          transition: background 0.15s;
+          padding: 0;
+          background: transparent;
+        }
+
+        .da-btn-edit {
+          color: var(--text-blue-dark, #1565c0);
+          .material-symbols-outlined { font-size: 17px; }
+          &:hover { background: #e8f0fe; }
+        }
+
+        .da-btn-delete {
+          &:hover { background: #fde8e8; }
+          .icon-delete {
+            width: 18px;
+            height: 18px;
           }
         }
 

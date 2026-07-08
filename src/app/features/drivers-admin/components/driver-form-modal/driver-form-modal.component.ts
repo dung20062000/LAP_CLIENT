@@ -19,6 +19,11 @@ import { NumbersOnlyDirective, VarcharOnlyDirective, NoAngleBracketsDirective } 
 
 export type ModalMode = 'view' | 'edit' | 'create';
 
+/**
+ * Người tạo: DungBT
+ * Ngày tạo: 08/07/2026
+ * formatDate pipe dùng để format ngày.
+ */
 @Pipe({ name: 'formatDate', standalone: true })
 export class FormatDatePipe implements PipeTransform {
   transform(iso: string | null | undefined, pattern = 'dd/MM/yyyy'): string {
@@ -28,6 +33,11 @@ export class FormatDatePipe implements PipeTransform {
   }
 }
 
+/**
+ * Người tạo: DungBT
+ * Ngày tạo: 08/07/2026
+ * isExpired pipe dùng để kiểm tra ngày hết hạn.
+ */
 @Pipe({ name: 'isExpired', standalone: true })
 export class IsExpiredPipe implements PipeTransform {
   transform(iso: string | null | undefined): boolean {
@@ -37,6 +47,11 @@ export class IsExpiredPipe implements PipeTransform {
   }
 }
 
+/**
+ * Người tạo: DungBT
+ * Ngày tạo: 08/07/2026
+ * formError pipe dùng để hiển thị lỗi form.
+ */
 @Pipe({ name: 'formError', standalone: true })
 export class FormErrorPipe implements PipeTransform {
   transform(errors: ValidationErrors | null | undefined, field: string): string {
@@ -100,6 +115,11 @@ export class DriverFormModalComponent implements OnInit {
   isLoading = false;
   isSaving = false;
 
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 07/07/2026
+   * Lấy danh sách control của form để dễ gọi.
+   */
   get f(): { [key: string]: AbstractControl } {
     return this.form.controls;
   }

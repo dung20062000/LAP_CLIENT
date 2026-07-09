@@ -42,12 +42,12 @@
 
         <div class="dpm-field">
           <label for="dpm-mobile">Số điện thoại</label>
-          <div class="dpm-value">{{ driver.Mobile || '—' }}</div>
+          <div class="dpm-value">{{ driver.Mobile }}</div>
         </div>
 
         <div class="dpm-field">
           <label for="dpm-license">Số GPLX</label>
-          <div class="dpm-value">{{ driver.DriverLicense || '—' }}</div>
+          <div class="dpm-value">{{ driver.DriverLicense }}</div>
         </div>
 
         <div class="dpm-field">
@@ -76,13 +76,13 @@
 
         <div class="dpm-field dpm-field--full">
           <label for="dpm-issue-place">Nơi cấp</label>
-          <div class="dpm-value">{{ driver.IssueLicensePlace || '—' }}</div>
+          <div class="dpm-value">{{ driver.IssueLicensePlace }}</div>
         </div>
 
         <div class="dpm-field dpm-field--full">
           <label for="dpm-updated-date">Ngày cập nhật</label>
           <div class="dpm-value dpm-value--muted">
-            {{ (driver.UpdatedDate | formatDate:'HH:mm dd/MM/yyyy') || '—' }}
+            {{ driver.UpdatedDate | formatDate:'HH:mm dd/MM/yyyy' }}
           </div>
         </div>
       </div>

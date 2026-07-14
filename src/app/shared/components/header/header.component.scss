@@ -66,7 +66,59 @@
     background: rgba(17, 174, 199, 0.08);
     color: var(--primary-color-darker);
   }
+
+  // Link nội bộ routerLink – thêm icon camera
+  &.nav-link-internal {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    i {
+      font-size: 13px;
+    }
+
+    &.active {
+      background: rgba(17, 174, 199, 0.12);
+      color: var(--primary-color-darker);
+      font-weight: 600;
+    }
+  }
 }
+
+// Nút Xem ảnh PT trên header-right (desktop)
+.media-gallery-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border: 1.5px solid var(--primary-color);
+  border-radius: 20px;
+  color: var(--primary-color);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  transition: background 0.2s, color 0.2s;
+  white-space: nowrap;
+
+  i {
+    font-size: 13px;
+  }
+
+  .btn-text {
+    color: var(--primary-color);
+  }
+
+  &:hover,
+  &.active {
+    background: var(--primary-color);
+    color: #fff;
+
+    .btn-text {
+      color: #fff;
+    }
+  }
+}
+
 
 // ─── CÁC NÚT CHỨC NĂNG BÊN PHẢI ──────────────────────────────────────────
 
@@ -145,7 +197,12 @@
   }
 }
 
-// User greeting
+// User greeting & selector dropdown
+.user-selector {
+  position: relative;
+  user-select: none;
+}
+
 .user-greeting {
   display: flex;
   align-items: center;
@@ -158,11 +215,84 @@
   background: rgba(17, 174, 199, 0.06);
   border-radius: 20px;
   border: 1px solid rgba(17, 174, 199, 0.15);
+  transition: background 0.2s, border-color 0.2s;
 
   strong {
     color: var(--primary-color);
     font-weight: 700;
   }
+
+  &.dropdown-trigger {
+    cursor: pointer;
+    gap: 6px;
+
+    &:hover {
+      background: rgba(17, 174, 199, 0.1);
+      border-color: rgba(17, 174, 199, 0.3);
+    }
+  }
+}
+
+.user-arrow {
+  display: flex;
+  align-items: center;
+  color: #888;
+  transition: transform 0.2s;
+}
+
+.user-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+  min-width: 190px;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+
+  li {
+    width: 100%;
+  }
+
+  .dropdown-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    font-size: 13px;
+    color: #333;
+    text-decoration: none;
+    transition: background 0.15s, color 0.15s;
+    font-weight: 500;
+
+    i {
+      font-size: 13px;
+      color: var(--primary-color);
+      width: 16px;
+      text-align: center;
+    }
+
+    &:hover {
+      background: rgba(17, 174, 199, 0.06);
+      color: var(--primary-color-darker);
+    }
+
+    &.active {
+      color: var(--primary-color);
+      font-weight: 600;
+      background: rgba(17, 174, 199, 0.08);
+    }
+  }
+}
+
+.mobile-only-nav-item {
+  display: none !important;
 }
 
 // Logout button
@@ -327,9 +457,17 @@
   }
 }
 
-// ─── RESPONSIVE ─────────────────────────────────────────────────────────────
+// RESPONSIVE
 
-@media (max-width: 900px) {
+// Màn hình dưới 1366px (độ phân giải trung bình/nhỏ trên desktop)
+@media screen and (max-width: 1366px) {
+  .header-container {
+    padding: 0 8px;
+    gap: 12px;
+    justify-content: space-between;
+  }
+}
+@media (max-width: 1200px) {
   .header-container {
     padding: 0 16px;
     gap: 12px;
@@ -360,7 +498,8 @@
     .zalo-btn,
     .hotline-btn,
     .logout-btn,
-    .user-greeting {
+    .user-greeting,
+    .user-selector {
       display: none !important;
     }
   }
@@ -380,6 +519,10 @@
     transform: translateX(100%);
     visibility: hidden;
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.3s;
+
+    .mobile-only-nav-item {
+      display: block !important;
+    }
 
     &.open {
       transform: translateX(0);
@@ -411,7 +554,7 @@
 
     .nav-link {
       font-size: 16px;
-      padding: 12px 16px;
+      padding: 6px 8px;
     }
 
     .mobile-actions {

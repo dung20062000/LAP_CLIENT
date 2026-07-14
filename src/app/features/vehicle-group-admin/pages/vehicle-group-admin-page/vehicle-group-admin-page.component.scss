@@ -1,0 +1,516 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+.vga-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg-white);
+  margin: 12px 12px 12px 12px;
+  border-radius: 4px;
+  padding: 16px 8px;
+  box-shadow: 0 4px 16px 0 rgba(100, 100, 100, 0.4);
+}
+
+.vga-header {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.vga-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-blue-dark);
+  margin: 0;
+  letter-spacing: 0.4px;
+}
+
+.vga-body {
+  flex: 1;
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  overflow: hidden;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  min-height: 0;
+}
+
+.vga-col {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
+
+  &.vga-col-users {
+    flex: 1 1 0;
+    min-width: 0;
+    margin-right: 8px;
+  }
+
+  &.vga-col-unassigned,
+  &.vga-col-assigned {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+}
+
+.vga-nav-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 6px;
+  flex-shrink: 0;
+}
+
+.vga-nav-btn {
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  background: var(--bagps-primary);
+  border-color: var(--bagps-primary);
+  color: var(--text-white);
+  font-size: 13px;
+  transition: background 0.15s ease, opacity 0.15s ease;
+
+  &:hover:not(:disabled) {
+    opacity: 0.8;
+    background: var(--bagps-primary);
+    border-color: var(--bagps-primary);
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    background: var(--bagps-disabled);
+    border-color: var(--bagps-disabled);
+  }
+}
+
+.vga-panel {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+  background: var(--bg-white);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  min-height: 0;
+}
+
+.vga-panel-header {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-grey);
+  flex-shrink: 0;
+
+}
+
+.vga-panel-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-blue-dark);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.vga-search-box {
+  position: relative;
+  padding: 8px 10px;
+  flex-shrink: 0;
+}
+
+.vga-search-icon {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  font-size: 12px;
+  pointer-events: none;
+}
+
+.vga-search-input {
+  width: 100%;
+  padding: 5px 28px 5px 8px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.15s;
+  color: #343a40;
+
+  &::placeholder {
+    color: var(--text-placeholder);
+    font-size: 12px;
+  }
+
+  &:focus {
+    border-color: var(--border-primary);
+    box-shadow: 0 0 0 2px rgba(var(--border-primary), 0.15);
+  }
+}
+
+.vga-search-clear {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  font-size: 12px;
+  cursor: pointer;
+
+  &:hover {
+    color: #343a40;
+  }
+}
+
+.vga-list-container {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+
+  &::-webkit-scrollbar { width: 5px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb { background: #ced4da; border-radius: 3px; }
+}
+.vga-list-container:has(.vga-center-state){
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.vga-user-list {
+  margin: 0;
+}
+
+.vga-user-item {
+  cursor: pointer;
+  padding: 8px 12px;
+  border: none;
+  transition: background 0.1s, border-color 0.1s;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+
+  &:nth-child(even):not(.active) {
+    background: var(--bg-grey);
+  }
+
+  &:hover:not(.active) {
+    background: var(--bg-gray-light-3);
+  }
+
+  &.active {
+    background: var(--bagps-secondary-1);
+    font-weight: 600;
+    color: var(--text-primary);
+    .vga-user-sub {
+      font-weight: 600;
+    }
+  }
+}
+
+.vga-user-name {
+  font-size: 13px;
+  line-height: 1.3;
+  color: var(--text-primary);
+}
+
+.vga-user-sub {
+  font-size: 13px;
+}
+
+.vga-select-all-bar {
+  flex-shrink: 0;
+  padding: 8px 16px;
+  -webkit-user-select: none;
+  user-select: none;
+  display: flex;
+}
+
+.vga-select-all-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+  margin: 0;
+  font-weight: 500;
+  font-size: 13px;
+  color: #343a40;
+
+  &:hover .vga-custom-checkbox:not(.checked):not(.indeterminate) {
+    border-color: var(--bg-blue-1);
+    background: #e9f0fb;
+  }
+}
+
+.vga-select-all-text {
+  line-height: 1;
+}
+
+.vga-custom-checkbox {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  border-radius: 3px;
+  border: 1.5px solid #adb5bd;
+  background: var(--bg-white);
+  transition: border-color 0.15s, background 0.15s;
+  font-size: 9px;
+  color: var(--text-white);
+
+  .vga-check-icon{
+    font-size: 22px;
+    color: var(--text-white);
+    font-weight: 100;
+  }
+
+  .vga-remove-icon {
+    font-size: 18px;
+    color: var(--text-gray);
+  }
+
+  &.checked {
+    background: var(--bg-blue-1);
+    border-color: var(--bg-blue-1);
+  }
+
+  &.indeterminate {
+    border-color: var(--bg-blue-1);
+    color: var(--text-secondary);
+  }
+}
+
+.vga-tree-container {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0;
+  padding: 4px 4px;
+
+  &::-webkit-scrollbar { width: 5px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb { background: #ced4da; border-radius: 3px; }
+}
+.vga-tree-container:has(.vga-center-state){
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.vga-center-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 20px;
+  font-size: 13px;
+  color: var(--text-muted);
+
+  i { font-size: 14px; }
+
+  &--full {
+    flex: 1;
+    flex-direction: column;
+    gap: 10px;
+    padding: 40px 20px;
+    font-size: 13px;
+
+    i { font-size: 24px; opacity: 0.4; }
+  }
+}
+
+.vga-action-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 2px 0 8px 0;
+  flex-shrink: 0;
+}
+
+.vga-action-btn {
+  font-size: 13px;
+  padding: 6px 18px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background-color: var(--bagps-primary);
+  color: var(--text-white);
+  border-color: var(--bagps-primary);
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    background-color: var(--bagps-disabled);
+    border-color: var(--bagps-disabled);
+    color: var(--text-white);
+  }
+}
+
+::ng-deep {
+  .vga-tree {
+    background: transparent;
+    border: none;
+    padding: 0 !important;
+    font-size: 13px;
+
+    .p-tree-node {
+      padding: 0;
+    }
+
+    .p-tree-node-content {
+      padding: 3px 6px;
+      border-radius: 4px;
+      transition: background 0.1s;
+      gap: 4px;
+
+      &:hover {
+        background: #e9f0fb;
+      }
+
+      // Highlight khi node được checkbox tick (không phải node-dirty)
+      // Dùng :has() để detect checkbox checked state
+      &:has(.p-checkbox-checked) {
+        background: var(--bagps-secondary-1) !important;
+      }
+
+      &.p-tree-node-selected,
+      &.p-highlight {
+        background: var(--bagps-secondary-1) !important;
+      }
+
+      .p-tree-node-toggle-button{
+        width: fit-content;
+      }
+    }
+
+    .p-tree-node-label {
+      font-size: 13px;
+      color: var(--text-primary);
+      line-height: 1.4;
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+
+    .vga-node-content-wrapper {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .vga-folder-icon {
+      font-size: 22px;
+      font-weight: 300;
+      color: var(--text-primary);
+      vertical-align: middle;
+      user-select: none;
+    }
+
+    // Checkbox style
+    .p-checkbox {
+      width: 16px;
+      height: 16px;
+
+      .p-checkbox-box {
+        width: 16px;
+        height: 16px;
+        border-radius: 3px;
+        border: 1.5px solid #adb5bd;
+        transition: border-color 0.15s, background 0.15s;
+
+        &.p-highlight {
+          background: var(--bg-blue-1) !important;
+          border-color: var(--bg-blue-1) !important;
+        }
+      }
+    }
+
+    // Node dirty (nền vàng) - áp dụng qua styleClass của node
+    // Ghi đè :has() để giữ màu vàng cho node chuyển từ cột khác
+    .node-dirty > .p-tree-node-content {
+      background: var(--bg-yellow) !important;
+      border-radius: 0 4px 4px 0;
+
+      .p-tree-node-label {
+        color: var(--text-yellow-dark);
+        font-weight: 500;
+      }
+
+      // Khi node dirty bị checkbox thêm, vẫn giữ màu vàng
+      &:has(.p-checkbox-checked) {
+        background: var(--bg-yellow) !important;
+      }
+    }
+
+    .p-tree-node-children {
+      padding-left: 16px;
+    }
+  }
+
+  .vga-toggler-icon {
+    font-size: 11px;
+    color: var(--text-muted);
+    width: 14px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 1024px) {
+  .vga-body {
+    flex-wrap: wrap;
+    overflow: hidden;
+    align-content: stretch;
+    gap: 0;
+    padding-bottom: 0;
+  }
+
+  .vga-col-users {
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+    margin-right: 0 !important;
+    margin-bottom: 12px !important;
+    height: 38% !important;
+  }
+
+  .vga-col-unassigned,
+  .vga-col-assigned {
+    width: calc(50% - 25px) !important;
+    flex: none !important;
+    height: calc(62% - 12px) !important;
+  }
+
+  .vga-nav-buttons {
+    flex: 0 0 auto !important;
+    height: calc(62% - 12px) !important;
+    flex-direction: column !important;
+    width: auto !important;
+    padding: 0 8px !important;
+    order: unset !important;
+  }
+
+  .vga-action-bar {
+    padding: 8px 0 8px 0;
+  }
+}

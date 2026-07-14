@@ -1,8 +1,3 @@
-/**
- * Người tạo: DungBT
- * Ngày tạo: 28/05/2026
- * Mô tả: Pipe dịch thuật — resolve translation key thành chuỗi hiển thị theo ngôn ngữ hiện tại.
- */
 import { Pipe, PipeTransform, inject } from '@angular/core';
 import { TranslationService } from '../services/translation.service';
 

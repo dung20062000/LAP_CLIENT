@@ -20,7 +20,11 @@ export enum DestinationType {
   Road = 4
 }
 
-//Thông tin phương tiện
+/**
+ * Người tạo: DungBT
+ * Ngày tạo: 18/06/2026
+ * Thông tin phương tiện
+ */
 export interface Vehicle {
   id: number;
   // Biển số xe
@@ -37,7 +41,11 @@ export interface Vehicle {
   destinationName?: string;
 }
 
-// Điểm đến (cửa khẩu, nhà máy, bãi cảng)
+/**
+ * Người tạo: DungBT
+ * Ngày tạo: 18/06/2026
+ * Điểm đến (cửa khẩu, nhà máy, bãi cảng)
+ */
 export interface Destination {
   id: number;
   name: string;
@@ -47,7 +55,11 @@ export interface Destination {
   vehicleCount: number;
 }
 
-// Thống kê tổng quan dashboard
+/**
+ * Người tạo: DungBT
+ * Ngày tạo: 18/06/2026
+ * Thống kê tổng quan dashboard
+ */
 export interface DashboardStats {
   totalVehicles: number;
   loadedVehicles: number;
@@ -58,28 +70,44 @@ export interface DashboardStats {
   atFactory: number;
 }
 
-// Cấu hình từng widget
+/**
+ * Người tạo: DungBT
+ * Ngày tạo: 18/06/2026
+ * Cấu hình từng widget
+ */
 export interface WidgetConfig {
   widgetId: string;
   size: WidgetSize;
   collapsed: boolean;
 }
 
-// Cấu hình layout toàn dashboard (lưu localStorage)
+/**
+ * Người tạo: DungBT
+ * Ngày tạo: 18/06/2026
+ * Cấu hình layout toàn dashboard (lưu localStorage)
+ */
 export interface DashboardLayoutConfig {
   userId: string;
   widgets: WidgetConfig[];
   savedAt: string;
 }
 
-// Dữ liệu điểm đến dạng biểu đồ (bar chart)
+/**
+ * Người tạo: DungBT
+ * Ngày tạo: 18/06/2026
+ * Dữ liệu điểm đến dạng biểu đồ (bar chart)
+ */
 export interface DestinationChartItem {
   name: string;
   count: number;
   type: DestinationType;
 }
 
-// Option item dùng cho bộ lọc ng-select (multi-select)
+/**
+ * Người tạo: DungBT
+ * Ngày tạo: 18/06/2026
+ * Option item dùng cho bộ lọc ng-select (multi-select)
+ */
 export interface VehicleOption {
   value: number;
   label: string;

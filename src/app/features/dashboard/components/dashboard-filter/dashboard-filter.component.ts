@@ -1,3 +1,9 @@
+// prettier-ignore
+import { Component, OnInit, OnChanges, OnDestroy, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef, SimpleChanges, ElementRef, HostListener, ViewChild, AfterViewInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { VehicleOption } from '../../../../models';
+
 /**
  * Người tạo: DungBT
  * Ngày tạo: 01/06/2026
@@ -6,32 +12,6 @@
  *        - Header ghim cố định "Tất cả (N)" ở đầu dropdown.
  *        - Hỗ trợ search, clear, click-outside để đóng dropdown.
  *        - Emit filterChange: number[] (danh sách Vehicle.id được chọn).
- */
-import {
-  Component,
-  OnInit,
-  OnChanges,
-  OnDestroy,
-  Input,
-  Output,
-  EventEmitter,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  SimpleChanges,
-  ElementRef,
-  HostListener,
-  ViewChild,
-  AfterViewInit,
-} from '@angular/core';
-
-import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { VehicleOption } from '../../../../models';
-
-/**
- * Người tạo: DungBT
- * Ngày tạo: 01/06/2026
- * Component bộ lọc xe — custom multi-select thuần HTML/Angular với checkbox và dòng "Tất cả" ghim đầu.
  */
 @Component({
   selector: 'app-dashboard-filter',
@@ -63,7 +43,7 @@ export class DashboardFilterComponent implements OnInit, OnChanges, OnDestroy, A
 
   constructor(
     private cdr: ChangeDetectorRef,
-    private el: ElementRef
+    private el: ElementRef,
   ) {}
 
   ngOnInit(): void {

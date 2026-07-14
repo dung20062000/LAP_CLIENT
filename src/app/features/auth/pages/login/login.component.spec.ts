@@ -1,8 +1,4 @@
-/**
- * Người tạo: DungBT
- * Ngày tạo: 28/05/2026
- * Mô tả: Unit test cho LoginComponent — kiểm tra form validation, submit form, toggle password và render HTML.
- */
+
 import { TestBed } from '@angular/core/testing';
 import { signal } from '@angular/core';
 import { provideRouter } from '@angular/router';
@@ -10,7 +6,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { LoginComponent } from './login.component';
 import { HeaderComponent } from '../../../../shared/components/header/header.component';
 import { FooterComponent } from '../../../../shared/components/footer/footer.component';
-import { SlideBannerComponent } from '../../../../shared/components/slide-banner/slide-banner.component';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { TranslationService } from '../../../../shared/services/translation.service';
 import { routes } from '../../../../app.routes';
@@ -54,7 +49,6 @@ describe('LoginComponent', () => {
         ReactiveFormsModule,
         HeaderComponent,
         FooterComponent,
-        SlideBannerComponent,
         TranslatePipe,
       ],
       providers: [

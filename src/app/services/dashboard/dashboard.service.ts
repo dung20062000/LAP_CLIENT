@@ -1,19 +1,7 @@
-/**
- * Người tạo: DungBT
- * Ngày tạo: 01/06/2026
- * Mô tả: Service quản lý dữ liệu Dashboard:
- *        - Mock data phương tiện & điểm đến
- *        - API tổng (getAllDashboardData) khi load trang lần đầu
- *        - API riêng từng widget (getOverviewData, getBorderData, getRoadData, getFactoryData, getPortData)
- *          được gọi khi ấn nút reload của từng widget
- *        - Mỗi widget có BehaviorSubject trigger & loading state độc lập
- *        - Auto-refresh mỗi 5 phút qua RxJS timer
- *        - Lưu/đọc cấu hình layout widget theo userId từ localStorage
- *        - BehaviorSubject quản lý bộ lọc xe đang chọn (theo Vehicle.id)
- */
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, timer, Observable, of } from 'rxjs';
 import { map, shareReplay, delay, tap } from 'rxjs/operators';
+// ignore
 import {
   Vehicle,
   VehicleOption,
@@ -91,7 +79,15 @@ type LocationType = Vehicle['locationType'];
 /**
  * Người tạo: DungBT
  * Ngày tạo: 01/06/2026
- * Service singleton cung cấp dữ liệu Dashboard và quản lý trạng thái.
+ * Mô tả: Service quản lý dữ liệu Dashboard:
+ *        - Mock data phương tiện & điểm đến
+ *        - API tổng (getAllDashboardData) khi load trang lần đầu
+ *        - API riêng từng widget (getOverviewData, getBorderData, getRoadData, getFactoryData, getPortData)
+ *          được gọi khi ấn nút reload của từng widget
+ *        - Mỗi widget có BehaviorSubject trigger & loading state độc lập
+ *        - Auto-refresh mỗi 5 phút qua RxJS timer
+ *        - Lưu/đọc cấu hình layout widget theo userId từ localStorage
+ *        - BehaviorSubject quản lý bộ lọc xe đang chọn (theo Vehicle.id)
  */
 @Injectable({
   providedIn: 'root',
@@ -468,6 +464,8 @@ export class DashboardService {
     return updated;
   }
   /**
+   * Người tạo: DungBT
+   * Ngày tạo: 18/06/2026
    * Helper dùng chung cho các API widget (getBorderData, getRoadData…).
    * Tạo mock data mới ngẫu nhiên cho loại locationType tương ứng,
    * cập nhật subject và tắt loading.
@@ -494,7 +492,11 @@ export class DashboardService {
     );
   }
 
-  //Bật hoặc tắt loading cho tất cả widget cùng lúc.
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 18/06/2026
+   * Bật hoặc tắt loading cho tất cả widget cùng lúc.
+   */
   private setAllLoading(state: boolean): void {
     this.overviewLoadingSubject.next(state);
     this.borderLoadingSubject.next(state);
@@ -503,7 +505,11 @@ export class DashboardService {
     this.portLoadingSubject.next(state);
   }
 
-  //Áp dụng bộ lọc selectedIds lên danh sách xe.
+  /**
+   * Người tạo: DungBT
+   * Ngày tạo: 01/06/2026
+   * Áp dụng bộ lọc selectedIds lên danh sách xe.
+   */
   private applyFilter(vehicles: Vehicle[]): Vehicle[] {
     const ids = this.selectedIdsSubject.getValue();
     return ids.length === 0 ? vehicles : vehicles.filter((v) => ids.includes(v.id));

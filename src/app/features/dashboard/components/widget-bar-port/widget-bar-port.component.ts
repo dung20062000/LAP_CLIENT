@@ -1,10 +1,3 @@
-/**
- * Người tạo: DungBT
- * Ngày tạo: 01/06/2026
- * Mô tả: Widget Bar Chart – Phương tiện tại Cảng / Nhà máy.
- *        Trục X: tên bãi/cảng. Trục Y: số lượng xe.
- *        Có dataZoom slider ngang để cuộn khi nhiều cột vượt chiều rộng.
- */
 import { Component, Input, OnChanges, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
 
 import { NgxEchartsDirective } from 'ngx-echarts';
@@ -14,7 +7,9 @@ import { Vehicle } from '../../../../models';
 /**
  * Người tạo: DungBT
  * Ngày tạo: 01/06/2026
- * Widget Bar Chart phân bổ xe tại cảng và nhà máy.
+ * Mô tả: Widget Bar Chart – Phương tiện tại Cảng / Nhà máy.
+ *        Trục X: tên bãi/cảng. Trục Y: số lượng xe.
+ *        Có dataZoom slider ngang để cuộn khi nhiều cột vượt chiều rộng.
  */
 @Component({
   selector: 'app-widget-bar-port',

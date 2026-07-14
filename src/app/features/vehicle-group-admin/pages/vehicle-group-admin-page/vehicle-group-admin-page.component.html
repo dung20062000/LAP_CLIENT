@@ -1,0 +1,361 @@
+<!-- Trang Quản Trị Nhóm Phương Tiện -->
+<div class="vga-page">
+
+  <!-- HEADER -->
+  <div class="vga-header">
+    <h1 class="vga-title">QUẢN TRỊ NHÓM PHƯƠNG TIỆN</h1>
+  </div>
+
+  <!-- BODY -->
+  <div class="vga-body">
+
+    <!-- Danh Sách Người Dùng -->
+    <div class="vga-col vga-col-users">
+
+      <div class="vga-panel">
+        <div class="vga-panel-header">
+          <span class="vga-panel-title">
+            Danh sách người dùng
+            <!-- @if (!usersLoading) {
+              <span class="vga-badge">({{ allUsers.length }})</span>
+            } -->
+          </span>
+        </div>
+
+        <!-- Search box -->
+        <div class="vga-search-box">
+          <input
+            id="user-search-input"
+            type="text"
+            class="vga-search-input"
+            placeholder="Tìm người dùng..."
+            [(ngModel)]="userSearchQuery"
+            (input)="onUserSearch()"
+          />
+          @if (userSearchQuery.trim() === '') {
+            <i class="fas fa-search vga-search-icon"></i>
+          } @else {
+            <i class="fas fa-times vga-search-clear"
+              style="cursor: pointer;"
+              tabindex="0"
+              (click)="userSearchQuery=''; onUserSearch()"
+              (keydown.enter)="userSearchQuery=''; onUserSearch()"></i>
+          }
+        </div>
+
+        <!-- Danh sách user -->
+        <div class="vga-list-container">
+          @if (usersLoading) {
+            <div class="vga-center-state">
+              <i class="fas fa-spinner fa-spin text-primary"></i>
+              <span class="ms-2 text-muted">Đang tải...</span>
+            </div>
+          } @else if (filteredUsers.length === 0) {
+            <div class="vga-center-state text-muted">
+              <i class="fas fa-inbox"></i>
+              <span>Không có dữ liệu</span>
+            </div>
+          } @else {
+            <ul class="list-group list-group-flush vga-user-list">
+              @for (user of filteredUsers; track user.userId) {
+                <li
+                  class="list-group-item vga-user-item"
+                  role="button"
+                  tabindex="0"
+                  [class.active]="selectedUser?.userId === user.userId"
+                  (click)="onSelectUser(user)"
+                  (keydown.enter)="onSelectUser(user)"
+                >
+                  <span class="vga-user-name">{{ user.fullname }}</span>
+                  @if (user.username) {
+                    <small class="vga-user-sub">({{ user.username }})</small>
+                  }
+                </li>
+              }
+            </ul>
+          }
+        </div>
+      </div>
+
+    </div>
+    <!-- Nhóm Chưa Gán -->
+    <div class="vga-col vga-col-unassigned">
+
+      <div class="vga-panel">
+        <!-- Panel header -->
+        <div class="vga-panel-header">
+          <span class="vga-panel-title">
+            Chọn nhóm cho người dùng
+            @if (selectedUser && !unassignedLoading) {
+              <span class="vga-badge">({{ unassignedCount }})</span>
+            }
+          </span>
+        </div>
+
+        @if (!selectedUser) {
+          <div class="vga-center-state vga-center-state--full text-muted">
+            <i class="fas fa-arrow-left"></i>
+            <span>Chọn một người dùng để xem nhóm</span>
+          </div>
+        } @else {
+          <!-- Search cây -->
+          <div class="vga-search-box">
+            <input
+              id="unassigned-search-input"
+              type="text"
+              class="vga-search-input"
+              placeholder="Tìm nhóm phương tiện..."
+              [(ngModel)]="unassignedSearchQuery"
+              (input)="onUnassignedSearch()"
+            />
+            @if (unassignedSearchQuery.trim() === '') {
+              <i class="fas fa-search vga-search-icon"></i>
+            } @else {
+              <i class="fas fa-times vga-search-clear"
+                 style="cursor: pointer;"
+                 tabindex="0"
+                 (click)="unassignedSearchQuery=''; onUnassignedSearch()"
+                 (keydown.enter)="unassignedSearchQuery=''; onUnassignedSearch()"></i>
+            }
+          </div>
+
+          <!-- Checkbox Tất cả - cố định, không cuộn -->
+          @if (!unassignedLoading && unassignedNodes.length > 0) {
+            <div class="vga-select-all-bar">
+              <div class="vga-select-all-label"
+                tabindex="0"
+                role="button"
+                (click)="toggleSelectAllUnassigned()"
+                (keydown.enter)="toggleSelectAllUnassigned()">
+                <span class="vga-custom-checkbox"
+                  [class.checked]="isAllUnassignedSelected"
+                  [class.indeterminate]="isUnassignedIndeterminate">
+                  @if (isAllUnassignedSelected) {
+                    <span class="material-symbols-outlined vga-check-icon">
+                      check
+                    </span>
+                  } @else if (isUnassignedIndeterminate) {
+                    <span class="material-symbols-outlined vga-remove-icon">
+                      remove
+                    </span>
+                  }
+                </span>
+                <span class="vga-select-all-text">Tất cả</span>
+              </div>
+            </div>
+          }
+
+          <!-- Tree content -->
+          <div class="vga-tree-container">
+            @if (unassignedLoading) {
+              <div class="vga-center-state">
+                <i class="fas fa-spinner fa-spin text-primary"></i>
+                <span class="ms-2 text-muted">Đang tải...</span>
+              </div>
+            } @else if (unassignedNodes.length === 0) {
+              <div class="vga-center-state text-muted">
+                <i class="fas fa-inbox"></i>
+                <span>Không có dữ liệu</span>
+              </div>
+            } @else {
+              <p-tree
+                id="unassigned-tree"
+                selectionMode="checkbox"
+                styleClass="vga-tree"
+                [value]="unassignedNodes"
+                [propagateSelectionUp]="true"
+                [propagateSelectionDown]="true"
+                [(selection)]="selectedUnassigned"
+                (selectionChange)="onUnassignedSelectionChange()"
+              >
+                <ng-template let-expanded pTemplate="togglericon">
+                  @if (expanded) {
+                    <i class="fa-solid fa-caret-down vga-toggler-icon"></i>
+                  } @else {
+                    <i class="fa-solid fa-caret-right vga-toggler-icon"></i>
+                  }
+                </ng-template>
+
+                <ng-template let-node pTemplate="default">
+                  <span class="vga-node-content-wrapper">
+                    <!-- nếu không có node cha thì là thư mục -->
+                    @if (!node.parent) {
+                      <span class="material-symbols-outlined vga-folder-icon">folder</span>
+                    }
+                    <span class="vga-node-label">{{ node.label }}</span>
+                  </span>
+                </ng-template>
+              </p-tree>
+            }
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- NÚT ĐIỀU HƯỚNG -->
+    <div class="vga-nav-buttons">
+      <button
+        id="btn-move-to-assigned"
+        class="btn vga-nav-btn"
+        title="Chuyển sang đã gán"
+        [disabled]="!selectedUnassigned.length"
+        (click)="moveToAssigned()"
+      >
+        <i class="fas fa-chevron-right"></i>
+      </button>
+      <button
+        id="btn-move-to-unassigned"
+        class="btn vga-nav-btn"
+        title="Trả về chưa gán"
+        [disabled]="!selectedAssigned.length"
+        (click)="moveToUnassigned()"
+      >
+        <i class="fas fa-chevron-left"></i>
+      </button>
+    </div>
+
+    <!-- Nhóm Đã Gán -->
+    <div class="vga-col vga-col-assigned">
+
+      <div class="vga-panel">
+        <!-- Panel header -->
+        <div class="vga-panel-header">
+          <span class="vga-panel-title">
+            Nhóm đã gán cho người dùng
+            @if (selectedUser && !assignedLoading) {
+              <span class="vga-badge">({{ assignedCount }})</span>
+            }
+          </span>
+        </div>
+
+        @if (!selectedUser) {
+          <!-- Chưa chọn user -->
+          <div class="vga-center-state vga-center-state--full text-muted">
+            <i class="fas fa-user"></i>
+            <span>Chọn một người dùng để xem nhóm</span>
+          </div>
+        } @else {
+          <!-- Search cây -->
+          <div class="vga-search-box">
+            <input
+              id="assigned-search-input"
+              type="text"
+              class="vga-search-input"
+              placeholder="Tìm nhóm phương tiện..."
+              [(ngModel)]="assignedSearchQuery"
+              (input)="onAssignedSearch()"
+            />
+            @if (assignedSearchQuery.trim() === '') {
+              <i class="fas fa-search vga-search-icon"></i>
+            } @else {
+              <i class="fas fa-times vga-search-clear"
+                style="cursor: pointer;"
+                tabindex="0"
+                (click)="assignedSearchQuery=''; onAssignedSearch()"
+                (keydown.enter)="assignedSearchQuery=''; onAssignedSearch()"></i>
+            }
+          </div>
+
+          <!-- Checkbox Tất cả - cố định, không cuộn -->
+          @if (!assignedLoading && assignedNodes.length > 0) {
+            <div class="vga-select-all-bar">
+              <div class="vga-select-all-label"
+                tabindex="0"
+                role="button"
+                (click)="toggleSelectAllAssigned()"
+                (keydown.enter)="toggleSelectAllAssigned()">
+                <span class="vga-custom-checkbox"
+                  [class.checked]="isAllAssignedSelected"
+                  [class.indeterminate]="isAssignedIndeterminate">
+                  @if (isAllAssignedSelected) {
+                    <span class="material-symbols-outlined vga-check-icon">
+                      check
+                    </span>
+                  } @else if (isAssignedIndeterminate) {
+                    <span class="material-symbols-outlined vga-remove-icon">
+                      remove
+                    </span>
+                  }
+                </span>
+                <span class="vga-select-all-text">Tất cả</span>
+              </div>
+            </div>
+          }
+
+          <!-- Tree content -->
+          <div class="vga-tree-container">
+            @if (assignedLoading) {
+              <div class="vga-center-state">
+                <i class="fas fa-spinner fa-spin text-primary"></i>
+                <span class="ms-2 text-muted">Đang tải...</span>
+              </div>
+            } @else if (assignedNodes.length === 0) {
+              <div class="vga-center-state text-muted">
+                <i class="fas fa-inbox"></i>
+                <span>Không có dữ liệu</span>
+              </div>
+            } @else {
+              <p-tree
+                id="assigned-tree"
+                selectionMode="checkbox"
+                styleClass="vga-tree"
+                [value]="assignedNodes"
+                [propagateSelectionUp]="true"
+                [propagateSelectionDown]="true"
+                [(selection)]="selectedAssigned"
+                (selectionChange)="onAssignedSelectionChange()"
+              >
+                <ng-template let-expanded pTemplate="togglericon">
+                  @if (expanded) {
+                    <i class="fa-solid fa-caret-down vga-toggler-icon"></i>
+                  } @else {
+                    <i class="fa-solid fa-caret-right vga-toggler-icon"></i>
+                  }
+                </ng-template>
+
+                <ng-template let-node pTemplate="default">
+                  <span class="vga-node-content-wrapper">
+                    <!-- nếu không có node cha thì là thư mục -->
+                    @if (!node.parent) {
+                      <span class="material-symbols-outlined vga-folder-icon">folder</span>
+                    }
+                    <span class="vga-node-label">{{ node.label }}</span>
+                  </span>
+                </ng-template>
+              </p-tree>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- (Lưu / Hủy) -->
+  <div class="vga-action-bar">
+    <button
+      id="btn-save-groups"
+      class="btn vga-action-btn"
+      [disabled]="!isDirty || isSaving"
+      (click)="onSave()"
+    >
+      @if (isSaving) {
+        <i class="fas fa-spinner fa-spin me-1"></i>
+      } @else {
+        <i class="fas fa-save me-1"></i>
+      }
+      Lưu
+    </button>
+
+    <button
+      id="btn-cancel-groups"
+      class="btn vga-action-btn"
+      [disabled]="!isDirty || isSaving"
+      (click)="onCancel()"
+    >
+      <i class="fas fa-times me-1"></i>
+      Hủy
+    </button>
+  </div>
+</div>
+
+<p-confirmDialog class="confirm-dialog-custome"/>

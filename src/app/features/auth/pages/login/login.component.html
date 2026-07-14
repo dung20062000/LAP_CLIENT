@@ -3,114 +3,170 @@
   <app-header class="login-header" />
 
   <!-- Nội dung chính: Slide Banner làm nền + Form đăng nhập -->
-  <main class="login-layout">
-  <!-- Banner làm background -->
-  <div class="banner-background">
-    <app-slide-banner />
-  </div>
+  <main class="login-layout" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
 
-  <div class="container-fluid h-100 p-0 form-overlay">
-    <div class="row h-100 no-gutters justify-content-end align-items-center pr-lg-5">
-
-      <!-- form -->
-      <div class="col-12 col-sm-10 col-md-8 col-lg-4 form-section">
-        <div class="login-card-wrapper mx-auto">
-          <div class="login-card">
-            <div class="login-logo text-center">
-              <img
-                class="img-fluid logo-img"
-                alt="BA GPS"
-                src="/images/logos/logo.svg"
-               >
-            </div>
-
-            @if (errorMessage()) {
-            <div class="alert alert-danger" role="alert">
-              <i class="fas fa-exclamation-circle mr-2"></i>
-              {{ errorMessage() }}
-              <button type="button" class="close-btn" aria-label="Đóng" (click)="errorMessage.set('')">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
+    <!-- Background Layer (Absolute) -->
+    @if (hasSlides() && currentSlide(); as slide) {
+      <div class="banner-slides-container">
+        @for (item of resolvedSlides(); track item.id; let i = $index) {
+          <div class="banner-slide" [class.active]="i === currentIndex()">
+            @if (item.link) {
+              <a target="_blank" rel="noopener noreferrer" class="banner-link-wrapper" [attr.aria-label]="item.title" [href]="item.link">
+                <div class="banner-bg" [style.backgroundImage]="'url(' + item.imageUrl + ')'"></div>
+              </a>
+            } @else {
+              <div class="banner-bg" [style.backgroundImage]="'url(' + item.imageUrl + ')'"></div>
             }
-
-            <form novalidate [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-
-              <!-- username -->
-              <div class="form-group">
-                <div class="input-icon-wrapper" [class.input-error]="isFieldInvalid('username')"
-                  [class.input-success]="loginForm.get('username')?.valid && loginForm.get('username')?.value">
-                  <span class="input-icon-left">
-                    <i class="fas fa-user text-muted"></i>
-                  </span>
-                  <input placeholder="{{ 'login.username_placeholder' | translate }}" type="text" id="username" maxlength="50" class="form-input-pill"
-                    formControlName="username" autocomplete="username">
-                </div>
-                @if (isFieldInvalid('username')) {
-                <div class="error-text">
-                  {{ getFieldError('username') }}
-                </div>
-                }
-              </div>
-
-              <!-- Password -->
-              <div class="form-group">
-                <div class="input-icon-wrapper" [class.input-error]="isFieldInvalid('password')"
-                  [class.input-success]="loginForm.get('password')?.valid && loginForm.get('password')?.value">
-                  <span class="input-icon-left">
-                    <i class="fas fa-lock text-muted"></i>
-                  </span>
-                  <input placeholder="{{ 'login.password_placeholder' | translate }}" id="password" maxlength="200"
-                    class="form-input-pill" formControlName="password"
-                    autocomplete="current-password" [type]="showPassword() ? 'text' : 'password'">
-                  <button type="button" class="input-icon-right-btn" [attr.aria-label]="(showPassword() ? 'login.password_hide' : 'login.password_show') | translate"
-                    (click)="showPassword.set(!showPassword())">
-                    <i class="fas" [class.fa-eye]="!showPassword()" [class.fa-eye-slash]="showPassword()"></i>
-                  </button>
-                </div>
-                @if (isFieldInvalid('password')) {
-                <div class="error-text">
-                  {{ getFieldError('password') }}
-                </div>
-                }
-              </div>
-
-              <div class="form-options d-flex justify-content-between align-items-center">
-                <div class="custom-control custom-checkbox">
-                  <input type="checkbox" class="custom-control-input" id="rememberMe" formControlName="rememberMe">
-                  <label class="custom-control-label" for="rememberMe">{{ 'login.remember_me' | translate }}</label>
-                </div>
-                <a href="#" class="forgot-password-link">{{ 'login.forgot_password' | translate }}</a>
-              </div>
-
-              <div class="submit-section">
-                <button type="submit" class="btn btn-login-pill btn-block" [disabled]="isLoading()">
-                  @if (isLoading()) {
-                  <span class="spinner-border spinner-border-sm mr-2"></span>
-                  {{ 'login.btn_loading' | translate }}
-                  } @else {
-                  {{ 'login.btn_login' | translate }}
-                  }
-                </button>
-              </div>
-
-            </form>
-
-            <div class="qr-code-section text-center">
-              <div class="qr-container">
-                <img src="/images/qr/qr-code.svg" alt="Mã QR" class="qr-image">
-              </div>
-              <p class="qr-text">{{ 'login.qr_text' | translate }}</p>
-            </div>
-
           </div>
-
-        </div>
+        }
       </div>
 
+      <!-- Arrows & Dots -->
+      <button class="banner-arrow arrow-prev" [class.visible]="isHovered()" [attr.aria-label]="TranslationKey.BannerAriaPrev | translate" (click)="prevSlide()">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <button class="banner-arrow arrow-next" [class.visible]="isHovered()" [attr.aria-label]="TranslationKey.BannerAriaNext | translate" (click)="nextSlide()">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+      <div class="banner-dots">
+        @for (idx of dotIndices(); track idx) {
+          <button class="dot" [class.active]="idx === currentIndex()" [attr.aria-label]="(TranslationKey.BannerAriaSlide | translate) + ' ' + (idx + 1)" (click)="goToSlideByIndex(idx)"></button>
+        }
+      </div>
+    } @else {
+      <!-- Fallback bg -->
+      <div class="banner-slides-container">
+        <div class="banner-slide active">
+          <div class="banner-bg" style="background-image: url('/images/banners/BANNER_1.jpg')"></div>
+          <div class="banner-overlay"></div>
+        </div>
+      </div>
+    }
+
+    <!-- Foreground Layer (Flex/Grid) -->
+    <div class="container-fluid h-100 p-0 form-overlay">
+      <div class="row h-100 no-gutters align-items-center pr-lg-5 login-foreground-row">
+
+        <!-- Text Banner (Chỉ hiện nếu có slide) -->
+        <div class="col-12 col-lg-6 align-self-lg-end d-flex justify-content-center justify-content-lg-start banner-text-section order-2 order-lg-1">
+          @if (hasSlides()) {
+          <div class="banner-text-wrapper position-relative">
+            @for (item of resolvedSlides(); track item.id; let i = $index) {
+              <div class="banner-text" [class.active]="i === currentIndex()">
+                <h2 class="banner-title">{{ item.title }}</h2>
+                <p class="banner-summary">{{ item.shortContents }}</p>
+                @if (item.link) {
+                  <a target="_blank" rel="noopener noreferrer" class="btn btn-light banner-btn mt-1" [href]="item.link">
+                    {{ TranslationKey.BannerBtnDetail | translate }} <i class="fas fa-arrow-right ml-2"></i>
+                  </a>
+                }
+              </div>
+            }
+          </div>
+          }
+        </div>
+
+        <!-- Form Đăng Nhập -->
+        <div class="col-12 col-sm-10 col-md-8 col-lg-6 form-section order-1 order-lg-2">
+          <div class="login-card-wrapper mx-auto">
+            <div class="login-card">
+              <div class="login-logo text-center">
+                <img class="img-fluid logo-img" alt="BA GPS" src="/images/logos/logo.svg">
+              </div>
+
+              @if (errorMessage()) {
+              <div class="alert alert-danger" role="alert">
+                <i class="fas fa-exclamation-circle mr-2"></i>
+                {{ errorMessage() }}
+                <button type="button" class="close-btn" aria-label="Đóng" (click)="errorMessage.set('')">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              }
+
+              <form novalidate [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+                <!-- username -->
+                <div class="form-group">
+                  <div class="input-icon-wrapper" [class.input-error]="usernameControl?.invalid && (usernameControl?.touched || usernameControl?.dirty)"
+                    [class.input-success]="usernameControl?.valid && usernameControl?.value">
+                    <span class="input-icon-left">
+                      <i class="fas fa-user text-muted"></i>
+                    </span>
+                    <input placeholder="{{ TranslationKey.LoginUsernamePlaceholder | translate }}" type="text" id="username" maxlength="50" class="form-input-pill"
+                      formControlName="username" autocomplete="username">
+                  </div>
+                  @if (usernameControl?.invalid && (usernameControl?.touched || usernameControl?.dirty)) {
+                  <div class="error-text">
+                    @if (usernameControl?.errors?.['required']) {
+                      {{ TranslationKey.LoginErrUsernameRequired | translate }}
+                    } @else if (usernameControl?.errors?.['pattern']) {
+                      {{ TranslationKey.LoginErrUsernamePattern | translate }}
+                    } @else if (usernameControl?.errors?.['maxlength']) {
+                      {{ TranslationKey.LoginErrUsernameMaxlength | translate }}
+                    }
+                  </div>
+                  }
+                </div>
+
+                <!-- Password -->
+                <div class="form-group">
+                  <div class="input-icon-wrapper" [class.input-error]="passwordControl?.invalid && (passwordControl?.touched || passwordControl?.dirty)"
+                    [class.input-success]="passwordControl?.valid && passwordControl?.value">
+                    <span class="input-icon-left">
+                      <i class="fas fa-lock text-muted"></i>
+                    </span>
+                    <input placeholder="{{ TranslationKey.LoginPasswordPlaceholder | translate }}" id="password" maxlength="200"
+                      class="form-input-pill" formControlName="password"
+                      autocomplete="current-password" [type]="showPassword() ? 'text' : 'password'">
+                    <button type="button" class="input-icon-right-btn" [attr.aria-label]="(showPassword() ? TranslationKey.LoginPasswordHide : TranslationKey.LoginPasswordShow) | translate"
+                      (click)="showPassword.set(!showPassword())">
+                      <i class="fas" [class.fa-eye]="!showPassword()" [class.fa-eye-slash]="showPassword()"></i>
+                    </button>
+                  </div>
+                  @if (passwordControl?.invalid && (passwordControl?.touched || passwordControl?.dirty)) {
+                  <div class="error-text">
+                    @if (passwordControl?.errors?.['required']) {
+                      {{ TranslationKey.LoginErrPasswordRequired | translate }}
+                    } @else if (passwordControl?.errors?.['maxlength']) {
+                      {{ TranslationKey.LoginErrPasswordMaxlength | translate }}
+                    }
+                  </div>
+                  }
+                </div>
+
+                <div class="form-options d-flex justify-content-between align-items-center">
+                  <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="rememberMe" formControlName="rememberMe">
+                    <label class="custom-control-label" for="rememberMe">{{ TranslationKey.LoginRememberMe | translate }}</label>
+                  </div>
+                  <a href="#" class="forgot-password-link">{{ TranslationKey.LoginForgotPassword | translate }}</a>
+                </div>
+
+                <div class="submit-section">
+                  <button type="submit" class="btn btn-login-pill btn-block" [disabled]="isLoading()">
+                    @if (isLoading()) {
+                    <span class="spinner-border spinner-border-sm mr-2"></span>
+                    {{ TranslationKey.LoginBtnLoading | translate }}
+                    } @else {
+                    {{ TranslationKey.LoginBtnLogin | translate }}
+                    }
+                  </button>
+                </div>
+              </form>
+
+              <div class="qr-code-section text-center">
+                <div class="qr-container">
+                  <img src="/images/qr/qr-code.svg" alt="Mã QR" class="qr-image">
+                </div>
+                <p class="qr-text">{{ TranslationKey.LoginQrText | translate }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
     </div>
-  </div>
-</main>
+  </main>
 
   <!-- Footer -->
   <app-footer class="login-footer" />

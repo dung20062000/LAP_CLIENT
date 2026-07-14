@@ -1,17 +1,13 @@
+import { Injectable, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { catchError, of } from 'rxjs';
+import { TranslationKey } from '../enums/translation-key.enum';
+
 /**
  * Người tạo: DungBT
  * Ngày tạo: 28/05/2026
  * Mô tả: Service quản lý đa ngôn ngữ — load file JSON theo ngôn ngữ,
  *         lưu trữ lang hiện tại vào localStorage, hỗ trợ VI và EN.
- */
-import { Injectable, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { catchError, of } from 'rxjs';
-
-/**
- * Người tạo: DungBT
- * Ngày tạo: 28/05/2026
- * Service singleton quản lý i18n cho toàn ứng dụng.
  */
 @Injectable({ providedIn: 'root' })
 export class TranslationService {
@@ -83,7 +79,7 @@ export class TranslationService {
    * Ví dụ: 'nav.home' -> đọc translations()['nav']['home'].
    * Trả về key gốc nếu không tìm thấy (fallback).
    */
-  translate(key: string): string {
+  translate(key: string | TranslationKey): string {
     const keys = key.split('.');
     let value: any = this.translations();
     for (const k of keys) {

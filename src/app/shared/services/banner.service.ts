@@ -1,12 +1,7 @@
-/**
- * Người tạo: DungBT
- * Ngày tạo: 28/05/2026
- * Mô tả: Service lấy danh sách banner từ CMS API (hiện dùng mock data tạm thời).
- */
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { BannerSlide } from '../components/slide-banner/slide-banner.component';
+import { BannerSlide } from '../../features/auth/pages/login';
 
 /**
  * Người tạo: DungBT
@@ -89,7 +84,7 @@ const MOCK_BANNERS: BannerSlide[] = [
 /**
  * Người tạo: DungBT
  * Ngày tạo: 28/05/2026
- * Service singleton cung cấp danh sách banner cho SlideBannerComponent.
+ * Mô tả: Service lấy danh sách banner từ CMS API (hiện dùng mock data tạm thời).
  */
 @Injectable({
   providedIn: 'root',

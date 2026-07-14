@@ -1,13 +1,22 @@
+/* Google Material Symbols */
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
+
 /* BA GPS Color Variables */
 :root {
   --bagps-primary: #0066ff;
   --bagps-secondary: #00d2ff;
+  --bagps-secondary-1: #CAEFFB;
   --bagps-dark: #1a1a2e;
   --bagps-darker: #0d0d1a;
   --bagps-accent: #ffd700;
   --bagps-success: #28a745;
   --bagps-danger: #dc3545;
   --bagps-warning: #ffc107;
+  --bagps-disabled: #6c757d;
+
+  --border-color:  #dee2e6;
+  --border-primary: #007bff;
+  --border-dirty:  #f9a825;
 
   /* Header primary color */
   --primary-color: #0394d6;
@@ -25,20 +34,30 @@
   /* Text color */
   --text-primary: #000000;
   --text-secondary: #383838;
+  --text-gray: #6c757d;
+  --text-muted: #6c757d;
   --text-blue: #0066cc;
+  --text-blue-dark: #004A96;
   --text-white: #ffffff;
   --text-grey-light: #e2e2e2;
   --text-error: #dc3545;
   --text-danger: #dc3545;
+  --text-yellow-dark: #7a5c00;
+  --text-placeholder: #adb5bd;
 
   /* Background color */
   --bg-white: #ffffff;
+  --bg-grey: #f8f9fa;
+  --bg-gray-1: #999999;
   --bg-blue: #0066cc;
+  --bg-blue-1: #0066ff;
   --bg-green: #4db848;
   --bg-orange: #e67e22;
+  --bg-yellow: #fff9c4;
 
   --bg-banner-overlay: rgba(0, 20, 60, 0.65);
   --bg-gray-light-2: #b9b9b9;
+  --bg-gray-light-3: #e9f0fb;
 
   /* Color gradient */
   --gradient-cyan-primary: linear-gradient(to right, #2d9aff, #0bd3ff);
@@ -125,7 +144,7 @@ a {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #adb5bd;
+  background: var(--text-placeholder);
   border-radius: 4px;
 }
 
@@ -150,12 +169,12 @@ a {
   color: #0066ff !important;
 }
 
-/* BA GPS Header Navbar Theme */
+/* Theme màu sắc navbar chính */
 .bg-primary {
   background: linear-gradient(135deg, #0052cc, #003399) !important;
 }
 
-/* BA GPS Navbar Text */
+/* màu sắc chữ navbar */
 .navbar-dark .navbar-nav .nav-link {
   color: rgba(255, 255, 255, 0.85) !important;
 }
@@ -165,7 +184,7 @@ a {
   color: #fff !important;
 }
 
-/* BA GPS Dropdowns */
+/* Dropdown BA GPS */
 .bg-primary .dropdown-menu {
   border-radius: 8px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
@@ -182,7 +201,7 @@ a {
     transform 0.3s ease;
 }
 
-/* BA GPS Form Controls */
+/* Form BA GPS */
 .form-control:focus {
   border-color: #0066ff;
   box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.12);
@@ -194,7 +213,7 @@ a {
   border: none !important;
 }
 
-/* Utilities */
+/* Tiện ích */
 .font-weight-semibold {
   font-weight: 600;
 }
@@ -225,7 +244,7 @@ a {
   animation: fadeInUp 0.6s ease-out forwards;
 }
 
-/* Responsive Helpers */
+/* Responsive */
 @media (max-width: 768px) {
   body {
     font-size: 15px;
@@ -241,7 +260,7 @@ a {
   font-weight: 700;
 }
 
-/* Prevent horizontal scroll on mobile */
+/* ẩn thanh cuộn ngang */
 html,
 body {
   overflow-x: hidden;
@@ -251,3 +270,106 @@ body {
 .footer .text-muted {
   color: #6c757d !important;
 }
+
+/* bố cục phù hợp với màn hình và chỉ cuộn trong phạm vi nội dung body */
+body:has(app-media-gallery-page) {
+  height: 100vh;
+  overflow: hidden;
+}
+
+body:has(app-media-gallery-page) app-main-layout {
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+body:has(app-media-gallery-page) .main-content {
+  height: calc(100vh - 64px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+body:has(app-media-gallery-page) app-media-gallery-page {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+body:has(app-media-gallery-page) app-footer {
+  display: none !important;
+  flex-shrink: 0;
+}
+
+/* Custom smaller styles for PrimeNG Toast */
+.p-toast {
+  width: 280px !important;
+}
+.p-toast .p-toast-message .p-toast-summary {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+}
+.p-toast .p-toast-message .p-toast-detail {
+  font-size: 12px !important;
+  font-weight: 400 !important;
+}
+.p-toast .p-toast-message .p-toast-message-text {
+  gap: 0 !important;
+}
+.p-toast .p-toast-close-button{
+  width: 14px !important;
+  height: 14px !important;
+}
+
+/* PrimeNG Checkbox Global Custom Styles */
+.p-checkbox-checked .p-checkbox-box,
+.p-checkbox-indeterminate .p-checkbox-box,
+.p-checkbox .p-checkbox-box.p-highlight {
+  background-color: var(--bg-blue-1) !important;
+  border-color: var(--bg-blue-1) !important;
+}
+.p-checkbox-checked .p-checkbox-icon,
+.p-checkbox-indeterminate .p-checkbox-icon {
+  font-weight: 500 !important;
+}
+/* confirmDialog custom */
+.p-confirmdialog .p-dialog-header{
+  font-size: 13px !important;
+  padding-top: 14px !important;
+  padding-bottom: 14px !important;
+}
+.p-confirmdialog .p-dialog-header .p-dialog-header-actions .p-button-icon-only.p-button-rounded{
+  height: 24px !important;
+  width: 24px !important;
+}
+.p-confirmdialog .p-dialog-content .p-confirmdialog-message{
+  font-size: 13px !important;
+}
+.p-confirmdialog .p-dialog-footer .p-button{
+  font-size: 13px !important;
+  color: var(--text-white);
+  background: var(--bg-blue);
+  border: none;
+}
+.p-confirmdialog .p-dialog-footer .p-button i{
+  font-size: 13px !important;
+}
+.p-confirmdialog .p-dialog-footer .p-button:not(:disabled):hover{
+  color: var(--text-white) !important;
+  background: var(--bg-blue) !important;
+  border: none !important;
+  opacity: 0.8;
+}
+.p-confirmdialog .p-dialog-footer .p-confirmdialog-reject-button{
+  /* background-color: var(--bg-gray-light-2) !important; */
+  background-color: var(--bg-gray-1) !important;
+  color: var(--text-white);
+}
+.p-confirmdialog .p-dialog-footer .p-button:not(:disabled):hover.p-confirmdialog-reject-button{
+  background-color: var(--bg-gray-1) !important;
+  color: var(--text-white);
+  opacity: 0.8;
+}
+

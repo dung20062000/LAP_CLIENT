@@ -1,0 +1,204 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+// Container chính fit 1 màn hình
+.media-gallery-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  // background: #f8f9fa;
+}
+
+// ─── HEADER ─────────────────────────────────────────────────────────────────
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.8rem 16px 0.2rem;
+  background: #fff;
+  flex-shrink: 0;
+}
+
+.page-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #007bff;
+  margin: 0;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  i {
+    font-size: 14px;
+  }
+}
+
+// ─── CONTENT (SCROLLABLE) ──────────────────────────────────────────────────
+
+.media-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 16px;
+  position: relative;
+
+  // Scrollbar mỏng
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #ced4da;
+    border-radius: 3px;
+  }
+}
+
+// Loading
+.loading-overlay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+  color: #6c757d;
+}
+
+// Empty state
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+  color: #6c757d;
+
+  i {
+    opacity: 0.4;
+  }
+
+  p {
+    font-size: 14px;
+    margin-top: 12px;
+  }
+}
+
+// Grid ảnh
+.image-grid {
+  margin: 0 -4px;
+}
+
+.image-grid-item {
+  padding: 4px;
+
+  // Custom 5 cột (20%)
+  &.col-20 {
+    flex: 0 0 20%;
+    max-width: 20%;
+  }
+}
+
+// ─── PAGINATOR (STICKY BOTTOM) ───────────────────────────────────────────────
+
+.paginator-wrapper {
+  flex-shrink: 0;
+  background: #fff;
+  border-top: 1px solid #dee2e6;
+
+  ::ng-deep {
+    .p-paginator {
+      padding: 4px 8px;
+      justify-content: flex-start;
+      background: transparent;
+      border: none;
+      font-size: 13px;
+
+      .p-paginator-first { order: 1; }
+      .p-paginator-prev { order: 2; }
+      .p-paginator-pages { order: 3; }
+      .p-paginator-next { order: 4; }
+      .p-paginator-last { order: 5; }
+
+      p-select, .p-paginator-rpp-dropdown, .p-paginator-rpp-options {
+        order: 6;
+        height: 30px;
+        font-size: 12px;
+
+        ::ng-deep .p-select-label {
+          padding: 4px 8px;
+          font-size: 12px;
+        }
+      }
+      &::after {
+        content: 'ảnh mỗi trang';
+        order: 7;
+        margin-left: 8px;
+        color: #6c757d;
+        font-size: 13px;
+        display: flex;
+        align-items: center;
+      }
+
+      .p-paginator-current {
+        order: 8;
+        margin-left: auto;
+        color: #6c757d;
+        font-size: 12px;
+      }
+
+      .p-paginator-pages {
+        .p-paginator-page {
+          width: 30px;
+          height: 30px;
+          min-width: 30px;
+          font-size: 12px;
+          border-radius: 4px;
+          color: var(--primary-color-darker);
+
+          &.p-paginator-page-selected{
+            background: var(--primary-color);
+            color: var(--text-white);
+            border-color: var(--primary-color);
+          }
+        }
+      }
+
+      .p-paginator-first,
+      .p-paginator-prev,
+      .p-paginator-next,
+      .p-paginator-last {
+        width: 30px;
+        height: 30px;
+        min-width: 30px;
+      }
+    }
+  }
+}
+
+::ng-deep .p-select-list {
+  font-size: 13px;
+
+  .p-select-option{
+    padding: 4px 8px;
+
+    &.p-select-option-selected{
+      background: var(--primary-color);
+      color: var(--text-white);
+    }
+    &.p-focus{
+      background: var(--primary-color);
+      color: var(--text-white);
+      opacity: 0.8;
+    }
+  }
+
+}

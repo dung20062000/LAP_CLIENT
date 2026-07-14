@@ -171,14 +171,26 @@ export class WidgetDonutRoadComponent implements OnChanges, OnDestroy {
           },
           labelLayout: (params: any) => {
             const is100Percent = loadedCount === 0 || emptyCount === 0;
+
             if (is100Percent) {
-              return { y: '82%' };
+              const pieCenterX = params.rect.x + params.rect.width / 2;
+              return { y: '82%', x: pieCenterX, align: 'center' };
             }
-            const isLeft = params.labelRect.x < params.rect.x;
-            return {
-              y: '82%',
-              dx: isLeft ? 40 : -40, // Đẩy nhãn bên trái sang phải 40px, nhãn bên phải sang trái 40px
-            };
+
+            // Dùng dataIndex để loại bỏ lỗi lật vị trí khi reload
+            if (params.dataIndex === 1) {
+              // "Không hàng" -> Cố định bên trái
+              return {
+                y: '82%',
+                dx: 80, // Đẩy nhãn bên trái vào trong (sang phải)
+              };
+            } else {
+              // "Có hàng" -> Cố định bên phải
+              return {
+                y: '82%',
+                dx: -80, // Đẩy nhãn bên phải vào trong (sang trái)
+              };
+            }
           },
           data: data,
         },

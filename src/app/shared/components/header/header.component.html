@@ -120,14 +120,14 @@
             (keydown.enter)="userMenuOpen = !userMenuOpen"
           >
             {{ TranslationKey.HeaderGreeting | translate }} <strong>{{ currentUser()!.fullName || currentUser()!.username }}</strong>
-            <span class="user-arrow">
+            <!-- <span class="user-arrow">
               <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
                 <path d="M7 10l5 5 5-5z"/>
               </svg>
-            </span>
+            </span> -->
           </div>
 
-          @if (userMenuOpen) {
+          <!-- @if (userMenuOpen) {
             <ul class="user-dropdown">
               <li>
                 <a
@@ -152,7 +152,7 @@
                 </a>
               </li>
             </ul>
-          }
+          } -->
         </div>
       }
 

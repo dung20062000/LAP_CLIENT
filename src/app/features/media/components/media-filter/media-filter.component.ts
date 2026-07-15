@@ -37,7 +37,7 @@ export class MediaFilterComponent implements OnInit {
   private messageService = inject(MessageService);
 
   // Quản lý số cột của layout từ component cha
-  @Input() activeLayout: GalleryLayoutCols = 6;
+  @Input() activeLayout: GalleryLayoutCols = GalleryLayoutCols.Col6;
   @Output() layoutChange = new EventEmitter<GalleryLayoutCols>();
 
   // Các tùy chọn layout được hỗ trợ

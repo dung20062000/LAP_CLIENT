@@ -52,9 +52,9 @@ export class MediaGalleryPageComponent {
   currentParams: MediaSearchParams | null = null;
 
   // Layout class: 4→col-md-3, 5→col-20, 6→col-md-2
-  layoutClass = LAYOUT_CLASS_MAP[6];
+  layoutClass = LAYOUT_CLASS_MAP[GalleryLayoutCols.Col6];
   // Số cột đang chọn
-  activeLayout: GalleryLayoutCols = 6;
+  activeLayout: GalleryLayoutCols = GalleryLayoutCols.Col6;
 
   // Paginator state
   currentPage = 0; // p-paginator dùng 0-based

@@ -219,6 +219,7 @@ export class DriversAdminPageComponent implements OnInit {
    */
   private rebuildFormArray(items: DriverDto[]): void {
     const arr = this.fb.array(items.map((d) => this.createDriverRow(d)));
+    arr.markAllAsTouched();
     this.form.setControl('drivers', arr);
   }
 

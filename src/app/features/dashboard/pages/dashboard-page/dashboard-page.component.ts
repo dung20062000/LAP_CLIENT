@@ -188,17 +188,29 @@ export class DashboardPageComponent implements OnInit {
     const config = this.getWidgetConfig(widgetId);
     const size = config.size || WidgetSize.Auto;
 
+    let baseClass = '';
     // overview và bar-port mặc định là full-width col-12
     if (widgetId === 'overview' || widgetId === 'bar-port') {
-      if (size === WidgetSize.Small) return 'col-12 col-md-4';
-      if (size === WidgetSize.Medium) return 'col-12 col-md-8';
-      if (size === WidgetSize.Large) return 'col-12';
-      return 'col-12'; // auto
+      if (size === WidgetSize.Small) {
+        baseClass = 'col-12 col-md-4';
+      } else if (size === WidgetSize.Medium) {
+        baseClass = 'col-12 col-md-8';
+      } else if (size === WidgetSize.Large) {
+        baseClass = 'col-12';
+      } else {
+        return 'col-12';
+      }
+    } else {
+      // Tính toán động cho dòng giữa (donut-border, donut-road, bar-factory)
+      const middleClasses = this.getMiddleWidgetColClasses();
+      baseClass = middleClasses[widgetId] || 'col-12';
     }
 
-    // Tính toán động cho dòng giữa (donut-border, donut-road, bar-factory)
-    const middleClasses = this.getMiddleWidgetColClasses();
-    return middleClasses[widgetId] || 'col-12';
+    if (size === WidgetSize.Auto) {
+      baseClass += ' widget-auto-fill';
+    }
+
+    return baseClass;
   }
 
   /**
@@ -208,9 +220,18 @@ export class DashboardPageComponent implements OnInit {
    */
   private getMiddleWidgetColClasses(): Record<string, string> {
     const configs = {
-      'donut-border': { default: 3, size: this.getWidgetConfig('donut-border').size || WidgetSize.Auto },
-      'donut-road': { default: 3, size: this.getWidgetConfig('donut-road').size || WidgetSize.Auto },
-      'bar-factory': { default: 6, size: this.getWidgetConfig('bar-factory').size || WidgetSize.Auto },
+      'donut-border': {
+        default: 3,
+        size: this.getWidgetConfig('donut-border').size || WidgetSize.Auto,
+      },
+      'donut-road': {
+        default: 3,
+        size: this.getWidgetConfig('donut-road').size || WidgetSize.Auto,
+      },
+      'bar-factory': {
+        default: 6,
+        size: this.getWidgetConfig('bar-factory').size || WidgetSize.Auto,
+      },
     };
 
     const fixedWidths: Record<string, number> = {};

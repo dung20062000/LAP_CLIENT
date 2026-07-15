@@ -81,9 +81,21 @@
     padding-left: 7px;
     padding-right: 7px;
   }
+
+  ::ng-deep .widget-auto-fill {
+    flex-grow: 1 !important;
+    max-width: 100% !important;
+  }
 }
 
 // ─── Responsive ───────────────────────────────────────────────────────────────
+@media screen and (max-width: 992px) {
+  .dashboard-page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}
 @media (max-width: 768px) {
   .dashboard-page-header {
     flex-direction: column;

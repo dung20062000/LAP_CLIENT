@@ -89,7 +89,6 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  width: 100%;
 
   a {
     display: flex;
@@ -142,9 +141,8 @@
   }
 
   .footer-app-links-container {
-    flex-direction: row;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center;
     padding-left: 0;
     gap: 20px;
   }

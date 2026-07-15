@@ -351,7 +351,7 @@
                     }
 
                     &:focus-within {
-                      border-color: var(--form-input-border-color-focus);
+                      // border-color: var(--form-input-border-color-focus);
                       box-shadow: 0 0 0 3px rgba(0, 162, 232, 0.15);
                     }
 

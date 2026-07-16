@@ -1,6 +1,6 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideEchartsCore } from 'ngx-echarts';
 import * as echarts from 'echarts';
@@ -9,13 +9,14 @@ import Aura from '@primeuix/themes/aura';
 
 import { MessageService } from 'primeng/api';
 import { routes } from './app.routes';
+import { cleanParamsInterceptor } from './shared/interceptors/clean-params.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     MessageService,
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
-    provideHttpClient(),
+    provideHttpClient(withInterceptors([cleanParamsInterceptor])),
     provideAnimationsAsync(),
     provideEchartsCore({ echarts }),
     providePrimeNG({

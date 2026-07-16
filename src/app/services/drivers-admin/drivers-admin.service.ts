@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
@@ -55,22 +55,8 @@ export class DriversAdminService {
    * Ngày tạo: 25/06/2026
    */
   getDriverList(request: DriverListRequest): Observable<DriverListResponse> {
-    let params = new HttpParams();
-    if (request.Keyword) params = params.set('Keyword', request.Keyword);
-    if (request.Type) params = params.set('Type', request.Type);
-    if (request.Page) params = params.set('Page', request.Page.toString());
-    if (request.PageSize) params = params.set('PageSize', request.PageSize.toString());
-
-    // Array params: DriverIds[], LicenseTypeIds[]
-    (request.DriverIds ?? []).forEach((id) => {
-      params = params.append('DriverIds', id.toString());
-    });
-    (request.LicenseTypeIds ?? []).forEach((id) => {
-      params = params.append('LicenseTypeIds', id.toString());
-    });
-
     return this.http
-      .get<ApiResponse<DriverListResponse>>(`${this.apiUrl}/drivers`, { params })
+      .get<ApiResponse<DriverListResponse>>(`${this.apiUrl}/drivers`, { params: request as any })
       .pipe(map((res) => res.data ?? { TotalRecord: 0, Items: [] }));
   }
   /**
@@ -130,17 +116,8 @@ export class DriversAdminService {
    * Ngày tạo: 25/06/2026
    */
   exportExcel(request: DriverListRequest): Observable<Blob> {
-    let params = new HttpParams();
-    if (request.Keyword) params = params.set('Keyword', request.Keyword);
-    (request.DriverIds ?? []).forEach((id) => {
-      params = params.append('DriverIds', id.toString());
-    });
-    (request.LicenseTypeIds ?? []).forEach((id) => {
-      params = params.append('LicenseTypeIds', id.toString());
-    });
-
     return this.http.get(`${this.apiUrl}/drivers/export`, {
-      params,
+      params: request as any,
       responseType: 'blob',
     });
   }

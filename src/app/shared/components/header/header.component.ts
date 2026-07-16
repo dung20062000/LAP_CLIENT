@@ -45,6 +45,7 @@ export class HeaderComponent {
 
   readonly TranslationKey = TranslationKey;
 
+  /** Menu nội bộ */
   internalMenuItems = [
     { label: 'Dashboard', icon: 'fas fa-tachometer-alt', link: '/public/dashboard' },
     { label: 'Xem ảnh phương tiện', icon: 'fas fa-camera', link: '/public/media' },
@@ -63,13 +64,23 @@ export class HeaderComponent {
 
   navOpen = false;
 
+  /**
+   * Lấy menu nội bộ match nhất với URL hiện tại.
+   * Người tạo: DungBT
+   * Ngày tạo: 16/07/2026
+   */
   get activeInternalMenu(): { label: string; icon: string; link: string } {
     const currentUrl = this.router.url;
-    // Tìm menu match nhất (dài nhất) để tránh nhầm route con, hoặc đơn giản là dùng startsWith
-    return (
-      this.internalMenuItems.find((item) => currentUrl.startsWith(item.link)) ||
-      this.internalMenuItems[0]
-    );
+    // Tìm menu match nhất (dài nhất) để tránh nhầm route con
+    let bestMatch = this.internalMenuItems[0];
+    let maxLen = 0;
+    for (const item of this.internalMenuItems) {
+      if (currentUrl.startsWith(item.link) && item.link.length > maxLen) {
+        maxLen = item.link.length;
+        bestMatch = item;
+      }
+    }
+    return bestMatch;
   }
 
   /**

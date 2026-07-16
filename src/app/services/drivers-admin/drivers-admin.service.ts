@@ -5,7 +5,7 @@ import { map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { ApiResponse } from '../../models/auth/auth.model';
 // prettier-ignore
-import { DriverLookupDto, LicenseTypeLookupDto, DriverListResponse, DriverListRequest, UpdateDriverRequest, } from '../../models/drivers-admin';
+import { DriverLookupDto, LicenseTypeLookupDto, DriverListResponse, DriverListRequest, UpdateDriverRequest, CreateDriverRequest, DriverDto, } from '../../models/drivers-admin';
 
 /**
  * Mô tả: Service kết nối API quản lý lái xe.
@@ -73,6 +73,17 @@ export class DriversAdminService {
       .get<ApiResponse<DriverListResponse>>(`${this.apiUrl}/drivers`, { params })
       .pipe(map((res) => res.data ?? { TotalRecord: 0, Items: [] }));
   }
+  /**
+   * GET /api/drivers/{id}
+   * Lấy thông tin chi tiết lái xe theo ID.
+   * Người tạo: DungBT
+   * Ngày tạo: 06/07/2026
+   */
+  getById(id: number): Observable<DriverDto> {
+    return this.http
+      .get<ApiResponse<DriverDto>>(`${this.apiUrl}/drivers/${id}`)
+      .pipe(map((res) => res.data!));
+  }
 
   /**
    * PUT /api/drivers
@@ -84,6 +95,17 @@ export class DriversAdminService {
   batchUpdate(items: UpdateDriverRequest[]): Observable<void> {
     return this.http
       .put<ApiResponse<void>>(`${this.apiUrl}/drivers`, items)
+      .pipe(map(() => void 0));
+  }
+  /**
+   * Tạo mới lái xe.
+   * POST /api/drivers/create
+   * Người tạo: DungBT
+   * Ngày tạo: 06/07/2026
+   */
+  create(request: CreateDriverRequest): Observable<void> {
+    return this.http
+      .post<ApiResponse<void>>(`${this.apiUrl}/drivers`, request)
       .pipe(map(() => void 0));
   }
 

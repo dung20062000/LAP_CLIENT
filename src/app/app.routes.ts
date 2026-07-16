@@ -54,6 +54,13 @@ export const routes: Routes = [
             (m) => m.DriversAdminPageComponent,
           ),
       },
+      {
+        path: 'administration/drivers-new',
+        loadComponent: () =>
+          import('./features/drivers-admin-new/page/drivers-admin-new-page/drivers-admin-new-page.component').then(
+            (m) => m.DriversAdminNewPageComponent,
+          ),
+      },
     ],
   },
   {

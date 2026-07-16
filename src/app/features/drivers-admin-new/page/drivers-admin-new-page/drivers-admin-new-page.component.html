@@ -1,0 +1,343 @@
+<!-- Trang Quản Lý Thông Tin Lái Xe -->
+<div class="da-page">
+
+  <!-- HEADER -->
+  <div class="da-header">
+    <h1 class="da-title">THÔNG TIN LÁI XE</h1>
+  </div>
+
+  <!-- BỘ LỌC -->
+  <div class="media-filter da-filter-bar">
+    <div class="filter-row">
+      <!-- Cột Tìm kiếm -->
+      <div class="filter-item filter-search">
+        <label for="driver-keyword">Tìm kiếm</label>
+        <div class="da-search-group">
+          <input
+            id="driver-keyword"
+            type="text"
+            class="da-search-input"
+            [placeholder]="placeholder"
+            [(ngModel)]="keyword"
+            (keydown.enter)="onSearch()"
+          />
+          @if (keyword) {
+            <span
+              class="da-search-clear"
+              role="button"
+              tabindex="0"
+              title="Xóa"
+              (click)="clearKeyword()"
+              (keydown.enter)="clearKeyword()"
+            >
+              <i class="fas fa-times"></i>
+            </span>
+          }
+          <div class="search-icon"><i class="fas fa-search"></i></div>
+          <ng-select
+            id="driver-search-type"
+            bindLabel="label"
+            bindValue="value"
+            class="filter-ng-select da-search-type-select"
+            [clearable]="false"
+            [searchable]="false"
+            [items]="searchTypeOptions"
+            [(ngModel)]="searchType"
+          />
+        </div>
+      </div>
+
+      <!-- Cột Lái xe -->
+      <div class="filter-item filter-driver">
+        <label for="filter-driver">Lái xe</label>
+        <ng-select
+          id="filter-driver"
+          bindLabel="Label"
+          bindValue="Value"
+          placeholder="Chọn lái xe"
+          notFoundText="Không tìm thấy"
+          class="filter-ng-select custom-ng-select-checkbox"
+          [items]="driverLookup"
+          [multiple]="true"
+          [closeOnSelect]="false"
+          [(ngModel)]="selectedDriverIds"
+        >
+          <ng-template let-items="items" ng-multi-label-tmp>
+            @if (items.length > 0) {
+              <div class="ng-value">
+                @if (items.length === 1) {
+                  <span class="ng-value-label">{{ items[0].Label }}</span>
+                } @else if (items.length < driverLookup.length) {
+                  <span class="ng-value-label">{{ items.length }} lái xe</span>
+                } @else {
+                  <span class="ng-value-label">Tất cả ({{ driverLookup.length }})</span>
+                }
+              </div>
+            }
+          </ng-template>
+          <ng-template ng-header-tmp>
+            <div
+              class="filter-option filter-option--all"
+              role="button"
+              tabindex="0"
+              (click)="toggleAllDrivers(); $event.stopPropagation()"
+              (keydown.enter)="toggleAllDrivers(); $event.stopPropagation()"
+            >
+              <input type="checkbox" class="filter-checkbox" style="pointer-events:none;" readonly [checked]="isAllDriversSelected()" />
+              <span class="filter-option-label" style="font-weight: bold; margin-left: 8px;">Tất cả ({{ driverLookup.length }})</span>
+            </div>
+          </ng-template>
+          <ng-template let-item="item" let-item$="item$" ng-option-tmp>
+            <div class="filter-option" style="cursor: pointer; display: flex; align-items: center;">
+              <input type="checkbox" class="filter-checkbox" style="pointer-events:none;" readonly [checked]="item$.selected" />
+              <span class="filter-option-label" style="margin-left: 8px;">{{ item.Label }}</span>
+            </div>
+          </ng-template>
+        </ng-select>
+      </div>
+
+      <!-- Cột Loại bằng -->
+      <div class="filter-item filter-license">
+        <label for="filter-license-type">Loại bằng</label>
+        <ng-select
+          id="filter-license-type"
+          bindLabel="Name"
+          bindValue="Value"
+          placeholder="Chọn loại bằng"
+          notFoundText="Không tìm thấy"
+          class="filter-ng-select custom-ng-select-checkbox"
+          [items]="licenseTypeLookup"
+          [multiple]="true"
+          [closeOnSelect]="false"
+          [(ngModel)]="selectedLicenseTypeIds"
+        >
+          <ng-template let-items="items" ng-multi-label-tmp>
+            @if (items.length > 0) {
+              <div class="ng-value">
+                @if (items.length === 1) {
+                  <span class="ng-value-label">{{ items[0].Name }}</span>
+                } @else if (items.length < licenseTypeLookup.length) {
+                  <span class="ng-value-label">{{ items.length }} loại bằng</span>
+                } @else {
+                  <span class="ng-value-label">Tất cả ({{ licenseTypeLookup.length }})</span>
+                }
+              </div>
+            }
+          </ng-template>
+          <ng-template ng-header-tmp>
+            <div
+              class="filter-option filter-option--all"
+              role="button"
+              tabindex="0"
+              (click)="toggleAllLicenseTypes(); $event.stopPropagation()"
+              (keydown.enter)="toggleAllLicenseTypes(); $event.stopPropagation()"
+            >
+              <input type="checkbox" class="filter-checkbox" style="pointer-events:none;" readonly [checked]="isAllLicenseTypesSelected()" />
+              <span class="filter-option-label" style="font-weight: bold; margin-left: 8px;">Tất cả ({{ licenseTypeLookup.length }})</span>
+            </div>
+          </ng-template>
+          <ng-template let-item="item" let-item$="item$" ng-option-tmp>
+            <div class="filter-option" style="cursor: pointer; display: flex; align-items: center;">
+              <input type="checkbox" class="filter-checkbox" style="pointer-events:none;" readonly [checked]="item$.selected" />
+              <span class="filter-option-label" style="margin-left: 8px;">{{ item.Name }}</span>
+            </div>
+          </ng-template>
+        </ng-select>
+      </div>
+
+      <!-- Nút Tìm kiếm -->
+      <div class="filter-item filter-btn">
+        <button class="btn btn-search" type="button" (click)="onSearch()">
+          <i class="fas fa-search me-1"></i> Tìm kiếm
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACTION BAR -->
+  <div class="da-action-bar">
+    <div class="da-action-right">
+      @if (hasData) {
+        <button class="btn da-btn-export" type="button" title="Xuất Excel" [disabled]="isExporting" (click)="onExport()">
+          <img
+            src="./icons/icons8-excel-file.png"
+            alt="Xuất Excel"
+            class="icon-excel"
+            tabindex="0"
+          />
+        </button>
+      }
+      <!-- Nút Thêm mới -->
+      <button class="btn da-btn-add" type="button" id="btn-add-driver" title="Thêm mới lái xe" (click)="openCreateModal()">
+        <span class="material-symbols-outlined">person_add</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- LOADING -->
+  @if (isLoading) {
+    <div class="da-loading">
+      <i class="fas fa-spinner fa-spin"></i>
+      <span>Đang tải dữ liệu...</span>
+    </div>
+  }
+
+  <!-- LƯỚI DỮ LIỆU -->
+  @if (!isLoading) {
+    @if (totalRecord === 0) {
+      <div class="da-empty-container text-muted">
+        <i class="fas fa-inbox"></i>
+        <span>Không có dữ liệu</span>
+      </div>
+    } @else {
+      <div class="da-table-wrapper">
+        <p-table
+          styleClass="p-datatable-sm da-table"
+          [value]="drivers"
+        >
+          <ng-template pTemplate="header">
+            <tr>
+              <th class="da-col-stt">STT</th>
+              <th class="da-col-name">Họ và tên</th>
+              <th class="da-col-phone">Số điện thoại</th>
+              <th class="da-col-license">Số giấy phép lái xe</th>
+              <th class="da-col-issue-date">Ngày cấp</th>
+              <th class="da-col-expire-date">Ngày hết hạn</th>
+              <th class="da-col-place">Nơi cấp</th>
+              <th class="da-col-type">Loại bằng</th>
+              <th class="da-col-updated">Ngày cập nhật</th>
+              <th class="da-col-action">Thao tác</th>
+            </tr>
+          </ng-template>
+
+          <ng-template let-driver let-i="rowIndex" pTemplate="body">
+            <tr>
+              <!-- STT -->
+              <td class="da-col-stt text-center">
+                {{ (currentPage - 1) * pageSize + i + 1 }}
+              </td>
+
+              <!-- Họ và tên — click để xem chi tiết -->
+              <td class="da-col-name">
+                <span
+                  class="da-name-link"
+                  role="button"
+                  tabindex="0"
+                  [title]="'Xem chi tiết: ' + driver.DisplayName"
+                  (click)="openViewModal(driver)"
+                  (keydown.enter)="openViewModal(driver)"
+                >
+                  {{ driver.DisplayName }}
+                </span>
+              </td>
+
+              <!-- Số điện thoại -->
+              <td class="da-col-phone">
+                <div class="da-cell-readonly">{{ driver.Mobile }}</div>
+              </td>
+
+              <!-- Số GPLX -->
+              <td class="da-col-license">
+                <div class="da-cell-readonly">{{ driver.DriverLicense }}</div>
+              </td>
+
+              <!-- Ngày cấp -->
+              <td class="da-col-issue-date text-center">
+                <div class="da-cell-readonly">{{ formatDate(driver.IssueLicenseDate) }}</div>
+              </td>
+
+              <!-- Ngày hết hạn -->
+              <td class="da-col-expire-date text-center">
+                <div class="da-cell-readonly">{{ formatDate(driver.ExpireLicenseDate) }}</div>
+              </td>
+
+              <!-- Nơi cấp -->
+              <td class="da-col-place">
+                <div class="da-cell-readonly">{{ driver.IssueLicensePlace }}</div>
+              </td>
+
+              <!-- Loại bằng -->
+              <td class="da-col-type text-center">
+                <div class="da-cell-readonly">{{ driver.LicenseTypeName }}</div>
+              </td>
+
+              <!-- Ngày cập nhật -->
+              <td class="da-col-updated text-center">
+                <div class="da-updated-date">{{ formatDate(driver.UpdatedDate, 'HH:mm dd/MM/yyyy') }}</div>
+              </td>
+
+              <!-- Thao tác -->
+              <td class="da-col-action text-center">
+                <div class="da-actions">
+                  <!-- Nút Sửa -->
+                  <button
+                    class="da-btn-action da-btn-edit"
+                    type="button"
+                    title="Sửa lái xe"
+                    (click)="openEditModal(driver)"
+                  >
+                    <span class="material-symbols-outlined">edit</span>
+                  </button>
+                  <!-- Nút Xóa -->
+                  <button
+                    class="da-btn-action da-btn-delete"
+                    type="button"
+                    title="Xóa lái xe"
+                    (click)="onDelete(driver.Id, i, driver.DisplayName)"
+                  >
+                    <img src="./icons/icons8-trash.svg" alt="Xóa" class="icon-delete" />
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+
+      <!-- PAGINATOR -->
+      <div class="paginator-wrapper">
+        <p-paginator
+          id="driver-paginator"
+          currentPageReportTemplate="{first} - {last} / {totalRecords} dòng"
+          dropdownAppendTo="body"
+          layout="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown CurrentPageReport"
+          [rows]="pageSize"
+          [totalRecords]="totalRecord"
+          [rowsPerPageOptions]="pageSizeOptions"
+          [first]="(currentPage - 1) * pageSize"
+          [showCurrentPageReport]="true"
+          (onPageChange)="onPageChange($event)"
+        >
+          <ng-template pTemplate="firstpagelinkicon">
+            <i class="fas fa-step-backward" style="font-size: 11px;"></i>
+          </ng-template>
+          <ng-template pTemplate="previouspagelinkicon">
+            <i class="fas fa-caret-left" style="font-size: 13px;"></i>
+          </ng-template>
+          <ng-template pTemplate="nextpagelinkicon">
+            <i class="fas fa-caret-right" style="font-size: 13px;"></i>
+          </ng-template>
+          <ng-template pTemplate="lastpagelinkicon">
+            <i class="fas fa-step-forward" style="font-size: 11px;"></i>
+          </ng-template>
+        </p-paginator>
+      <!-- icon reload trang -->
+        <i class="fas fa-sync reload-icon" title="Tải lại" tabindex="0" (click)="loadGrid()" (keydown.enter)="loadGrid()"></i>
+      </div>
+    }
+  }
+</div>
+
+<!-- CONFIRM DIALOG -->
+<p-confirmDialog class="confirm-dialog-custome" />
+
+<!-- POPUP MODAL -->
+@if (modalVisible) {
+  <app-driver-form-modal
+    [driverId]="modalDriverId"
+    [initialMode]="modalMode"
+    [licenseTypeLookup]="licenseTypeLookup"
+    (closed)="onModalClosed()"
+    (saved)="onModalSaved()"
+  />
+}

@@ -89,6 +89,23 @@ export interface DriverListRequest {
  */
 export interface UpdateDriverRequest {
   Id: number;
+  DisplayName?: string;
+  DriverLicense?: string | null;
+  IssueLicenseDate?: string | null;
+  ExpireLicenseDate?: string | null;
+  IssueLicensePlace?: string | null;
+  LicenseType?: number | null;
+  Mobile?: string | null;
+}
+
+/**
+ * Payload tạo mới lái xe
+ * Người tạo: DungBT
+ * Ngày tạo: 06/07/2026
+ */
+export interface CreateDriverRequest {
+  Id?: number;
+  DisplayName: string;
   DriverLicense?: string | null;
   IssueLicenseDate?: string | null;
   ExpireLicenseDate?: string | null;

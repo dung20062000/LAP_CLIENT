@@ -10,14 +10,8 @@ import { Checkbox } from 'primeng/checkbox';
 import { TreeNode, MessageService } from 'primeng/api';
 
 import { MediaService } from '../../../../../services/media';
-import {
-  VehicleItem,
-  MediaChannel,
-  MediaSearchParams,
-  SortOption,
-  GalleryLayoutCols,
-  GALLERY_LAYOUTS,
-} from '../../../../../models/media';
+// prettier-ignore
+import { VehicleItem, MediaChannel, MediaSearchParams, SortOption, GalleryLayoutCols, GALLERY_LAYOUTS,} from '../../../../../models/media';
 
 /**
  * Mô tả: Bộ lọc màn hình Xem Ảnh Phương Tiện.
@@ -28,7 +22,8 @@ import {
  *        - Emit sự kiện (search) kèm MediaSearchParams ra page cha khi bấm Tìm kiếm.
  * Người tạo: DungBT
  * Ngày tạo: 04/06/2026
- */ @Component({
+ */
+@Component({
   selector: 'app-media-filter',
   standalone: true,
   // prettier-ignore

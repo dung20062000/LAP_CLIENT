@@ -14,7 +14,6 @@ import { TableModule } from 'primeng/table';
 import { ConfirmationService, MessageService } from 'primeng/api';
 
 import { DriversAdminService } from '../../../../services/drivers-admin';
-import { getHttpErrorMessage } from '../../../../shared/utils/http-error';
 // prettier-ignore
 import { DriverLookupDto, LicenseTypeLookupDto, DriverDto, DriverListRequest, DriverSearchType } from '../../../../models/drivers-admin';
 // prettier-ignore

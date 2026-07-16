@@ -109,14 +109,20 @@ export enum GalleryLayoutCols {
   Col6 = 6,
 }
 
-export const GALLERY_LAYOUTS: GalleryLayoutCols[] = [
-  GalleryLayoutCols.Col4,
-  GalleryLayoutCols.Col5,
-  GalleryLayoutCols.Col6,
-];
-
+/**
+ * LAYOUT_CLASS_MAP dùng để map số cột với class của Bootstrap
+ * Người tạo: DungBT
+ * Ngày tạo: 16/07/2026
+ */
 export const LAYOUT_CLASS_MAP: Record<GalleryLayoutCols, string> = {
   [GalleryLayoutCols.Col4]: 'col-md-3',
   [GalleryLayoutCols.Col5]: 'col-20',
   [GalleryLayoutCols.Col6]: 'col-md-2',
 };
+
+/**
+ * Tự động lấy danh sách layout từ map, tránh việc phải khai báo lặp lại
+ * Người tạo: DungBT
+ * Ngày tạo: 16/07/2026
+ */
+export const GALLERY_LAYOUTS = Object.keys(LAYOUT_CLASS_MAP).map(Number) as GalleryLayoutCols[];

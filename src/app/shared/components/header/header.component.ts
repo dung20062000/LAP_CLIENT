@@ -8,9 +8,9 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
 import { TranslationKey } from '../../enums/translation-key.enum';
 
 /**
+ * Item menu với label là translation key và href là đường dẫn.
  * Người tạo: DungBT
  * Ngày tạo: 28/05/2026
- * Item menu với label là translation key và href là đường dẫn.
  */
 interface MenuItem {
   label: TranslationKey | string;
@@ -18,9 +18,9 @@ interface MenuItem {
 }
 
 /**
+ * Component header chính của ứng dụng.
  * Người tạo: DungBT
  * Ngày tạo: 28/05/2026
- * Component header chính của ứng dụng.
  */
 @Component({
   selector: 'app-header',
@@ -32,22 +32,22 @@ export class HeaderComponent {
   private translationService = inject(TranslationService);
   private authService = inject(AuthService);
 
-  // Trạng thái đăng nhập — lấy từ AuthService.
+  /** Trạng thái đăng nhập — lấy từ AuthService.  */
   readonly isLoggedIn = this.authService.isLoggedIn;
-  // Thông tin user hiện tại — lấy từ AuthService.
+  /** Thông tin user hiện tại — lấy từ AuthService. */
   readonly currentUser = this.authService.currentUser;
 
-  // Số hotline hiển thị trên header.
+  /** Số hotline hiển thị trên header. */
   hotline = '19006464';
-  // Đường dẫn Zalo OA của BA GPS.
+  /** Đường dẫn Zalo OA của BA GPS. */
   zaloUrl = 'https://zalo.me/1958838581480438876';
 
   readonly TranslationKey = TranslationKey;
 
   /**
+   * Menu gốc chứa translation key — chưa resolve ngôn ngữ.
    * Người tạo: DungBT
    * Ngày tạo: 28/05/2026
-   * Menu gốc chứa translation key — chưa resolve ngôn ngữ.
    */
   private rawMenuItems: MenuItem[] = [
     { label: TranslationKey.NavHome, href: 'https://bagps.vn/' },
@@ -63,10 +63,10 @@ export class HeaderComponent {
   ];
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 28/05/2026
    * Resolve translation key thành chuỗi hiển thị theo ngôn ngữ hiện tại.
    * Tự cập nhật khi currentLang thay đổi.
+   * Người tạo: DungBT
+   * Ngày tạo: 28/05/2026
    */
   menuItems = computed(() =>
     this.rawMenuItems.map((item) => ({
@@ -76,9 +76,9 @@ export class HeaderComponent {
   );
 
   /**
+   * Danh sách ngôn ngữ hỗ trợ với flag và label.
    * Người tạo: DungBT
    * Ngày tạo: 28/05/2026
-   * Danh sách ngôn ngữ hỗ trợ với flag và label.
    */
   languages = [
     {
@@ -95,60 +95,60 @@ export class HeaderComponent {
   ];
 
   /**
+   * Lấy ngôn ngữ hiện tại từ TranslationService
    * Người tạo: DungBT
    * Ngày tạo: 28/05/2026
-   * Lấy ngôn ngữ hiện tại từ TranslationService
    */
   get currentLang(): string {
     return this.translationService.currentLang();
   }
 
   /**
+   * Lấy thông tin ngôn ngữ hiện tại từ TranslationService
    * Người tạo: DungBT
    * Ngày tạo: 28/05/2026
-   * Lấy thông tin ngôn ngữ hiện tại từ TranslationService
    */
   readonly currentLangInfo = computed(
     () => this.languages.find((l) => l.code === this.currentLang) ?? this.languages[0],
   );
 
-  // Trạng thái mở dropdown ngôn ngữ.
+  /** Trạng thái mở dropdown ngôn ngữ. */
   langOpen = false;
 
-  // Trạng thái mở menu mobile (hamburger).
+  /** Trạng thái mở menu mobile (hamburger). */
   isMenuOpen = false;
 
   /**
+   * Chọn ngôn ngữ và cập nhật vào TranslationService.
    * Người tạo: DungBT
    * Ngày tạo: 28/05/2026
-   * Chọn ngôn ngữ và cập nhật vào TranslationService.
    */
   selectLang(code: string): void {
     this.translationService.changeLanguage(code);
   }
 
   /**
+   * Toggle trạng thái mở/đóng menu mobile.
    * Người tạo: DungBT
    * Ngày tạo: 28/05/2026
-   * Toggle trạng thái mở/đóng menu mobile.
    */
   toggleMenu(): void {
     this.isMenuOpen = !this.isMenuOpen;
   }
 
   /**
+   * Đóng menu mobile — dùng trong click-outside directive.
    * Người tạo: DungBT
    * Ngày tạo: 28/05/2026
-   * Đóng menu mobile — dùng trong click-outside directive.
    */
   closeMenu(): void {
     this.isMenuOpen = false;
   }
 
   /**
+   * Xử lý đăng xuất qua AuthService.
    * Người tạo: DungBT
    * Ngày tạo: 28/05/2026
-   * Xử lý đăng xuất qua AuthService.
    */
   onLogout(): void {
     this.authService.logout();

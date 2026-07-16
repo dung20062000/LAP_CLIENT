@@ -1,7 +1,7 @@
 /**
+ * Enum quản lý toàn bộ translation keys trong ứng dụng để dễ maintain và tái sử dụng.
  * Người tạo: DungBT
  * Ngày tạo: 19/06/2026
- * Enum quản lý toàn bộ translation keys trong ứng dụng để dễ maintain và tái sử dụng.
  */
 export enum TranslationKey {
   // Login
@@ -39,7 +39,7 @@ export enum TranslationKey {
   HeaderGreeting = 'header.greeting',
   HeaderLogout = 'header.logout',
   HeaderSelectLanguage = 'header.select_language',
-  
+
   // Navigation
   NavHome = 'nav.home',
   NavProducts = 'nav.products',

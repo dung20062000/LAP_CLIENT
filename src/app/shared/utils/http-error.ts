@@ -1,13 +1,15 @@
 /**
+ * Mô tả: Utility helper để trích xuất thông tin lỗi từ response của API server.
  * Người tạo: DungBT
  * Ngày tạo: 09/06/2026
- * Mô tả: Utility helper để trích xuất thông tin lỗi từ response của API server.
  */
 
 /**
  * Trích xuất thông tin lỗi từ response của API server.
  * @param err Đối tượng lỗi (thường là HttpErrorResponse hoặc Exception)
  * @param defaultMsg Thông điệp mặc định khi không tìm thấy lỗi từ server
+ * Người tạo: DungBT
+ * Ngày tạo: 09/06/2026
  */
 export function getHttpErrorMessage(err: any, defaultMsg: string): string {
   if (err && err.error) {

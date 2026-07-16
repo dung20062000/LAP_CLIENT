@@ -1,28 +1,21 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, timer, Observable, of } from 'rxjs';
 import { map, shareReplay, delay, tap } from 'rxjs/operators';
-// ignore
-import {
-  Vehicle,
-  VehicleOption,
-  Destination,
-  DashboardStats,
-  WidgetConfig,
-  DashboardLayoutConfig,
-  DestinationChartItem,
-  WidgetSize,
-  DestinationType,
-} from '../../models/dashboard';
+// prettier-ignore
+import { Vehicle, VehicleOption, Destination, DashboardStats,
+  WidgetConfig, DashboardLayoutConfig, DestinationChartItem, WidgetSize, DestinationType } from '../../models/dashboard';
 
-// Hằng số
+/** Hằng số */
 const REFRESH_INTERVAL_MS = 5 * 60 * 1000; // 5 phút
 const LAYOUT_STORAGE_PREFIX = 'dashboard_layout_';
 
-// Độ trễ giả lập network (ms) – mô phỏng API call
-const MOCK_API_DELAY_FULL = 800; // API tổng
-const MOCK_API_DELAY_WIDGET = 500; // API từng widget
+/** Độ trễ giả lập network (ms) – mô phỏng API call */
+/**API tổng */
+const MOCK_API_DELAY_FULL = 800;
+/**API từng widget */
+const MOCK_API_DELAY_WIDGET = 500;
 
-// Dữ liệu giả lập điểm đến
+/** Dữ liệu giả lập điểm đến */
 const MOCK_DESTINATIONS: Omit<Destination, 'vehicleCount'>[] = [
   // Cửa khẩu
   { id: 1, name: 'Cửa khẩu Mộc Bài', type: DestinationType.Border },
@@ -49,7 +42,7 @@ const MOCK_DESTINATIONS: Omit<Destination, 'vehicleCount'>[] = [
   { id: 20, name: 'KCN Long An', type: DestinationType.Factory },
 ];
 
-// Dữ liệu giả lập tên lái xe
+/** Dữ liệu giả lập tên lái xe */
 const DRIVER_NAMES = [
   'Nguyễn Văn An',
   'Trần Văn Bình',
@@ -73,12 +66,10 @@ const DRIVER_NAMES = [
   'Cao Văn Xuân',
 ];
 
-// Kiểu locationType hợp lệ
+/** Kiểu locationType hợp lệ */
 type LocationType = Vehicle['locationType'];
 
 /**
- * Người tạo: DungBT
- * Ngày tạo: 01/06/2026
  * Mô tả: Service quản lý dữ liệu Dashboard:
  *        - Mock data phương tiện & điểm đến
  *        - API tổng (getAllDashboardData) khi load trang lần đầu
@@ -88,19 +79,21 @@ type LocationType = Vehicle['locationType'];
  *        - Auto-refresh mỗi 5 phút qua RxJS timer
  *        - Lưu/đọc cấu hình layout widget theo userId từ localStorage
  *        - BehaviorSubject quản lý bộ lọc xe đang chọn (theo Vehicle.id)
+ * Người tạo: DungBT
+ * Ngày tạo: 01/06/2026
  */
 @Injectable({
   providedIn: 'root',
 })
 export class DashboardService {
-  // Bộ lọc
+  /** Bộ lọc */
   private selectedIdsSubject = new BehaviorSubject<number[]>([]);
   readonly selectedIds$ = this.selectedIdsSubject.asObservable();
 
-  // Cache dữ liệu mock
+  /** Cache dữ liệu mock */
   private cachedVehicles: Vehicle[] = [];
 
-  // Loading state từng widget
+  /** Loading state từng widget */
   private overviewLoadingSubject = new BehaviorSubject<boolean>(false);
   private borderLoadingSubject = new BehaviorSubject<boolean>(false);
   private roadLoadingSubject = new BehaviorSubject<boolean>(false);
@@ -113,27 +106,27 @@ export class DashboardService {
   readonly factoryLoading$ = this.factoryLoadingSubject.asObservable();
   readonly portLoading$ = this.portLoadingSubject.asObservable();
 
-  // BehaviorSubject lưu dữ liệu riêng cho từng widget
+  /** BehaviorSubject lưu dữ liệu riêng cho từng widget */
   private statsSubject = new BehaviorSubject<DashboardStats | null>(null);
   private borderVehiclesSubject = new BehaviorSubject<Vehicle[]>([]);
   private roadVehiclesSubject = new BehaviorSubject<Vehicle[]>([]);
   private factoryVehiclesSubject = new BehaviorSubject<Vehicle[]>([]);
   private portVehiclesSubject = new BehaviorSubject<Vehicle[]>([]);
 
-  // Observable expose ra ngoài cho component
+  /** Observable expose ra ngoài cho component */
   readonly statsData: Observable<DashboardStats | null> = this.statsSubject.asObservable();
   readonly borderVehiclesData: Observable<Vehicle[]> = this.borderVehiclesSubject.asObservable();
   readonly roadVehiclesData: Observable<Vehicle[]> = this.roadVehiclesSubject.asObservable();
   readonly factoryVehiclesData: Observable<Vehicle[]> = this.factoryVehiclesSubject.asObservable();
   readonly portVehiclesData: Observable<Vehicle[]> = this.portVehiclesSubject.asObservable();
 
-  // Dùng để trigger lấy vehicleOptions cho filter dropdown
+  /** Dùng để trigger lấy vehicleOptions cho filter dropdown */
   readonly allVehiclesDataStream: Observable<Vehicle[]> = this.statsData.pipe(
     map(() => this.cachedVehicles),
     shareReplay(1),
   );
 
-  // Destinations (dùng nếu cần)
+  /** Destinations (dùng nếu cần) */
   readonly destinationsData: Observable<Destination[]> = this.statsData.pipe(
     map(() => this.calcDestinations(this.cachedVehicles)),
   );
@@ -146,11 +139,11 @@ export class DashboardService {
   }
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 03/06/2026
    * [API TỔNG] Gọi 1 lần khi load trang – lấy toàn bộ dữ liệu dashboard.
    * Cập nhật đồng thời tất cả widget subjects.
    * Giả lập delay mạng MOCK_API_DELAY_FULL ms.
+   * Người tạo: DungBT
+   * Ngày tạo: 03/06/2026
    */
   getAllDashboardData(): Observable<{
     stats: DashboardStats;
@@ -190,9 +183,9 @@ export class DashboardService {
   }
 
   /**
+   * [API WIDGET] Lấy dữ liệu widget TỔNG QUAN CÔNG TY.
    * Người tạo: DungBT
    * Ngày tạo: 03/06/2026
-   * [API WIDGET] Lấy dữ liệu widget TỔNG QUAN CÔNG TY.
    */
   getOverviewData(): Observable<DashboardStats> {
     // [API] getOverviewData – đang gọi API widget overview...
@@ -214,9 +207,9 @@ export class DashboardService {
   }
 
   /**
+   * [API WIDGET] Lấy dữ liệu widget PHƯƠNG TIỆN TẠI CỬA KHẨU.
    * Người tạo: DungBT
    * Ngày tạo: 03/06/2026
-   * [API WIDGET] Lấy dữ liệu widget PHƯƠNG TIỆN TẠI CỬA KHẨU.
    */
   getBorderData(): Observable<Vehicle[]> {
     return this.getWidgetData(
@@ -227,9 +220,9 @@ export class DashboardService {
   }
 
   /**
+   * [API WIDGET] Lấy dữ liệu widget PHƯƠNG TIỆN ĐANG TRÊN ĐƯỜNG.
    * Người tạo: DungBT
    * Ngày tạo: 03/06/2026
-   * [API WIDGET] Lấy dữ liệu widget PHƯƠNG TIỆN ĐANG TRÊN ĐƯỜNG.
    */
   getRoadData(): Observable<Vehicle[]> {
     return this.getWidgetData(
@@ -240,9 +233,9 @@ export class DashboardService {
   }
 
   /**
+   * [API WIDGET] Lấy dữ liệu widget PHƯƠNG TIỆN TẠI NHÀ MÁY.
    * Người tạo: DungBT
    * Ngày tạo: 03/06/2026
-   * [API WIDGET] Lấy dữ liệu widget PHƯƠNG TIỆN TẠI NHÀ MÁY.
    */
   getFactoryData(): Observable<Vehicle[]> {
     return this.getWidgetData(
@@ -253,9 +246,9 @@ export class DashboardService {
   }
 
   /**
+   * [API WIDGET] Lấy dữ liệu widget PHƯƠNG TIỆN TẠI CẢNG.
    * Người tạo: DungBT
    * Ngày tạo: 03/06/2026
-   * [API WIDGET] Lấy dữ liệu widget PHƯƠNG TIỆN TẠI CẢNG.
    */
   getPortData(): Observable<Vehicle[]> {
     return this.getWidgetData(
@@ -265,9 +258,9 @@ export class DashboardService {
     );
   }
   /**
+   * Làm mới toàn bộ dữ liệu dashboard (gọi lại API tổng).
    * Người tạo: DungBT
    * Ngày tạo: 01/06/2026
-   * Làm mới toàn bộ dữ liệu dashboard (gọi lại API tổng).
    */
   refresh(): Observable<unknown> {
     this.selectedIdsSubject.next([]);
@@ -275,10 +268,10 @@ export class DashboardService {
   }
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 03/06/2026
    * Reload dữ liệu của một widget cụ thể – gọi API riêng tương ứng.
    * @param widgetId ID của widget cần reload
+   * Người tạo: DungBT
+   * Ngày tạo: 03/06/2026
    */
   refreshWidget(widgetId: string): Observable<unknown> {
     // [API] refreshWidget
@@ -300,10 +293,10 @@ export class DashboardService {
   }
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 01/06/2026
    * Cập nhật bộ lọc theo danh sách Vehicle.id và re-apply lên tất cả subjects.
    * @param ids Danh sách ID xe được chọn (rỗng = hiển thị tất cả)
+   * Người tạo: DungBT
+   * Ngày tạo: 01/06/2026
    */
   setFilter(ids: number[]): void {
     this.selectedIdsSubject.next(ids);
@@ -321,9 +314,9 @@ export class DashboardService {
   }
 
   /**
+   * Lấy danh sách VehicleOption (id + licensePlate) dùng cho dropdown bộ lọc.
    * Người tạo: DungBT
    * Ngày tạo: 01/06/2026
-   * Lấy danh sách VehicleOption (id + licensePlate) dùng cho dropdown bộ lọc.
    */
   getVehicleOptions(): VehicleOption[] {
     if (this.cachedVehicles.length === 0) {
@@ -333,10 +326,10 @@ export class DashboardService {
   }
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 01/06/2026
    * Lấy dữ liệu điểm đến dạng bar chart từ danh sách xe.
    * @param vehicles Danh sách xe cần tính toán
+   * Người tạo: DungBT
+   * Ngày tạo: 01/06/2026
    */
   getDestinationChartData(vehicles: Vehicle[]): DestinationChartItem[] {
     const countMap: Record<string, { count: number; type: DestinationChartItem['type'] }> = {};
@@ -356,10 +349,10 @@ export class DashboardService {
   }
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 01/06/2026
    * Lấy cấu hình layout widget từ localStorage theo userId.
    * @param userId ID/username người dùng đăng nhập
+   * Người tạo: DungBT
+   * Ngày tạo: 01/06/2026
    */
   getLayoutConfig(userId: string): WidgetConfig[] {
     try {
@@ -384,11 +377,11 @@ export class DashboardService {
   }
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 01/06/2026
    * Lưu cấu hình layout widget vào localStorage theo userId.
    * @param userId ID/username người dùng đăng nhập
    * @param widgets Danh sách cấu hình widget
+   * Người tạo: DungBT
+   * Ngày tạo: 01/06/2026
    */
   saveLayoutConfig(userId: string, widgets: WidgetConfig[]): void {
     try {
@@ -405,13 +398,13 @@ export class DashboardService {
   }
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 01/06/2026
    * Cập nhật size của một widget và lưu lại.
    * @param userId    ID người dùng
    * @param widgetId  ID widget cần cập nhật
    * @param size      Kích thước mới
    * @param currentWidgets Danh sách widget hiện tại
+   * Người tạo: DungBT
+   * Ngày tạo: 01/06/2026
    */
   updateWidgetSize(
     userId: string,
@@ -435,13 +428,13 @@ export class DashboardService {
   }
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 01/06/2026
    * Cập nhật trạng thái collapsed của widget và lưu lại.
    * @param userId    ID người dùng
    * @param widgetId  ID widget cần cập nhật
    * @param collapsed Trạng thái thu gọn mới
    * @param currentWidgets Danh sách widget hiện tại
+   * Người tạo: DungBT
+   * Ngày tạo: 01/06/2026
    */
   updateWidgetCollapsed(
     userId: string,
@@ -464,11 +457,11 @@ export class DashboardService {
     return updated;
   }
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 18/06/2026
    * Helper dùng chung cho các API widget (getBorderData, getRoadData…).
    * Tạo mock data mới ngẫu nhiên cho loại locationType tương ứng,
    * cập nhật subject và tắt loading.
+   * Người tạo: DungBT
+   * Ngày tạo: 18/06/2026
    */
   private getWidgetData(
     type: LocationType,
@@ -493,9 +486,9 @@ export class DashboardService {
   }
 
   /**
+   * Bật hoặc tắt loading cho tất cả widget cùng lúc.
    * Người tạo: DungBT
    * Ngày tạo: 18/06/2026
-   * Bật hoặc tắt loading cho tất cả widget cùng lúc.
    */
   private setAllLoading(state: boolean): void {
     this.overviewLoadingSubject.next(state);
@@ -506,9 +499,9 @@ export class DashboardService {
   }
 
   /**
+   * Áp dụng bộ lọc selectedIds lên danh sách xe.
    * Người tạo: DungBT
    * Ngày tạo: 01/06/2026
-   * Áp dụng bộ lọc selectedIds lên danh sách xe.
    */
   private applyFilter(vehicles: Vehicle[]): Vehicle[] {
     const ids = this.selectedIdsSubject.getValue();
@@ -516,11 +509,11 @@ export class DashboardService {
   }
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 01/06/2026
    * Tạo dữ liệu giả lập 83 phương tiện.
    * Biển số dạng 43C0XXXX_C, phân bổ theo loại địa điểm.
    * Mỗi lần gọi ngẫu nhiên hóa lại vị trí để mô phỏng thay đổi.
+   * Người tạo: DungBT
+   * Ngày tạo: 01/06/2026
    */
   private generateMockData(): Vehicle[] {
     const vehicles: Vehicle[] = [];
@@ -578,10 +571,10 @@ export class DashboardService {
   }
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 01/06/2026
    * Tính toán thống kê tổng quan từ danh sách xe.
    * @param vehicles Danh sách xe cần tính toán
+   * Người tạo: DungBT
+   * Ngày tạo: 01/06/2026
    */
   private calcStats(vehicles: Vehicle[]): DashboardStats {
     return {
@@ -596,10 +589,10 @@ export class DashboardService {
   }
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 01/06/2026
    * Tính số xe tại từng điểm đến.
    * @param vehicles Danh sách xe cần tính toán
+   * Người tạo: DungBT
+   * Ngày tạo: 01/06/2026
    */
   private calcDestinations(vehicles: Vehicle[]): Destination[] {
     return MOCK_DESTINATIONS.map((d) => ({
@@ -609,9 +602,9 @@ export class DashboardService {
   }
 
   /**
+   * Cấu hình layout mặc định khi chưa có trong localStorage.
    * Người tạo: DungBT
    * Ngày tạo: 01/06/2026
-   * Cấu hình layout mặc định khi chưa có trong localStorage.
    */
   private getDefaultLayoutConfig(): WidgetConfig[] {
     return [

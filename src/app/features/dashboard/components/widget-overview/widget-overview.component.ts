@@ -3,9 +3,9 @@ import { Component, Input, OnChanges, ChangeDetectionStrategy } from '@angular/c
 import { DashboardStats } from '../../../../models';
 
 /**
+ * Widget hiển thị thống kê tổng quan dạng 3 card màu.
  * Người tạo: DungBT
  * Ngày tạo: 01/06/2026
- * Widget hiển thị thống kê tổng quan dạng 3 card màu.
  */
 @Component({
   selector: 'app-widget-overview',
@@ -16,13 +16,12 @@ import { DashboardStats } from '../../../../models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WidgetOverviewComponent implements OnChanges {
-  //Dữ liệu thống kê từ DashboardService
+  /** Dữ liệu thống kê từ DashboardService */
   @Input() stats: DashboardStats | null = null;
 
-  //Phần trăm xe có hàng
+  /** Phần trăm xe có hàng */
   loadedPercent = 0;
-
-  //Phần trăm xe không hàng
+  /** Phần trăm xe không hàng */
   emptyPercent = 0;
 
   ngOnChanges(): void {

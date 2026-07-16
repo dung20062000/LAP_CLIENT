@@ -13,9 +13,9 @@ import { BannerService } from '../../../../shared/services/banner.service';
 import { TranslationKey } from '../../../../shared/enums/translation-key.enum';
 
 /**
+ * Interface chứa thông tin banner slide.
  * Người tạo: DungBT
  * Ngày tạo: 19/06/2026
- * Interface chứa thông tin banner slide.
  */
 export interface BannerSlide {
   id: string | number;
@@ -28,9 +28,9 @@ export interface BannerSlide {
 }
 
 /**
+ * Interface chứa thông tin banner slide đã được resolve.
  * Người tạo: DungBT
  * Ngày tạo: 19/06/2026
- * Interface chứa thông tin banner slide đã được resolve.
  */
 export interface ResolvedBannerSlide extends Omit<BannerSlide, 'title' | 'shortContents'> {
   title: string;
@@ -38,9 +38,9 @@ export interface ResolvedBannerSlide extends Omit<BannerSlide, 'title' | 'shortC
 }
 
 /**
+ * Component trang đăng nhập.
  * Người tạo: DungBT
  * Ngày tạo: 19/06/2026
- * Component trang đăng nhập.
  */
 @Component({
   selector: 'app-login',
@@ -114,9 +114,9 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Bắt đầu auto play banner.
    * Người tạo: DungBT
    * Ngày tạo: 19/06/2026
-   * Bắt đầu auto play banner.
    */
   private startAutoPlay(): void {
     this.stopAutoPlay();
@@ -128,9 +128,9 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Dừng auto play banner.
    * Người tạo: DungBT
    * Ngày tạo: 19/06/2026
-   * Dừng auto play banner.
    */
   private stopAutoPlay(): void {
     if (this.intervalId !== null) {
@@ -140,9 +140,9 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Đi đến slide index.
    * Người tạo: DungBT
    * Ngày tạo: 19/06/2026
-   * Đi đến slide index.
    */
   private goToSlide(index: number): void {
     if (!this.hasSlides()) return;
@@ -151,9 +151,9 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Đi đến slide tiếp theo.
    * Người tạo: DungBT
    * Ngày tạo: 19/06/2026
-   * Đi đến slide tiếp theo.
    */
   nextSlide(): void {
     if (!this.hasSlides()) return;
@@ -161,9 +161,9 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Đi đến slide trước đó.
    * Người tạo: DungBT
    * Ngày tạo: 19/06/2026
-   * Đi đến slide trước đó.
    */
   prevSlide(): void {
     if (!this.hasSlides()) return;
@@ -172,9 +172,9 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Đi đến slide index và bắt đầu auto play.
    * Người tạo: DungBT
    * Ngày tạo: 19/06/2026
-   * Đi đến slide index và bắt đầu auto play.
    */
   goToSlideByIndex(index: number): void {
     this.goToSlide(index);
@@ -182,9 +182,9 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Dừng auto play khi hover vào banner.
    * Người tạo: DungBT
    * Ngày tạo: 19/06/2026
-   * Dừng auto play khi hover vào banner.
    */
   onMouseEnter(): void {
     this.isHovered.set(true);
@@ -192,9 +192,9 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Bắt đầu auto play khi rời khỏi banner.
    * Người tạo: DungBT
    * Ngày tạo: 19/06/2026
-   * Bắt đầu auto play khi rời khỏi banner.
    */
   onMouseLeave(): void {
     this.isHovered.set(false);
@@ -202,12 +202,12 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 28/05/2026
    * Xử lý submit form:
    * - Validate form, markAllAsTouched nếu invalid.
    * - Gọi AuthService.login, điều hướng về returnUrl hoặc /dashboard nếu thành công.
    * - Hiển thị error message nếu thất bại.
+   * Người tạo: DungBT
+   * Ngày tạo: 28/05/2026
    */
   onSubmit(): void {
     if (this.loginForm.invalid) {

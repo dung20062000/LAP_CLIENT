@@ -8,8 +8,6 @@ import { ApiResponse } from '../../models/auth/auth.model';
 import { DriverLookupDto, LicenseTypeLookupDto, DriverListResponse, DriverListRequest, UpdateDriverRequest, } from '../../models/drivers-admin';
 
 /**
- * Người tạo: DungBT
- * Ngày tạo: 25/06/2026
  * Mô tả: Service kết nối API quản lý lái xe.
  *        - getDriverLookup()        → GET  /api/drivers/driver-lookup
  *        - getLicenseTypeLookup()   → GET  /api/drivers/license-types-lookup
@@ -17,6 +15,8 @@ import { DriverLookupDto, LicenseTypeLookupDto, DriverListResponse, DriverListRe
  *        - batchUpdate()            → PUT  /api/drivers
  *        - softDelete()             → DELETE /api/drivers/{id}
  *        - exportExcel()            → GET  /api/drivers/export  (blob)
+ * Người tạo: DungBT
+ * Ngày tạo: 25/06/2026
  */
 @Injectable({ providedIn: 'root' })
 export class DriversAdminService {
@@ -24,10 +24,10 @@ export class DriversAdminService {
   private apiUrl = environment.apiUrl;
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 25/06/2026
    * GET /api/drivers/lookup
    * Lấy danh sách dropdown lái xe đang hoạt động.
+   * Người tạo: DungBT
+   * Ngày tạo: 25/06/2026
    */
   getDriverLookup(): Observable<DriverLookupDto[]> {
     return this.http
@@ -36,10 +36,10 @@ export class DriversAdminService {
   }
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 25/06/2026
    * GET /api/drivers/license-types-lookup
    * Lấy danh sách dropdown loại bằng lái.
+   * Người tạo: DungBT
+   * Ngày tạo: 25/06/2026
    */
   getLicenseTypeLookup(): Observable<LicenseTypeLookupDto[]> {
     return this.http
@@ -48,11 +48,11 @@ export class DriversAdminService {
   }
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 25/06/2026
    * GET /api/drivers
    * Lấy danh sách lái xe có phân trang và bộ lọc.
    * @param request Tham số filter và phân trang
+   * Người tạo: DungBT
+   * Ngày tạo: 25/06/2026
    */
   getDriverList(request: DriverListRequest): Observable<DriverListResponse> {
     let params = new HttpParams();
@@ -75,11 +75,11 @@ export class DriversAdminService {
   }
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 25/06/2026
    * PUT /api/drivers
    * Cập nhật hàng loạt các dòng đã thay đổi (inline edit).
    * @param items Danh sách payload các dòng dirty
+   * Người tạo: DungBT
+   * Ngày tạo: 25/06/2026
    */
   batchUpdate(items: UpdateDriverRequest[]): Observable<void> {
     return this.http
@@ -88,11 +88,11 @@ export class DriversAdminService {
   }
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 25/06/2026
    * DELETE /api/drivers/{id}
    * Xóa mềm lái xe theo ID.
    * @param id ID lái xe cần xóa
+   * Người tạo: DungBT
+   * Ngày tạo: 25/06/2026
    */
   softDelete(id: number): Observable<void> {
     return this.http
@@ -101,11 +101,11 @@ export class DriversAdminService {
   }
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 25/06/2026
    * GET /api/drivers/export
    * Xuất file Excel, trả về Blob để tải xuống trình duyệt.
    * @param request Tham số filter (không cần phân trang)
+   * Người tạo: DungBT
+   * Ngày tạo: 25/06/2026
    */
   exportExcel(request: DriverListRequest): Observable<Blob> {
     let params = new HttpParams();

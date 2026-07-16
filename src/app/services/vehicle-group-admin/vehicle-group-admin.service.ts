@@ -7,14 +7,14 @@ import { ApiResponse } from '../../models/auth/auth.model';
 import { environment } from '../../../environments/environment';
 
 /**
- * Người tạo: DungBT
- * Ngày tạo: 11/06/2026
  * Mô tả: Service quản lý dữ liệu màn hình Quản Trị Nhóm Phương Tiện.
  *        Kết nối LAP_API qua các endpoint:
  *        - getUsers()              → GET  /api/users
  *        - getUnassignedGroups()   → GET  /api/groups/unassigned?userId=...
  *        - getAssignedGroups()     → GET  /api/groups/assigned?userId=...
  *        - assignGroups()          → POST /api/users/{id}/groups
+ * Người tạo: DungBT
+ * Ngày tạo: 11/06/2026
  */
 @Injectable({
   providedIn: 'root',
@@ -24,10 +24,10 @@ export class VehicleGroupAdminService {
   private apiUrl = environment.apiUrl;
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 11/06/2026
    * GET /api/users
    * Lấy danh sách người dùng đang hoạt động của công ty.
+   * Người tạo: DungBT
+   * Ngày tạo: 11/06/2026
    */
   getUsers(): Observable<UserDto[]> {
     return this.http
@@ -36,11 +36,11 @@ export class VehicleGroupAdminService {
   }
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 11/06/2026
    * GET /api/groups/unassigned?userId=...
    * Lấy danh sách nhóm xe chưa gán cho user, dạng cây.
    * @param userId ID người dùng cần kiểm tra
+   * Người tạo: DungBT
+   * Ngày tạo: 11/06/2026
    */
   getUnassignedGroups(userId: string): Observable<VehicleGroupNode[]> {
     const params = new HttpParams().set('userId', userId);
@@ -50,11 +50,11 @@ export class VehicleGroupAdminService {
   }
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 11/06/2026
    * GET /api/groups/assigned?userId=...
    * Lấy danh sách nhóm xe đã gán cho user, dạng cây.
    * @param userId ID người dùng cần kiểm tra
+   * Người tạo: DungBT
+   * Ngày tạo: 11/06/2026
    */
   getAssignedGroups(userId: string): Observable<VehicleGroupNode[]> {
     const params = new HttpParams().set('userId', userId);
@@ -64,12 +64,12 @@ export class VehicleGroupAdminService {
   }
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 11/06/2026
    * POST /api/users/{id}/groups
    * Lưu danh sách gán nhóm xe mới cho người dùng (replace-all).
    * @param userId ID người dùng
    * @param request Body chứa mảng GroupId mới
+   * Người tạo: DungBT
+   * Ngày tạo: 11/06/2026
    */
   assignGroups(userId: string, request: AssignGroupsRequest): Observable<void> {
     return this.http

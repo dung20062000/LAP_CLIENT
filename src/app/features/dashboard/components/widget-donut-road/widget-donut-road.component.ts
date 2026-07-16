@@ -8,11 +8,11 @@ import { DestinationType, Vehicle } from '../../../../models';
 const MOBILE_BREAKPOINT = 576;
 
 /**
- * Người tạo: DungBT
- * Ngày tạo: 01/06/2026
  * Mô tả: Widget Donut Chart – Phương tiện đang trên đường.
  *        Hiển thị phân bổ xe đang di chuyển phân loại theo trạng thái có/không hàng.
  *        Số tổng hiển thị ở giữa biểu đồ.
+ * Người tạo: DungBT
+ * Ngày tạo: 01/06/2026
  */
 @Component({
   selector: 'app-widget-donut-road',
@@ -52,9 +52,9 @@ export class WidgetDonutRoadComponent implements OnChanges, OnDestroy {
   }
 
   /**
+   * Cập nhật trạng thái mobile
    * Người tạo: DungBT
    * Ngày tạo: 01/06/2026
-   * Cập nhật trạng thái mobile
    */
   private updateMobile(): void {
     const isNowMobile = window.innerWidth <= MOBILE_BREAKPOINT;
@@ -68,9 +68,9 @@ export class WidgetDonutRoadComponent implements OnChanges, OnDestroy {
   }
 
   /**
+   * Xây dựng biểu đồ donut
    * Người tạo: DungBT
    * Ngày tạo: 01/06/2026
-   * Xây dựng biểu đồ donut
    */
   private buildChart(): void {
     const roadVehicles = this.vehicles.filter((v) => v.locationType === DestinationType.Road);

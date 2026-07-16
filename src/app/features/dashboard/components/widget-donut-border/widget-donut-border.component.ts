@@ -8,11 +8,11 @@ import { Vehicle, Destination, DestinationType } from '../../../../models';
 const MOBILE_BREAKPOINT = 576;
 
 /**
- * Người tạo: DungBT
- * Ngày tạo: 01/06/2026
  * Mô tả: Widget Donut Chart – Phương tiện tại Cửa khẩu.
  *        Hiển thị phân bổ xe tại các cửa khẩu dạng hình vành khăn (Donut).
  *        Số tổng hiển thị ở giữa biểu đồ bằng graphic text.
+ * Người tạo: DungBT
+ * Ngày tạo: 01/06/2026
  */
 @Component({
   selector: 'app-widget-donut-border',
@@ -23,14 +23,14 @@ const MOBILE_BREAKPOINT = 576;
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WidgetDonutBorderComponent implements OnChanges, OnDestroy {
-  // Danh sách xe (đã lọc từ dashboard)
+  /** Danh sách xe (đã lọc từ dashboard) */
   @Input() vehicles: Vehicle[] = [];
-  // Danh sách điểm đến để lấy tên
+  /** Danh sách điểm đến để lấy tên */
   @Input() destinations: Destination[] = [];
 
-  // ECharts option
+  /** ECharts option */
   chartOption: EChartsOption = {};
-  // Flag kiểm tra xem có dữ liệu hay không
+  /** Flag kiểm tra xem có dữ liệu hay không */
   hasData = false;
 
   private isMobile = false;
@@ -51,9 +51,9 @@ export class WidgetDonutBorderComponent implements OnChanges, OnDestroy {
   }
 
   /**
+   * Cập nhật trạng thái mobile
    * Người tạo: DungBT
    * Ngày tạo: 01/06/2026
-   * Cập nhật trạng thái mobile
    */
   private updateMobile(): void {
     const isNowMobile = window.innerWidth <= MOBILE_BREAKPOINT;
@@ -64,9 +64,9 @@ export class WidgetDonutBorderComponent implements OnChanges, OnDestroy {
       }
     }
   } /**
+   * Xử lý thay đổi input
    * Người tạo: DungBT
    * Ngày tạo: 02/06/2026
-   * Xử lý thay đổi input
    */
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['vehicles'] || changes['destinations']) {
@@ -75,10 +75,11 @@ export class WidgetDonutBorderComponent implements OnChanges, OnDestroy {
   }
 
   /**
+   * Mô tả: Xây dựng cấu hình ECharts Donut cho xe tại cửa khẩu.
    * Người tạo: DungBT
-   * Ngày tạo: 01/06/2026
-   * Xây dựng cấu hình ECharts Donut cho xe tại cửa khẩu.
+   * Ngày tạo: 15/07/2026
    */
+
   private buildChart(): void {
     // Lọc xe đang ở cửa khẩu
     const borderVehicles = this.vehicles.filter((v) => v.locationType === DestinationType.Border);

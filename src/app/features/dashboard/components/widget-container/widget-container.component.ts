@@ -6,8 +6,6 @@ import { WidgetSize } from '../../../../models';
 const WIDGET_OPTIONS_OPEN_EVENT = 'widget-options-open';
 
 /**
- * Người tạo: DungBT
- * Ngày tạo: 01/06/2026
  * Component bao ngoài widget: header với Collapse, Reload, Options (kích thước).
  * @Input  title     – Tiêu đề hiển thị trên header
  * @Input  widgetId  – ID duy nhất của widget (dùng cho lưu layout)
@@ -17,6 +15,8 @@ const WIDGET_OPTIONS_OPEN_EVENT = 'widget-options-open';
  * @Output sizeChange   – Phát ra khi người dùng thay đổi kích thước
  * @Output reload       – Phát ra khi người dùng nhấn nút Tải lại
  * @Output collapsedChange – Phát ra khi trạng thái thu gọn thay đổi
+ * Người tạo: DungBT
+ * Ngày tạo: 01/06/2026
  */
 @Component({
   selector: 'app-widget-container',
@@ -30,27 +30,30 @@ export class WidgetContainerComponent {
   @Input() widgetId = '';
   @Input() size: WidgetSize = WidgetSize.Auto;
   @Input() collapsed = false;
-  @Input() layoutClass = ''; // Nhận class col động từ component cha
-  // Loading state từ bên ngoài – true khi service đang fetch API cho widget này
+
+  /** Nhận class col động từ component cha */
+  @Input() layoutClass = '';
+  /** Loading state từ bên ngoài – true khi service đang fetch API cho widget này */
   @Input() loading = false;
 
   @Output() sizeChange = new EventEmitter<WidgetSize>();
   @Output() reload = new EventEmitter<void>();
   @Output() collapsedChange = new EventEmitter<boolean>();
 
-  // Hiển thị popup options (hover)
+  /** Hiển thị popup options (hover) */
   showOptions = false;
-  // Spinner nội bộ (khi nhấn reload) – kết hợp với loading input để hiển thị spinner
+  /** Spinner nội bộ (khi nhấn reload) – kết hợp với loading input để hiển thị spinner */
   private _internalReloading = false;
 
-  // Getter tổng hợp: đang spinner nếu loading từ ngoài HOẶC nội bộ đang chờ
+  /** Getter tổng hợp: đang spinner nếu loading từ ngoài HOẶC nội bộ đang chờ */
   get isReloading(): boolean {
     return this.loading || this._internalReloading;
   }
-  // Mở submenu sang bên trái khi sát mép phải màn hình
+
+  /** Mở submenu sang bên trái khi sát mép phải màn hình */
   openLeft = false;
 
-  // Các tùy chọn kích thước
+  /** Các tùy chọn kích thước */
   readonly sizeOptions: { label: string; value: WidgetSize }[] = [
     { label: 'Tự động', value: WidgetSize.Auto },
     { label: 'Nhỏ', value: WidgetSize.Small },
@@ -59,9 +62,9 @@ export class WidgetContainerComponent {
   ];
 
   /**
+   * Toggle mở options và tự động tính toán hướng mở rộng của submenu
    * Người tạo: DungBT
    * Ngày tạo: 02/06/2026
-   * Toggle mở options và tự động tính toán hướng mở rộng của submenu
    */
   toggleOptions(event: MouseEvent): void {
     event.stopPropagation();
@@ -78,9 +81,9 @@ export class WidgetContainerComponent {
   }
 
   /**
+   * Tính toán xem menu có gần rìa phải màn hình không để mở submenu sang trái
    * Người tạo: DungBT
    * Ngày tạo: 02/06/2026
-   * Tính toán xem menu có gần rìa phải màn hình không để mở submenu sang trái
    */
   updateSubmenuPosition(): void {
     requestAnimationFrame(() => {
@@ -101,9 +104,9 @@ export class WidgetContainerComponent {
   }
 
   /**
+   * Toggle thu gọn / mở rộng widget body.
    * Người tạo: DungBT
    * Ngày tạo: 01/06/2026
-   * Toggle thu gọn / mở rộng widget body.
    */
   toggleCollapse(): void {
     this.collapsed = !this.collapsed;
@@ -111,9 +114,9 @@ export class WidgetContainerComponent {
   }
 
   /**
+   * Kích hoạt reload với animation spinner tạm thời.
    * Người tạo: DungBT
    * Ngày tạo: 01/06/2026
-   * Kích hoạt reload với animation spinner tạm thời.
    */
   onReload(): void {
     // Bật spinner nội bộ ngay lập tức để phản hồi click tức thì,
@@ -128,9 +131,9 @@ export class WidgetContainerComponent {
   }
 
   /**
+   * Thay đổi kích thước widget và đóng popup.
    * Người tạo: DungBT
    * Ngày tạo: 01/06/2026
-   * Thay đổi kích thước widget và đóng popup.
    */
   onSelectSize(size: WidgetSize): void {
     this.size = size;
@@ -138,7 +141,11 @@ export class WidgetContainerComponent {
     this.showOptions = false;
   }
 
-  // Đóng popup options khi click ra ngoài
+  /**
+   * Đóng popup options khi click ra ngoài
+   * Người tạo: DungBT
+   * Ngày tạo: 15/07/2026
+   */
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: Event): void {
     if (!this.el.nativeElement.contains(event.target)) {
@@ -146,7 +153,11 @@ export class WidgetContainerComponent {
     }
   }
 
-  // Đóng popup khi widget khác mở dropdown
+  /**
+   * Đóng popup khi widget khác mở dropdown
+   * Người tạo: DungBT
+   * Ngày tạo: 15/07/2026
+   */
   @HostListener('window:widget-options-open', ['$event'])
   onWidgetOptionsOpen(event: Event): void {
     const customEvent = event as CustomEvent;
@@ -155,7 +166,11 @@ export class WidgetContainerComponent {
     }
   }
 
-  // Tính toán lại khi resize màn hình
+  /**
+   * Tính toán lại khi resize màn hình
+   * Người tạo: DungBT
+   * Ngày tạo: 15/07/2026
+   */
   @HostListener('window:resize')
   onResize(): void {
     if (this.showOptions) {
@@ -163,6 +178,11 @@ export class WidgetContainerComponent {
     }
   }
 
+  /**
+   * Đóng popup options
+   * Người tạo: DungBT
+   * Ngày tạo: 15/07/2026
+   */
   private closeOptions(): void {
     this.showOptions = false;
     this.openLeft = false;

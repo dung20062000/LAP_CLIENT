@@ -1,7 +1,7 @@
 /**
+ * chứa parameters của login
  * Người tạo: DungBT
  * Ngày tạo: 18/06/2026
- * chứa parameters của login
  */
 export interface LoginRequest {
   username: string;
@@ -9,9 +9,9 @@ export interface LoginRequest {
 }
 
 /**
+ * chứa response của login
  * Người tạo: DungBT
  * Ngày tạo: 18/06/2026
- * chứa response của login
  */
 export interface LoginResponse {
   token: string;
@@ -21,9 +21,9 @@ export interface LoginResponse {
 }
 
 /**
+ * chứa thông tin user của response của login
  * Người tạo: DungBT
  * Ngày tạo: 18/06/2026
- * chứa thông tin user của response của login
  */
 export interface UserInfo {
   id: string | number;
@@ -35,9 +35,9 @@ export interface UserInfo {
 }
 
 /**
+ * chứa response của api
  * Người tạo: DungBT
  * Ngày tạo: 18/06/2026
- * chứa response của api
  */
 export interface ApiResponse<T = unknown> {
   success: boolean;

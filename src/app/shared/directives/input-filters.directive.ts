@@ -2,9 +2,9 @@ import { Directive, HostListener, Optional } from '@angular/core';
 import { NgControl } from '@angular/forms';
 
 /**
+ * Mô tả: Chỉ cho phép ký tự số trong input
  * Người tạo: DungBT
  * Ngày tạo: 26/06/2026
- * Mô tả: Chỉ cho phép ký tự số trong input
  */
 @Directive({
   selector: '[appNumbersOnly]',
@@ -33,9 +33,9 @@ export class NumbersOnlyDirective {
 }
 
 /**
+ * Mô tả: Chỉ cho phép ký tự chữ và số trong input
  * Người tạo: DungBT
  * Ngày tạo: 26/06/2026
- * Mô tả: Chỉ cho phép ký tự chữ và số trong input
  */
 @Directive({
   selector: '[appVarcharOnly]',
@@ -64,9 +64,9 @@ export class VarcharOnlyDirective {
 }
 
 /**
+ * Mô tả: Loại bỏ ký tự dấu <, > trong input
  * Người tạo: DungBT
  * Ngày tạo: 26/06/2026
- * Mô tả: Loại bỏ ký tự dấu <, > trong input
  */
 @Directive({
   selector: '[appNoAngleBrackets]',

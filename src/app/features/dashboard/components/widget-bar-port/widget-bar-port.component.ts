@@ -5,11 +5,11 @@ import type { EChartsOption } from 'echarts';
 import { Vehicle } from '../../../../models';
 
 /**
- * Người tạo: DungBT
- * Ngày tạo: 01/06/2026
  * Mô tả: Widget Bar Chart – Phương tiện tại Cảng / Nhà máy.
  *        Trục X: tên bãi/cảng. Trục Y: số lượng xe.
  *        Có dataZoom slider ngang để cuộn khi nhiều cột vượt chiều rộng.
+ * Người tạo: DungBT
+ * Ngày tạo: 01/06/2026
  */
 @Component({
   selector: 'app-widget-bar-port',
@@ -20,22 +20,27 @@ import { Vehicle } from '../../../../models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WidgetBarPortComponent implements OnChanges {
-  //Danh sách xe đã được lọc sẵn theo loại địa điểm (factory hoặc port) từ service
+  /** Danh sách xe đã được lọc sẵn theo loại địa điểm (factory hoặc port) từ service */
   @Input() vehicles: Vehicle[] = [];
-  //Màu sắc cột biểu đồ
+  /** Màu sắc cột biểu đồ */
   @Input() barColor: string = '#00c07f';
-  //Hiển thị thanh cuộn dataZoom ngang
+  /** Hiển thị thanh cuộn dataZoom ngang */
   @Input() showZoom: boolean = true;
 
   chartOption: EChartsOption = {};
-  //Flag kiểm tra xem có dữ liệu hay không
+  /** Flag kiểm tra xem có dữ liệu hay không */
   hasData = false;
-  //Độ rộng động của chart
+  /** Độ rộng động của chart */
   chartWidth = '100%';
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private chartInstance: any;
 
+  /**
+   * Khởi tạo ECharts
+   * Người tạo: DungBT
+   * Ngày tạo: 15/07/2026
+   */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onChartInit(ec: any): void {
     this.chartInstance = ec;
@@ -53,10 +58,10 @@ export class WidgetBarPortComponent implements OnChanges {
   }
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 01/06/2026
    * Xây dựng cấu hình ECharts Bar chart.
    * Gộp xe tại cảng và nhà máy, nhóm theo tên điểm.
+   * Người tạo: DungBT
+   * Ngày tạo: 01/06/2026
    */
   private buildChart(): void {
     // Data đã được lọc sẵn theo loại địa điểm từ service (không cần filter lại)

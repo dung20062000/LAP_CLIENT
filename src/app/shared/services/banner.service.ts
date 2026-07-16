@@ -4,10 +4,10 @@ import { Observable, of } from 'rxjs';
 import { BannerSlide } from '../../features/auth/pages/login';
 
 /**
- * Người tạo: DungBT
- * Ngày tạo: 28/05/2026
  * Mock data banner tạm thời — mỗi banner chứa cả VI và EN.
  * Thay bằng API call thật khi backend CMS sẵn sàng.
+ * Người tạo: DungBT
+ * Ngày tạo: 28/05/2026
  */
 const MOCK_BANNERS: BannerSlide[] = [
   {
@@ -82,9 +82,9 @@ const MOCK_BANNERS: BannerSlide[] = [
 ];
 
 /**
+ * Mô tả: Service lấy danh sách banner từ CMS API (hiện dùng mock data tạm thời).
  * Người tạo: DungBT
  * Ngày tạo: 28/05/2026
- * Mô tả: Service lấy danh sách banner từ CMS API (hiện dùng mock data tạm thời).
  */
 @Injectable({
   providedIn: 'root',
@@ -93,11 +93,11 @@ export class BannerService {
   private http = inject(HttpClient);
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 28/05/2026
    * Lấy danh sách banner. Hiện trả mock data — thay bằng:
    * this.http.get<BannerSlide[]>('/api/banners')
    * khi backend CMS sẵn sàng.
+   * Người tạo: DungBT
+   * Ngày tạo: 28/05/2026
    */
   readonly getBanners = (): Observable<BannerSlide[]> => {
     return of(MOCK_BANNERS);

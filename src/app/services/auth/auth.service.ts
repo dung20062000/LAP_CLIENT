@@ -4,39 +4,47 @@ import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { LoginRequest, LoginResponse, ApiResponse, UserInfo } from '../../models';
 
-// Hardcode credentials tạm thời — xóa khi backend API sẵn sàng.
+/**
+ * Hardcode credentials tạm thời — xóa khi backend API sẵn sàng.
+ * Người tạo: DungBT
+ * Ngày tạo: 19/06/2026
+ */
 const HARDCODE_USERNAME = 'admin';
 const HARDCODE_PASSWORD = 'admin@123';
 
 /**
- * Người tạo: DungBT
- * Ngày tạo: 19/06/2026
  * Mô tả: Service quản lý xác thực — đăng nhập, đăng xuất, lưu token,
  *         khôi phục session từ localStorage/sessionStorage.
+ * Người tạo: DungBT
+ * Ngày tạo: 19/06/2026
  */
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  // Tín hiệu lưu thông tin user hiện tại.
+  /** Tín hiệu lưu thông tin user hiện tại. */
   private currentUserSignal = signal<UserInfo | null>(null);
-  // Tín hiệu lưu JWT token.
+  /** Tín hiệu lưu JWT token. */
   private tokenSignal = signal<string | null>(null);
 
-  // Public readonly signals cho các component đăng ký theo dõi.
+  /** Public readonly signals cho các component đăng ký theo dõi. */
   readonly currentUser = this.currentUserSignal.asReadonly();
   readonly isLoggedIn = computed(() => !!this.currentUserSignal());
 
-  // Kiểm tra môi trường browser để tránh lỗi ReferenceError trên SSR
+  /**
+   * Kiểm tra môi trường browser để tránh lỗi ReferenceError trên SSR
+   * Người tạo: DungBT
+   * Ngày tạo: 18/06/2026
+   */
   private isBrowser(): boolean {
     return typeof window !== 'undefined';
   }
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 28/05/2026
    * Tạo session cookie để đánh dấu session còn hoạt động.
    * Cookie không có expires/max-age nên sẽ tự xóa khi đóng trình duyệt.
+   * Người tạo: DungBT
+   * Ngày tạo: 28/05/2026
    */
   private setSessionCookie(): void {
     if (this.isBrowser()) {
@@ -45,9 +53,9 @@ export class AuthService {
   }
 
   /**
+   * Xóa session cookie
    * Người tạo: DungBT
    * Ngày tạo: 28/05/2026
-   * Xóa session cookie
    */
   private deleteSessionCookie(): void {
     if (this.isBrowser()) {
@@ -57,9 +65,9 @@ export class AuthService {
   }
 
   /**
+   * Kiểm tra session cookie còn tồn tại không (tức là trình duyệt vẫn đang mở, chưa bị tắt hẳn).
    * Người tạo: DungBT
    * Ngày tạo: 18/06/2026
-   * Kiểm tra session cookie còn tồn tại không (tức là trình duyệt vẫn đang mở, chưa bị tắt hẳn).
    */
   private hasSessionCookie(): boolean {
     if (!this.isBrowser()) {
@@ -71,10 +79,10 @@ export class AuthService {
   }
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 28/05/2026
    * Mô tả: Service quản lý xác thực — đăng nhập, đăng xuất, lưu token,
    *         khôi phục session từ localStorage/sessionStorage.
+   * Người tạo: DungBT
+   * Ngày tạo: 28/05/2026
    */
   constructor(
     private http: HttpClient,
@@ -84,10 +92,10 @@ export class AuthService {
   }
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 29/05/2026
    * Thử khôi phục session từ localStorage và set vào signals.
    * Nếu parse lỗi hoặc thiếu data thì clearAuth.
+   * Người tạo: DungBT
+   * Ngày tạo: 29/05/2026
    */
   private tryRestoreSession(): void {
     if (!this.isBrowser()) return;
@@ -107,8 +115,6 @@ export class AuthService {
   }
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 28/05/2026
    * Đọc auth data đã lưu, parse và set vào signals.
    * Nếu parse lỗi thì clear hết để tránh state không hợp lệ.
    * Logic:
@@ -116,6 +122,8 @@ export class AuthService {
    *   - remember_me = 'false' → Không ghi nhớ: chỉ khôi phục nếu session cookie còn tồn tại
    *                             (tức là trình duyệt vẫn đang mở, chưa bị tắt hẳn).
    *   - Còn lại → clearAuth.
+   * Người tạo: DungBT
+   * Ngày tạo: 28/05/2026
    */
   private loadStoredAuth(): void {
     if (!this.isBrowser()) return;
@@ -139,14 +147,14 @@ export class AuthService {
   }
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 28/05/2026
    * @param credentials: truyền vào username, password
    * @param rememberMe: true nếu muốn ghi nhớ đăng nhập, false nếu không muốn ghi nhớ
    * Đăng nhập — hiện dùng hardcode tạm thời (admin/admin@123).
    * Nếu rememberMe = true: lưu vào localStorage với flag remember_me = true, xóa session cookie.
    * Ngược lại: lưu vào localStorage với flag remember_me = false và tạo session cookie.
    * Thay bằng gọi API /api/auth khi backend sẵn sàng.
+   * Người tạo: DungBT
+   * Ngày tạo: 28/05/2026
    */
   login(credentials: LoginRequest, rememberMe: boolean): Observable<ApiResponse<LoginResponse>> {
     if (
@@ -205,9 +213,9 @@ export class AuthService {
   }
 
   /**
+   * Đăng xuất — xóa signals, clear storage, điều hướng về /login.
    * Người tạo: DungBT
    * Ngày tạo: 28/05/2026
-   * Đăng xuất — xóa signals, clear storage, điều hướng về /login.
    */
   logout(): void {
     this.clearAuth();
@@ -215,9 +223,9 @@ export class AuthService {
   }
 
   /**
+   * Xóa toàn bộ auth state: signals, localStorage, sessionStorage và session cookie.
    * Người tạo: DungBT
    * Ngày tạo: 28/05/2026
-   * Xóa toàn bộ auth state: signals, localStorage, sessionStorage và session cookie.
    */
   private clearAuth(): void {
     this.tokenSignal.set(null);
@@ -234,18 +242,18 @@ export class AuthService {
   }
 
   /**
+   * Lấy token hiện tại — dùng để attach vào HTTP header.
    * Người tạo: DungBT
    * Ngày tạo: 28/05/2026
-   * Lấy token hiện tại — dùng để attach vào HTTP header.
    */
   getToken(): string | null {
     return this.tokenSignal();
   }
 
   /**
+   * Kiểm tra đã xác thực chưa — dùng trong authGuard.
    * Người tạo: DungBT
    * Ngày tạo: 28/05/2026
-   * Kiểm tra đã xác thực chưa — dùng trong authGuard.
    */
   isAuthenticated(): boolean {
     return !!this.tokenSignal() && !!this.currentUserSignal();

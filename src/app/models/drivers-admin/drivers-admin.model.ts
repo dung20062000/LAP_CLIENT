@@ -1,13 +1,13 @@
 /**
+ * Mô tả: Các interface/model dùng cho màn hình Quản Lý Lái Xe.
  * Người tạo: DungBT
  * Ngày tạo: 25/06/2026
- * Mô tả: Các interface/model dùng cho màn hình Quản Lý Lái Xe.
  */
 
 /**
+ * Enum cho loại tìm kiếm lái xe
  * Người tạo: DungBT
  * Ngày tạo: 01/07/2026
- * Enum cho loại tìm kiếm lái xe
  */
 export enum DriverSearchType {
   Name = 0,
@@ -15,9 +15,9 @@ export enum DriverSearchType {
 }
 
 /**
+ * Dropdown lái xe (GET /api/drivers/lookup)
  * Người tạo: DungBT
  * Ngày tạo: 01/07/2026
- * Dropdown lái xe (GET /api/drivers/lookup)
  */
 export interface DriverLookupDto {
   Value: number;
@@ -25,9 +25,9 @@ export interface DriverLookupDto {
 }
 
 /**
+ * Dropdown loại bằng (GET /api/drivers/license-types-lookup)
  * Người tạo: DungBT
  * Ngày tạo: 01/07/2026
- * Dropdown loại bằng (GET /api/drivers/license-types-lookup)
  */
 export interface LicenseTypeLookupDto {
   Value: number;
@@ -36,9 +36,9 @@ export interface LicenseTypeLookupDto {
 }
 
 /**
+ * Dữ liệu một dòng lái xe trong lưới
  * Người tạo: DungBT
  * Ngày tạo: 01/07/2026
- * Dữ liệu một dòng lái xe trong lưới
  */
 export interface DriverDto {
   Id: number;
@@ -47,18 +47,21 @@ export interface DriverDto {
   DisplayName: string;
   Mobile: string | null;
   DriverLicense: string | null;
-  IssueLicenseDate: string | null; // ISO string từ API
-  ExpireLicenseDate: string | null; // ISO string từ API
+  /** ISO string từ API */
+  IssueLicenseDate: string | null;
+  /** ISO string từ API */
+  ExpireLicenseDate: string | null;
   IssueLicensePlace: string | null;
   LicenseType: number | null;
   LicenseTypeName: string | null;
-  UpdatedDate: string | null; // ISO string từ API
+  /** ISO string từ API */
+  UpdatedDate: string | null;
 }
 
 /**
+ * Response phân trang cho lưới
  * Người tạo: DungBT
  * Ngày tạo: 01/07/2026
- * Response phân trang cho lưới
  */
 export interface DriverListResponse {
   TotalRecord: number;
@@ -66,9 +69,9 @@ export interface DriverListResponse {
 }
 
 /**
+ * Request filter cho lưới và export
  * Người tạo: DungBT
  * Ngày tạo: 01/07/2026
- * Request filter cho lưới và export
  */
 export interface DriverListRequest {
   Type?: DriverSearchType;
@@ -80,9 +83,9 @@ export interface DriverListRequest {
 }
 
 /**
+ * Payload batch update một dòng
  * Người tạo: DungBT
  * Ngày tạo: 01/07/2026
- * Payload batch update một dòng
  */
 export interface UpdateDriverRequest {
   Id: number;

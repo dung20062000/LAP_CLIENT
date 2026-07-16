@@ -5,7 +5,7 @@ import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { MediaImageItem } from '../../../../models/media';
 
-// Địa chỉ fake cho caption – xóa sau khi có API
+/** Địa chỉ fake cho caption – xóa sau khi có API */
 const FAKE_ADDRESSES = [
   'Bãi đỗ 49 Đức Giang',
   'Điểm kẹp chí - KV3',
@@ -15,8 +15,6 @@ const FAKE_ADDRESSES = [
 ];
 
 /**
- * Người tạo: DungBT
- * Ngày tạo: 04/06/2026
  * Mô tả: Dialog xem ảnh chi tiết – custom slideshow (không dùng p-galleria
  * để tránh lỗi two-way binding với ChangeDetectionStrategy.OnPush).
  * @Input() images: MediaImageItem[] – danh sách ảnh trang hiện tại
@@ -25,6 +23,8 @@ const FAKE_ADDRESSES = [
  * @Output() visibleChange: EventEmitter<boolean> – emit khi đóng dialog
  * @Hỗ trợ circular navigation, autoPlay (timer 3s).
  * @Caption overlay: biển số, thời gian, kênh, địa chỉ, tốc độ, nút download.
+ * Người tạo: DungBT
+ * Ngày tạo: 04/06/2026
  */
 @Component({
   selector: 'app-media-detail-dialog',
@@ -51,57 +51,58 @@ export class MediaDetailDialogComponent implements OnChanges, OnDestroy {
   @Output() loadNextPage = new EventEmitter<void>();
   @Output() loadPrevPage = new EventEmitter<void>();
 
-  // Cho phép circular navigation (quay lại đầu khi ở cuối)
+  /** Cho phép circular navigation (quay lại đầu khi ở cuối) */
+  /** Cho phép circular navigation (quay lại đầu khi ở cuối) */
   circular = true;
 
-  // Trạng thái autoPlay
+  /** Trạng thái autoPlay */
   autoPlay = false;
 
-  // Index hiện tại – hoàn toàn do component tự quản lý
+  /** Index hiện tại – hoàn toàn do component tự quản lý */
   currentIndex: number = 0;
 
-  // Lưu hướng chuyển trang để sau khi fetch xong sẽ gán lại index phù hợp
+  /** Lưu hướng chuyển trang để sau khi fetch xong sẽ gán lại index phù hợp */
   pendingDirection: 'next' | 'prev' | null = null;
 
-  // Timer handle cho autoPlay
+  /** Timer handle cho autoPlay */
   private autoPlayTimer: ReturnType<typeof setInterval> | null = null;
 
-  // Getter tiện lợi để lấy ảnh hiện tại
+  /** Getter tiện lợi để lấy ảnh hiện tại */
   get currentImage(): MediaImageItem {
     return this.images[this.currentIndex];
   }
 
   /**
+   * Kiểm tra xem có trang tiếp theo không
    * Người tạo: DungBT
    * Ngày tạo: 23/06/2026
-   * Kiểm tra xem có trang tiếp theo không
    */
   get hasNextPage(): boolean {
     return (this.currentPage + 1) * this.rows < this.totalRecords;
   }
 
   /**
+   * Kiểm tra xem có trang trước không
    * Người tạo: DungBT
    * Ngày tạo: 23/06/2026
-   * Kiểm tra xem có trang trước không
    */
   get hasPrevPage(): boolean {
     return this.currentPage > 0;
   }
 
   /**
+   * Lấy index hiện tại trong tổng số ảnh
    * Người tạo: DungBT
    * Ngày tạo: 23/06/2026
-   * Lấy index hiện tại trong tổng số ảnh
    */
   get globalCurrentIndex(): number {
     return this.currentPage * this.rows + this.currentIndex + 1;
   }
 
   /**
+   * Xử lý khi component nhận inputs thay đổi
    * Người tạo: DungBT
    * Ngày tạo: 23/06/2026
-   * Xử lý khi component nhận inputs thay đổi
    */
   ngOnChanges(changes: SimpleChanges): void {
     // Khi mở dialog hoặc activeIndex thay đổi, đồng bộ lại
@@ -127,9 +128,9 @@ export class MediaDetailDialogComponent implements OnChanges, OnDestroy {
   }
 
   /**
+   * Chuyển sang ảnh trước.
    * Người tạo: DungBT
    * Ngày tạo: 09/06/2026
-   * Chuyển sang ảnh trước.
    */
   prev(): void {
     if (this.images.length === 0 || this.loading) return;
@@ -145,9 +146,9 @@ export class MediaDetailDialogComponent implements OnChanges, OnDestroy {
   }
 
   /**
+   * Chuyển sang ảnh tiếp theo.
    * Người tạo: DungBT
    * Ngày tạo: 09/06/2026
-   * Chuyển sang ảnh tiếp theo.
    */
   next(): void {
     if (this.images.length === 0 || this.loading) return;
@@ -163,20 +164,20 @@ export class MediaDetailDialogComponent implements OnChanges, OnDestroy {
   }
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 04/06/2026
    * Lấy địa chỉ fake theo index cho caption overlay.
    * Xóa sau khi có reverse geocode từ latitude/longitude.
    * @param index Index ảnh trong danh sách
+   * Người tạo: DungBT
+   * Ngày tạo: 04/06/2026
    */
   getFakeAddress(index: number): string {
     return FAKE_ADDRESSES[index % FAKE_ADDRESSES.length];
   }
 
   /**
+   * Toggle bật/tắt chế độ xem ảnh tự động (autoPlay).
    * Người tạo: DungBT
    * Ngày tạo: 04/06/2026
-   * Toggle bật/tắt chế độ xem ảnh tự động (autoPlay).
    */
   toggleAutoPlay(): void {
     this.autoPlay = !this.autoPlay;
@@ -189,9 +190,9 @@ export class MediaDetailDialogComponent implements OnChanges, OnDestroy {
   }
 
   /**
+   * Bắt đầu autoPlay với interval 3 giây.
    * Người tạo: DungBT
    * Ngày tạo: 09/06/2026
-   * Bắt đầu autoPlay với interval 3 giây.
    */
   private startAutoPlay(): void {
     this.stopAutoPlay();
@@ -201,9 +202,9 @@ export class MediaDetailDialogComponent implements OnChanges, OnDestroy {
   }
 
   /**
+   * Dừng autoPlay.
    * Người tạo: DungBT
    * Ngày tạo: 09/06/2026
-   * Dừng autoPlay.
    */
   private stopAutoPlay(): void {
     if (this.autoPlayTimer !== null) {
@@ -213,10 +214,10 @@ export class MediaDetailDialogComponent implements OnChanges, OnDestroy {
   }
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 04/06/2026
    * Tải ảnh hiện tại về máy
    * @param image Ảnh cần download
+   * Người tạo: DungBT
+   * Ngày tạo: 04/06/2026
    */
   onDownload(image: MediaImageItem): void {
     if (!image?.url) return;
@@ -245,9 +246,9 @@ export class MediaDetailDialogComponent implements OnChanges, OnDestroy {
   }
 
   /**
+   * Đóng dialog và emit trạng thái về page cha.
    * Người tạo: DungBT
    * Ngày tạo: 04/06/2026
-   * Đóng dialog và emit trạng thái về page cha.
    */
   onHide(): void {
     this.autoPlay = false;

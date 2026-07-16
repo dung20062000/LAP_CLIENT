@@ -11,17 +11,24 @@ import { TreeNode, MessageService } from 'primeng/api';
 
 import { getHttpErrorMessage } from '../../../../shared/utils/http-error';
 import { MediaService } from '../../../../services/media';
-import { VehicleItem, MediaChannel, MediaSearchParams, SortOption, GalleryLayoutCols, GALLERY_LAYOUTS } from '../../../../models/media';
+import {
+  VehicleItem,
+  MediaChannel,
+  MediaSearchParams,
+  SortOption,
+  GalleryLayoutCols,
+  GALLERY_LAYOUTS,
+} from '../../../../models/media';
 
 /**
- * Người tạo: DungBT
- * Ngày tạo: 04/06/2026
  * Mô tả: Bộ lọc màn hình Xem Ảnh Phương Tiện.
  *        - TreeSelect nhóm PT → khi chọn/bỏ chọn sẽ gọi service lấy danh sách xe.
  *        - Dropdown xe (có filter), MultiSelect kênh (Kênh 1..4).
  *        - Calendar ngày + 2 Calendar giờ bắt đầu/kết thúc (timeOnly).
  *        - Logic disable: ngày kết thúc không được cách ngày bắt đầu quá 30 ngày.
  *        - Emit sự kiện (search) kèm MediaSearchParams ra page cha khi bấm Tìm kiếm.
+ * Người tạo: DungBT
+ * Ngày tạo: 04/06/2026
  */ @Component({
   selector: 'app-media-filter',
   standalone: true,
@@ -36,39 +43,39 @@ export class MediaFilterComponent implements OnInit {
   private cdr = inject(ChangeDetectorRef);
   private messageService = inject(MessageService);
 
-  // Quản lý số cột của layout từ component cha
+  /**  Quản lý số cột của layout từ component cha */
   @Input() activeLayout: GalleryLayoutCols = GalleryLayoutCols.Col6;
   @Output() layoutChange = new EventEmitter<GalleryLayoutCols>();
 
-  // Các tùy chọn layout được hỗ trợ
+  /** Các tùy chọn layout được hỗ trợ */
   layouts = GALLERY_LAYOUTS;
 
-  // Sự kiện phát ra params tìm kiếm cho page cha
+  /** Sự kiện phát ra params tìm kiếm cho page cha */
   @Output() searchSubmit = new EventEmitter<MediaSearchParams | null>();
 
-  // Dữ liệu cho TreeSelect nhóm PT
+  /** Dữ liệu cho TreeSelect nhóm PT */
   vehicleGroups: TreeNode[] = [];
   originalVehicleGroups: TreeNode[] = [];
-  // Các node đang được chọn trong TreeSelect
+  /** Các node đang được chọn trong TreeSelect */
   selectedGroups: TreeNode[] = [];
 
-  // Dữ liệu và giá trị cho Dropdown xe
+  /** Dữ liệu và giá trị cho Dropdown xe */
   vehicleList: VehicleItem[] = [];
   selectedVehicle: VehicleItem | null = null;
   vehicleLoading = false;
 
-  // Dữ liệu và giá trị cho MultiSelect kênh
+  /** Dữ liệu và giá trị cho MultiSelect kênh */
   channelOptions: MediaChannel[] = [];
   selectedChannels: number[] = [];
 
-  // Dropdown chiều sắp xếp
+  /** Dropdown chiều sắp xếp */
   sortOptions: SortOption[] = [
     { label: 'Theo ảnh mới nhất', value: 'desc' },
     { label: 'Theo ảnh cũ nhất', value: 'asc' },
   ];
   selectedSort: 'desc' | 'asc' = 'desc';
 
-  // Calendar ngày
+  /** Calendar ngày */
   selectedDate: Date | null = new Date();
   today = new Date();
   minDate: Date = (() => {
@@ -78,28 +85,28 @@ export class MediaFilterComponent implements OnInit {
   })();
   groupSearchQuery = '';
 
-  // Calendar giờ bắt đầu (default 00:00)
+  /** Calendar giờ bắt đầu (default 00:00) */
   startTime: Date = (() => {
     const d = new Date();
     d.setHours(0, 0, 0, 0);
     return d;
   })();
 
-  // Calendar giờ kết thúc (default 23:59)
+  /** Calendar giờ kết thúc (default 23:59) */
   endTime: Date = (() => {
     const d = new Date();
     d.setHours(23, 59, 0, 0);
     return d;
   })();
 
-  // Ngày tối đa cho endDate (startDate + 30 ngày)
+  /** Ngày tối đa cho endDate (startDate + 30 ngày) */
   maxEndDate: Date = new Date();
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 22/06/2026
    * Kiểm tra giờ bắt đầu và giờ kết thúc có hợp lệ không.
    * Trả về true nếu giờ bắt đầu lớn hơn giờ kết thúc.
+   * Người tạo: DungBT
+   * Ngày tạo: 22/06/2026
    */
   get isTimeRangeInvalid(): boolean {
     if (!this.startTime || !this.endTime) return false;
@@ -109,9 +116,9 @@ export class MediaFilterComponent implements OnInit {
   }
 
   /**
+   * Lấy nhãn hiển thị cho danh sách nhóm phương tiện được chọn.
    * Người tạo: DungBT
    * Ngày tạo: 22/06/2026
-   * Lấy nhãn hiển thị cho danh sách nhóm phương tiện được chọn.
    */
   getSelectedGroupsLabel(): string {
     const selected = this.selectedGroups || [];
@@ -140,9 +147,9 @@ export class MediaFilterComponent implements OnInit {
   }
 
   /**
+   * Gọi service lấy cây nhóm xe cho TreeSelect.
    * Người tạo: DungBT
    * Ngày tạo: 04/06/2026
-   * Gọi service lấy cây nhóm xe cho TreeSelect.
    */
   private loadVehicleGroups(): void {
     this.mediaService.getVehicleGroups().subscribe({
@@ -163,18 +170,18 @@ export class MediaFilterComponent implements OnInit {
     });
   }
   /**
+   * Thay đổi layout hiển thị ảnh
    * Người tạo: DungBT
    * Ngày tạo: 04/06/2026
-   * Thay đổi layout hiển thị ảnh
    */
   changeLayout(cols: GalleryLayoutCols): void {
     this.layoutChange.emit(cols);
   }
 
   /**
+   * Bộ lọc tùy chỉnh cho TreeSelect nhóm phương tiện.
    * Người tạo: DungBT
    * Ngày tạo: 05/06/2026
-   * Bộ lọc tùy chỉnh cho TreeSelect nhóm phương tiện.
    */
   onCustomFilter(event: Event): void {
     const query = (event.target as HTMLInputElement).value.toLowerCase().trim();
@@ -187,9 +194,9 @@ export class MediaFilterComponent implements OnInit {
   }
 
   /**
+   * Lọc node tree. Nếu group cha khớp thì giữ lại toàn bộ con của nó.
    * Người tạo: DungBT
    * Ngày tạo: 05/06/2026
-   * Lọc node tree. Nếu group cha khớp thì giữ lại toàn bộ con của nó.
    */
   private filterTreeNodes(nodes: TreeNode[], query: string): TreeNode[] {
     const filtered: TreeNode[] = [];
@@ -212,9 +219,9 @@ export class MediaFilterComponent implements OnInit {
   }
 
   /**
+   * Reset kết quả tìm kiếm khi đóng dropdown TreeSelect
    * Người tạo: DungBT
    * Ngày tạo: 04/06/2026
-   * Reset kết quả tìm kiếm khi đóng dropdown TreeSelect
    */
   onTreeSelectHide(): void {
     this.groupSearchQuery = '';
@@ -223,9 +230,9 @@ export class MediaFilterComponent implements OnInit {
   }
 
   /**
+   * Reset kết quả tìm kiếm khi mở dropdown TreeSelect
    * Người tạo: DungBT
    * Ngày tạo: 04/06/2026
-   * Reset kết quả tìm kiếm khi mở dropdown TreeSelect
    */
   onTreeSelectShow(): void {
     this.groupSearchQuery = '';
@@ -234,9 +241,9 @@ export class MediaFilterComponent implements OnInit {
   }
 
   /**
+   * Xóa từ khóa tìm kiếm và khôi phục danh sách nhóm
    * Người tạo: DungBT
    * Ngày tạo: 04/06/2026
-   * Xóa từ khóa tìm kiếm và khôi phục danh sách nhóm
    */
   clearSearchQuery(): void {
     this.groupSearchQuery = '';
@@ -245,36 +252,36 @@ export class MediaFilterComponent implements OnInit {
   }
 
   /**
+   * Xử lý khi giá trị TreeSelect thay đổi
    * Người tạo: DungBT
    * Ngày tạo: 04/06/2026
-   * Xử lý khi giá trị TreeSelect thay đổi
    */
   onGroupsChange(): void {
     this.loadVehiclesByGroups();
   }
 
   /**
+   * Khi chọn/bỏ chọn node nhóm trong TreeSelect → load lại danh sách xe.
    * Người tạo: DungBT
    * Ngày tạo: 04/06/2026
-   * Khi chọn/bỏ chọn node nhóm trong TreeSelect → load lại danh sách xe.
    */
   onNodeSelect(): void {
     this.loadVehiclesByGroups();
   }
 
   /**
+   * Khi bỏ chọn node nhóm → load lại danh sách xe theo nhóm còn lại.
    * Người tạo: DungBT
    * Ngày tạo: 04/06/2026
-   * Khi bỏ chọn node nhóm → load lại danh sách xe theo nhóm còn lại.
    */
   onNodeUnselect(): void {
     this.loadVehiclesByGroups();
   }
 
   /**
+   * Trả về tất cả các node lá.
    * Người tạo: DungBT
    * Ngày tạo: 05/06/2026
-   * Trả về tất cả các node lá.
    */
   private getAllLeafNodes(nodes: TreeNode[]): TreeNode[] {
     let leaves: TreeNode[] = [];
@@ -289,9 +296,9 @@ export class MediaFilterComponent implements OnInit {
   }
 
   /**
+   * Trả về tất cả các node bao gồm cả node cha.
    * Người tạo: DungBT
    * Ngày tạo: 05/06/2026
-   * Trả về tất cả các node bao gồm cả node cha.
    */
   private getAllNodes(nodes: TreeNode[]): TreeNode[] {
     let all: TreeNode[] = [];
@@ -305,9 +312,9 @@ export class MediaFilterComponent implements OnInit {
   }
 
   /**
+   * Kiểm tra xem tất cả các nhóm phương tiện đã được chọn hay chưa.
    * Người tạo: DungBT
    * Ngày tạo: 05/06/2026
-   * Kiểm tra xem tất cả các nhóm phương tiện đã được chọn hay chưa.
    */
   isAllSelected(): boolean {
     if (!this.vehicleGroups || this.vehicleGroups.length === 0) return false;
@@ -319,9 +326,9 @@ export class MediaFilterComponent implements OnInit {
   }
 
   /**
+   * Chọn tất cả hoặc bỏ chọn tất cả các nhóm phương tiện.
    * Người tạo: DungBT
    * Ngày tạo: 05/06/2026
-   * Chọn tất cả hoặc bỏ chọn tất cả các nhóm phương tiện.
    */
   toggleSelectAll(event: boolean | { checked?: boolean } | Event | null | undefined): void {
     let checked = false;
@@ -343,9 +350,9 @@ export class MediaFilterComponent implements OnInit {
   }
 
   /**
+   * Chọn tất cả hoặc bỏ chọn tất cả các kênh.
    * Người tạo: DungBT
    * Ngày tạo: 05/06/2026
-   * Chọn tất cả hoặc bỏ chọn tất cả các kênh.
    */
   toggleAllChannels(): void {
     if (this.isAllChannelsSelected()) {
@@ -356,25 +363,31 @@ export class MediaFilterComponent implements OnInit {
     this.cdr.markForCheck();
   }
 
-  // Kiểm tra xem tất cả các kênh đã được chọn hay chưa.
+  /** Kiểm tra xem tất cả các kênh đã được chọn hay chưa.
+   * Người tạo: DungBT
+   * Ngày tạo: 05/06/2026
+   */
   isAllChannelsSelected(): boolean {
     return (
       this.channelOptions.length > 0 && this.selectedChannels.length === this.channelOptions.length
     );
   }
 
-  //Đếm số lượng node lá (nhóm phương tiện con).
+  /**Đếm số lượng node lá (nhóm phương tiện con).
+   * Người tạo: DungBT
+   * Ngày tạo: 05/06/2026
+   */
   getLeafNodesCount(): number {
     return this.getAllLeafNodes(this.vehicleGroups).length;
   }
 
-  // Trạng thái expand/collapse toàn bộ tree nodes
+  /** Trạng thái expand/collapse toàn bộ tree nodes */
   isAllExpanded = false;
 
   /**
+   * Mở rộng / Thu gọn toàn bộ các node trong TreeSelect.
    * Người tạo: DungBT
    * Ngày tạo: 10/06/2026
-   * Mở rộng / Thu gọn toàn bộ các node trong TreeSelect.
    */
   toggleExpandAll(): void {
     this.isAllExpanded = !this.isAllExpanded;
@@ -383,9 +396,9 @@ export class MediaFilterComponent implements OnInit {
   }
 
   /**
+   * Dùng để mở rộng / thu gọn tất cả các node trong TreeSelect.
    * Người tạo: DungBT
    * Ngày tạo: 10/06/2026
-   * Dùng để mở rộng / thu gọn tất cả các node trong TreeSelect.
    */
   private expandAllRecursive(nodes: TreeNode[], isExpand: boolean): void {
     for (const node of nodes) {
@@ -397,9 +410,9 @@ export class MediaFilterComponent implements OnInit {
   }
 
   /**
+   * Dùng để tải danh sách xe theo nhóm.
    * Người tạo: DungBT
    * Ngày tạo: 10/06/2026
-   * Dùng để tải danh sách xe theo nhóm.
    */
   private loadVehiclesByGroups(): void {
     // Lấy key của các node lá đang được chọn
@@ -434,9 +447,9 @@ export class MediaFilterComponent implements OnInit {
   }
 
   /**
+   * Khi chọn xe → khởi tạo danh sách kênh (Kênh 1->4).
    * Người tạo: DungBT
    * Ngày tạo: 04/06/2026
-   * Khi chọn xe → khởi tạo danh sách kênh (Kênh 1->4).
    */
   onVehicleChange(): void {
     if (this.selectedVehicle) {
@@ -454,18 +467,18 @@ export class MediaFilterComponent implements OnInit {
   }
 
   /**
+   * Khi thay đổi ngày bắt đầu → tính lại maxEndDate (không quá 30 ngày).
    * Người tạo: DungBT
    * Ngày tạo: 04/06/2026
-   * Khi thay đổi ngày bắt đầu → tính lại maxEndDate (không quá 30 ngày).
    */
   onDateChange(): void {
     this.updateMaxEndDate();
   }
 
   /**
+   * Tính maxEndDate = selectedDate + 30 ngày (tối đa đến today).
    * Người tạo: DungBT
    * Ngày tạo: 04/06/2026
-   * Tính maxEndDate = selectedDate + 30 ngày (tối đa đến today).
    */
   private updateMaxEndDate(): void {
     if (!this.selectedDate) {
@@ -479,10 +492,10 @@ export class MediaFilterComponent implements OnInit {
   }
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 04/06/2026
    * Build params và emit sự kiện search ra page cha.
    * Validate: phải chọn xe trước khi tìm kiếm, thời gian hợp lệ.
+   * Người tạo: DungBT
+   * Ngày tạo: 04/06/2026
    */
   onSearch(): void {
     if (!this.selectedVehicle) return this.showError('Vui lòng chọn xe');
@@ -529,11 +542,11 @@ export class MediaFilterComponent implements OnInit {
   }
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 04/06/2026
    * Format Date thành chuỗi ISO datetime không có timezone
    * để gửi lên API đúng định dạng "yyyy-MM-ddTHH:mm:ss".
    * @param date Date cần format
+   * Người tạo: DungBT
+   * Ngày tạo: 04/06/2026
    */
   private formatDatetime(date: Date): string {
     const pad = (n: number): string => String(n).padStart(2, '0');
@@ -544,9 +557,9 @@ export class MediaFilterComponent implements OnInit {
   }
 
   /**
+   * @param detail Text thông báo lỗi
    * Người tạo: DungBT
    * Ngày tạo: 04/06/2026
-   * @param detail Text thông báo lỗi
    */
   private showError(detail: string): void {
     this.messageService.add({

@@ -5,13 +5,13 @@ import { CommonModule } from '@angular/common';
 import { VehicleOption } from '../../../../models';
 
 /**
- * Người tạo: DungBT
- * Ngày tạo: 01/06/2026
  * Mô tả: Component bộ lọc phương tiện – thuần Angular, không dùng ng-select.
  *        - Custom dropdown multi-select với checkbox.
  *        - Header ghim cố định "Tất cả (N)" ở đầu dropdown.
  *        - Hỗ trợ search, clear, click-outside để đóng dropdown.
  *        - Emit filterChange: number[] (danh sách Vehicle.id được chọn).
+ * Người tạo: DungBT
+ * Ngày tạo: 01/06/2026
  */
 @Component({
   selector: 'app-dashboard-filter',
@@ -22,23 +22,23 @@ import { VehicleOption } from '../../../../models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardFilterComponent implements OnInit, OnChanges, OnDestroy, AfterViewInit {
-  // Danh sách option xe nhận từ service
+  /** Danh sách option xe nhận từ service */
   @Input() vehicleOptions: VehicleOption[] = [];
-  // Phát ra danh sách Vehicle.id đang được chọn (rỗng = tất cả)
+  /** Phát ra danh sách Vehicle.id đang được chọn (rỗng = tất cả) */
   @Output() filterChange = new EventEmitter<number[]>();
 
   @ViewChild('searchInput') searchInputRef?: ElementRef<HTMLInputElement>;
 
-  // Giá trị đang chọn
+  /** Giá trị đang chọn */
   selectedIds: number[] = [];
 
-  // Trạng thái mở/đóng dropdown
+  /** Trạng thái mở/đóng dropdown */
   isOpen = false;
 
-  // Từ khóa tìm kiếm
+  /** Từ khóa tìm kiếm */
   searchTerm = '';
 
-  // Danh sách options đã lọc theo searchTerm
+  /** Danh sách options đã lọc theo searchTerm */
   filteredOptions: VehicleOption[] = [];
 
   constructor(
@@ -51,9 +51,9 @@ export class DashboardFilterComponent implements OnInit, OnChanges, OnDestroy, A
   }
 
   /**
+   * Xử lý thay đổi input
    * Người tạo: DungBT
    * Ngày tạo: 01/06/2026
-   * Xử lý thay đổi input
    */
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['vehicleOptions']) {
@@ -71,12 +71,20 @@ export class DashboardFilterComponent implements OnInit, OnChanges, OnDestroy, A
 
   ngOnDestroy(): void {}
 
-  // Kiểm tra xem tất cả xe có đang được chọn hay không.
+  /**
+   * Kiểm tra xem tất cả xe có đang được chọn hay không.
+   * Người tạo: DungBT
+   * Ngày tạo: 15/07/2026
+   */
   get isAllSelected(): boolean {
     return this.vehicleOptions.length > 0 && this.selectedIds.length === this.vehicleOptions.length;
   }
 
-  // Mở/đóng dropdown
+  /**
+   * Mở/đóng dropdown
+   * Người tạo: DungBT
+   * Ngày tạo: 15/07/2026
+   */
   toggleDropdown(): void {
     this.searchTerm = '';
     this.isOpen = !this.isOpen;
@@ -89,7 +97,11 @@ export class DashboardFilterComponent implements OnInit, OnChanges, OnDestroy, A
     this.cdr.markForCheck();
   }
 
-  // Đóng dropdown
+  /**
+   * Đóng dropdown
+   * Người tạo: DungBT
+   * Ngày tạo: 15/07/2026
+   */
   closeDropdown(): void {
     if (this.isOpen) {
       this.isOpen = false;
@@ -100,9 +112,9 @@ export class DashboardFilterComponent implements OnInit, OnChanges, OnDestroy, A
   }
 
   /**
+   * Lắng nghe click toàn document để đóng dropdown khi click ra ngoài.
    * Người tạo: DungBT
    * Ngày tạo: 01/06/2026
-   * Lắng nghe click toàn document để đóng dropdown khi click ra ngoài.
    */
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {
@@ -112,36 +124,60 @@ export class DashboardFilterComponent implements OnInit, OnChanges, OnDestroy, A
   }
 
   @HostListener('document:keydown.escape')
+
+  /**
+   * Đóng dropdown khi nhấn phím ESC
+   * Người tạo: DungBT
+   * Ngày tạo: 15/07/2026
+   */
   onEscape(): void {
     this.closeDropdown();
   }
 
-  /** Lọc danh sách khi người dùng gõ tìm kiếm */
+  /**
+   * Lọc danh sách khi người dùng gõ tìm kiếm
+   * Người tạo: DungBT
+   * Ngày tạo: 15/07/2026
+   */
   onSearch(): void {
     this.filteredOptions = this.applySearch(this.vehicleOptions, this.searchTerm);
     this.cdr.markForCheck();
   }
 
+  /**
+   * Áp dụng tìm kiếm
+   * Người tạo: DungBT
+   * Ngày tạo: 15/07/2026
+   */
   private applySearch(options: VehicleOption[], term: string): VehicleOption[] {
     if (!term || !term.trim()) return [...options];
     const lower = term.trim().toLowerCase();
     return options.filter((o) => o.label.toLowerCase().includes(lower));
   }
 
-  // Kiểm tra item có đang được chọn không
+  /**
+   *  Kiểm tra item có đang được chọn không
+   * Người tạo: DungBT
+   * Ngày tạo: 15/07/2026
+   */
+
   isSelected(id: number): boolean {
     return this.selectedIds.includes(id);
   }
 
-  // Lấy label theo id
+  /**
+   * Lấy label theo id
+   * Người tạo: DungBT
+   * Ngày tạo: 15/07/2026
+   */
   getLabelById(id: number): string {
     return this.vehicleOptions.find((o) => o.value === id)?.label ?? '';
   }
 
   /**
+   * Bật/tắt chọn tất cả xe từ checkbox header "Tất cả".
    * Người tạo: DungBT
    * Ngày tạo: 01/06/2026
-   * Bật/tắt chọn tất cả xe từ checkbox header "Tất cả".
    */
   toggleAllSelection(): void {
     if (this.isAllSelected) {
@@ -154,9 +190,9 @@ export class DashboardFilterComponent implements OnInit, OnChanges, OnDestroy, A
   }
 
   /**
+   * Chọn/bỏ chọn một item theo id.
    * Người tạo: DungBT
    * Ngày tạo: 01/06/2026
-   * Chọn/bỏ chọn một item theo id.
    */
   toggleItem(id: number): void {
     const idx = this.selectedIds.indexOf(id);
@@ -170,9 +206,9 @@ export class DashboardFilterComponent implements OnInit, OnChanges, OnDestroy, A
   }
 
   /**
+   * Xóa một item khỏi danh sách chọn (bấm × trên tag).
    * Người tạo: DungBT
    * Ngày tạo: 01/06/2026
-   * Xóa một item khỏi danh sách chọn (bấm × trên tag).
    */
   removeItem(id: number, event: Event): void {
     event.stopPropagation();
@@ -182,9 +218,9 @@ export class DashboardFilterComponent implements OnInit, OnChanges, OnDestroy, A
   }
 
   /**
+   * Gọi khi người dùng xóa tất cả bằng nút clear.
    * Người tạo: DungBT
    * Ngày tạo: 01/06/2026
-   * Gọi khi người dùng xóa tất cả bằng nút clear.
    */
   onClear(event: Event): void {
     event.stopPropagation();

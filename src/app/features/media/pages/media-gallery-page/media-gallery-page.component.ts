@@ -15,8 +15,6 @@ import { MediaImageCardComponent } from '../../components/media-image-card/media
 import { MediaDetailDialogComponent } from '../../components/media-detail-dialog/media-detail-dialog.component';
 
 /**
- * Người tạo: DungBT
- * Ngày tạo: 04/06/2026
  * Mô tả: Trang chính Xem Ảnh Phương Tiện.
  *        - Phối hợp MediaFilterComponent, MediaImageCardComponent,
  *          MediaDetailDialogComponent và PrimeNG Paginator.
@@ -24,6 +22,8 @@ import { MediaDetailDialogComponent } from '../../components/media-detail-dialog
  *        - Container height: 100%; overflow-y: auto để fit vừa 1 màn hình.
  *        - Layout grid: 4 cột (col-md-3), 5 cột (col-20), 6 cột (col-md-2).
  *          Mặc định 6 cột.
+ * Người tạo: DungBT
+ * Ngày tạo: 04/06/2026
  */
 @Component({
   selector: 'app-media-gallery-page',
@@ -40,20 +40,19 @@ export class MediaGalleryPageComponent {
   private destroyRef = inject(DestroyRef);
   private messageService = inject(MessageService);
 
-  // Danh sách ảnh hiện tại
+  /** Danh sách ảnh hiện tại */
   images: MediaImageItem[] = [];
-  // Tổng số ảnh (dùng cho paginator)
+  /** Tổng số ảnh (dùng cho paginator) */
   totalRecords = 0;
-
-  // Trạng thái loading khi đang tìm kiếm
+  /** Trạng thái loading khi đang tìm kiếm */
   loading = false;
 
-  // Params tìm kiếm hiện tại – lưu để dùng khi đổi trang
+  /** Params tìm kiếm hiện tại – lưu để dùng khi đổi trang */
   currentParams: MediaSearchParams | null = null;
 
-  // Layout class: 4→col-md-3, 5→col-20, 6→col-md-2
+  /** Layout class: 4→col-md-3, 5→col-20, 6→col-md-2 */
   layoutClass = LAYOUT_CLASS_MAP[GalleryLayoutCols.Col6];
-  // Số cột đang chọn
+  /** Số cột đang chọn */
   activeLayout: GalleryLayoutCols = GalleryLayoutCols.Col6;
 
   // Paginator state
@@ -66,10 +65,10 @@ export class MediaGalleryPageComponent {
   activeIndex = 0;
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 04/06/2026
    * Nhận params từ filter component → reset về trang 1 → tìm kiếm.
    * @param params Bộ lọc từ MediaFilterComponent
+   * Người tạo: DungBT
+   * Ngày tạo: 04/06/2026
    */
   onSearch(params: MediaSearchParams | null): void {
     // Reset về trang đầu khi filter thay đổi
@@ -86,8 +85,6 @@ export class MediaGalleryPageComponent {
   }
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 04/06/2026
    * Gọi service tìm kiếm ảnh và cập nhật grid.
    * searchImages(this.currentParams): Gọi API tìm kiếm ảnh
    * pipe(...): Đưa luồng dữ liệu vào đường ống xử lý.
@@ -97,6 +94,8 @@ export class MediaGalleryPageComponent {
    *  -> báo Toast success,
    *  -> và trigger Change Detection.
    *  Nếu lỗi thì bắt lỗi (error), báo Toast error.
+   * Người tạo: DungBT
+   * Ngày tạo: 04/06/2026
    */
   private loadImages(): void {
     if (!this.currentParams) return;
@@ -134,11 +133,11 @@ export class MediaGalleryPageComponent {
   }
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 04/06/2026
    * Xử lý sự kiện đổi trang từ PrimeNG Paginator.
    * Cập nhật pageNumber/pageSize và gọi lại tìm kiếm.
    * @param event Sự kiện paginator { page, rows, first }
+   * Người tạo: DungBT
+   * Ngày tạo: 04/06/2026
    */
   onPageChange(event: PaginatorState): void {
     this.currentPage = event.page ?? 0;
@@ -155,10 +154,10 @@ export class MediaGalleryPageComponent {
   }
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 04/06/2026
    * Thay đổi số cột hiển thị trong grid.
    * @param cols Số cột muốn hiển thị
+   * Người tạo: DungBT
+   * Ngày tạo: 04/06/2026
    */
   onLayoutChange(cols: GalleryLayoutCols): void {
     this.activeLayout = cols;
@@ -167,28 +166,28 @@ export class MediaGalleryPageComponent {
   }
 
   /**
+   * Kiểm tra xem có trang trước đó không
    * Người tạo: DungBT
    * Ngày tạo: 23/06/2026
-   * Kiểm tra xem có trang trước đó không
    */
   get hasPrevPage(): boolean {
     return this.currentPage > 0;
   }
 
   /**
+   * Kiểm tra xem có trang tiếp theo không
    * Người tạo: DungBT
    * Ngày tạo: 23/06/2026
-   * Kiểm tra xem có trang tiếp theo không
    */
   get hasNextPage(): boolean {
     return (this.currentPage + 1) * this.rows < this.totalRecords;
   }
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 04/06/2026
    * Mở dialog xem chi tiết ảnh tại index được click.
    * @param index Index của ảnh trong mảng images
+   * Người tạo: DungBT
+   * Ngày tạo: 04/06/2026
    */
   onImageClick(index: number): void {
     this.activeIndex = index;
@@ -197,9 +196,9 @@ export class MediaGalleryPageComponent {
   }
 
   /**
+   * Load trang tiếp theo khi đang xem ảnh trong dialog
    * Người tạo: DungBT
    * Ngày tạo: 23/06/2026
-   * Load trang tiếp theo khi đang xem ảnh trong dialog
    */
   onDialogLoadNextPage(): void {
     if (!this.currentParams || !this.hasNextPage) return;
@@ -209,9 +208,9 @@ export class MediaGalleryPageComponent {
   }
 
   /**
+   * Load trang trước đó khi đang xem ảnh trong dialog
    * Người tạo: DungBT
    * Ngày tạo: 23/06/2026
-   * Load trang trước đó khi đang xem ảnh trong dialog
    */
   onDialogLoadPrevPage(): void {
     if (!this.currentParams || !this.hasPrevPage) return;
@@ -221,10 +220,10 @@ export class MediaGalleryPageComponent {
   }
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 04/06/2026
    * Đóng dialog – nhận sự kiện visibleChange từ dialog component.
    * @param visible Trạng thái visible mới
+   * Người tạo: DungBT
+   * Ngày tạo: 04/06/2026
    */
   onDialogVisibleChange(visible: boolean): void {
     this.dialogVisible = visible;

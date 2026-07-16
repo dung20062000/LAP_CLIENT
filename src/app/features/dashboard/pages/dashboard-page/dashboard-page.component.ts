@@ -17,23 +17,18 @@ import { WidgetDonutRoadComponent } from '../../components/widget-donut-road/wid
 import { WidgetBarPortComponent } from '../../components/widget-bar-port/widget-bar-port.component';
 
 /**
- * Người tạo: DungBT
- * Ngày tạo: 01/06/2026
  * Mô tả: Dashboard Page – Màn hình chính theo dõi trạng thái xe chở hàng.
  *        - Gọi API tổng (getAllDashboardData) 1 lần khi load trang để lấy toàn bộ dữ liệu.
  *        - Khi ấn reload trên từng Widget, chỉ gọi API riêng của widget đó (refreshWidget).
  *        - Mỗi widget có loading state độc lập, hiển thị spinner khi đang reload.
+ * Người tạo: DungBT
+ * Ngày tạo: 01/06/2026
  */
 @Component({
   selector: 'app-dashboard-page',
   standalone: true,
-  imports: [
-    WidgetContainerComponent,
-    DashboardFilterComponent,
-    WidgetOverviewComponent,
-    WidgetDonutBorderComponent,
-    WidgetDonutRoadComponent,
-    WidgetBarPortComponent,
+  // prettier-ignore
+  imports: [ WidgetContainerComponent, DashboardFilterComponent, WidgetOverviewComponent, WidgetDonutBorderComponent, WidgetDonutRoadComponent, WidgetBarPortComponent,
   ],
   templateUrl: './dashboard-page.component.html',
   styleUrl: './dashboard-page.component.scss',
@@ -60,13 +55,13 @@ export class DashboardPageComponent implements OnInit {
   factoryLoading = false;
   portLoading = false;
 
-  // Danh sách option cho bộ lọc (id + biển số)
+  /** Danh sách option cho bộ lọc (id + biển số) */
   vehicleOptions: VehicleOption[] = [];
 
-  // Cấu hình layout widget
+  /** Cấu hình layout widget */
   widgetConfigs: WidgetConfig[] = [];
 
-  // Timestamp refresh gần nhất
+  /** Timestamp refresh gần nhất */
   lastRefresh = signal<Date>(new Date());
 
   constructor() {}
@@ -78,9 +73,9 @@ export class DashboardPageComponent implements OnInit {
   }
 
   /**
+   * Đăng ký nhận dữ liệu và trạng thái loading từ service, gán vào các biến của component.
    * Người tạo: DungBT
    * Ngày tạo: 03/06/2026
-   * Đăng ký nhận dữ liệu và trạng thái loading từ service, gán vào các biến của component.
    */
   private initStreams(): void {
     // Hàm hỗ trợ đăng ký luồng dữ liệu, gán biến và kích hoạt cập nhật giao diện
@@ -111,9 +106,9 @@ export class DashboardPageComponent implements OnInit {
   }
 
   /**
+   * Load cấu hình layout từ localStorage và subscribe vehicleOptions.
    * Người tạo: DungBT
    * Ngày tạo: 01/06/2026
-   * Load cấu hình layout từ localStorage và subscribe vehicleOptions.
    */
   private initLayout(): void {
     const userId = this.getCurrentUserId();
@@ -131,10 +126,10 @@ export class DashboardPageComponent implements OnInit {
   }
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 03/06/2026
    * [Gọi API tổng] Tải toàn bộ dữ liệu dashboard khi load trang lần đầu.
    * Sau khi hoàn thành sẽ cập nhật lastRefresh.
+   * Người tạo: DungBT
+   * Ngày tạo: 03/06/2026
    */
   private loadAllData(): void {
     this.dashboardService
@@ -153,9 +148,9 @@ export class DashboardPageComponent implements OnInit {
   }
 
   /**
+   * Lấy userId để làm key localStorage.
    * Người tạo: DungBT
    * Ngày tạo: 01/06/2026
-   * Lấy userId để làm key localStorage.
    */
   getCurrentUserId(): string {
     const user = this.authService.currentUser();
@@ -163,10 +158,10 @@ export class DashboardPageComponent implements OnInit {
   }
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 01/06/2026
    * Lấy cấu hình widget theo ID.
    * @param widgetId ID của widget cần lấy cấu hình
+   * Người tạo: DungBT
+   * Ngày tạo: 01/06/2026
    */
   getWidgetConfig(widgetId: string): WidgetConfig {
     return (
@@ -179,10 +174,10 @@ export class DashboardPageComponent implements OnInit {
   }
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 01/06/2026
    * Tính toán động class Bootstrap col cho các widget dựa trên kích thước cấu hình
    * @param widgetId ID của widget cần lấy cấu hình
+   * Người tạo: DungBT
+   * Ngày tạo: 01/06/2026
    */
   getWidgetColClass(widgetId: string): string {
     const config = this.getWidgetConfig(widgetId);
@@ -214,9 +209,9 @@ export class DashboardPageComponent implements OnInit {
   }
 
   /**
+   * Tính toán phân bổ cột cho 3 widget dòng giữa để tối ưu diện tích hàng
    * Người tạo: DungBT
    * Ngày tạo: 01/06/2026
-   * Tính toán phân bổ cột cho 3 widget dòng giữa để tối ưu diện tích hàng
    */
   private getMiddleWidgetColClasses(): Record<string, string> {
     const configs = {
@@ -320,21 +315,21 @@ export class DashboardPageComponent implements OnInit {
   }
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 01/06/2026
    * Xử lý khi bộ lọc thay đổi – gửi danh sách Vehicle.id xuống service.
    * @param ids Danh sách Vehicle.id đang được chọn (rỗng = tất cả)
+   * Người tạo: DungBT
+   * Ngày tạo: 01/06/2026
    */
   onFilterChange(ids: number[]): void {
     this.dashboardService.setFilter(ids);
   }
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 01/06/2026
    * Xử lý thay đổi kích thước widget → lưu vào localStorage.
    * @param widgetId ID widget
    * @param size     Kích thước mới
+   * Người tạo: DungBT
+   * Ngày tạo: 01/06/2026
    */
   onWidgetSizeChange(widgetId: string, size: WidgetSize): void {
     const userId = this.getCurrentUserId();
@@ -348,11 +343,11 @@ export class DashboardPageComponent implements OnInit {
   }
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 01/06/2026
    * Xử lý thay đổi trạng thái collapsed → lưu vào localStorage.
    * @param widgetId  ID widget
    * @param collapsed Trạng thái thu gọn mới
+   * Người tạo: DungBT
+   * Ngày tạo: 01/06/2026
    */
   onWidgetCollapsedChange(widgetId: string, collapsed: boolean): void {
     const userId = this.getCurrentUserId();
@@ -366,9 +361,9 @@ export class DashboardPageComponent implements OnInit {
   }
 
   /**
+   * Làm mới toàn bộ dữ liệu dashboard: reset bộ lọc + tải lại tất cả widget.
    * Người tạo: DungBT
    * Ngày tạo: 01/06/2026
-   * Làm mới toàn bộ dữ liệu dashboard: reset bộ lọc + tải lại tất cả widget.
    */
   onPageReload(): void {
     this.dashboardService
@@ -383,11 +378,11 @@ export class DashboardPageComponent implements OnInit {
   }
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 03/06/2026
    * [Reload độc lập] Xử lý reload từng widget riêng biệt.
    * Gọi đúng API tương ứng với widgetId, chỉ cập nhật dữ liệu widget đó.
    * @param widgetId ID widget cần reload ('overview' | 'donut-border' | 'donut-road' | 'bar-factory' | 'bar-port')
+   * Người tạo: DungBT
+   * Ngày tạo: 03/06/2026
    */
   onWidgetReload(widgetId: string): void {
     this.dashboardService

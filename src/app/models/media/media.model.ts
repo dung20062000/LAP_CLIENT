@@ -1,14 +1,14 @@
 /**
+ * Mô tả: Các interface/type dùng cho màn hình Xem Ảnh Phương Tiện.
  * Người tạo: DungBT
  * Ngày tạo: 04/06/2026
- * Mô tả: Các interface/type dùng cho màn hình Xem Ảnh Phương Tiện.
  */
 
 /**
- * Người tạo: DungBT
- * Ngày tạo: 18/06/2026
  * Node cây nhóm phương tiện cho PrimeNG TreeSelect
  * Map từ VehicleGroupTreeDto (key, label, data, children)
+ * Người tạo: DungBT
+ * Ngày tạo: 18/06/2026
  */
 export interface VehicleGroupTreeNode {
   key: string;
@@ -18,24 +18,24 @@ export interface VehicleGroupTreeNode {
 }
 
 /**
- * Người tạo: DungBT
- * Ngày tạo: 18/06/2026
  * Thông tin xe dùng cho Dropdown
  * Map từ VehicleDto (id, vehiclePlate, privateCode, displayName)
+ * Người tạo: DungBT
+ * Ngày tạo: 18/06/2026
  */
 export interface VehicleItem {
   id: number;
   vehiclePlate: string;
   privateCode: string;
   XNCode: number;
-  // Hiển thị dạng "PrivateCode (VehiclePlate)"
+  /** Hiển thị dạng "PrivateCode (VehiclePlate)" */
   displayName: string;
 }
 
 /**
+ * Kênh camera (Kênh 1..4)
  * Người tạo: DungBT
  * Ngày tạo: 18/06/2026
- * Kênh camera (Kênh 1..4)
  */
 export interface MediaChannel {
   value: number;
@@ -43,10 +43,10 @@ export interface MediaChannel {
 }
 
 /**
- * Người tạo: DungBT
- * Ngày tạo: 18/06/2026
  * Một bức ảnh trả về từ API
  * Map từ ImageItemDto (channel, imageTime, url, latitude, longitude)
+ * Người tạo: DungBT
+ * Ngày tạo: 18/06/2026
  */
 export interface MediaImageItem {
   channel: number;
@@ -58,29 +58,30 @@ export interface MediaImageItem {
 }
 
 /**
- * Người tạo: DungBT
- * Ngày tạo: 18/06/2026
  * Params gửi lên khi tìm kiếm ảnh
  * Map từ ImageSearchRequest của LAP_API
+ * Người tạo: DungBT
+ * Ngày tạo: 18/06/2026
  */
 export interface MediaSearchParams {
   vehiclePlate: string | null;
   customerId: number;
   channels: number[];
-  // ISO datetime string, ví dụ: "2025-04-10T00:00:00"
+  /** ISO datetime string, ví dụ: "2025-04-10T00:00:00" */
   startTime: string;
+  /** ISO datetime string, ví dụ: "2025-04-10T00:00:00" */
   endTime: string;
-  // "desc" = Mới nhất, "asc" = Cũ nhất
+  /** "desc" = Mới nhất, "asc" = Cũ nhất */
   sortOrder: 'desc' | 'asc';
   pageNumber: number;
   pageSize: number;
 }
 
 /**
+ * Map từ ImageSearchResponse của LAP_API
+ * Kết quả phân trang trả về
  * Người tạo: DungBT
  * Ngày tạo: 18/06/2026
- * Kết quả phân trang trả về
- * Map từ ImageSearchResponse của LAP_API
  */
 export interface MediaSearchResult {
   totalCount: number;
@@ -88,9 +89,9 @@ export interface MediaSearchResult {
 }
 
 /**
+ * Option sort direction cho Dropdown
  * Người tạo: DungBT
  * Ngày tạo: 18/06/2026
- * Option sort direction cho Dropdown
  */
 export interface SortOption {
   label: string;
@@ -98,9 +99,9 @@ export interface SortOption {
 }
 
 /**
+ * Cấu hình layout hiển thị lưới ảnh
  * Người tạo: DungBT
  * Ngày tạo: 23/06/2026
- * Cấu hình layout hiển thị lưới ảnh
  */
 export enum GalleryLayoutCols {
   Col4 = 4,

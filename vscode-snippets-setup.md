@@ -26,9 +26,9 @@
     "prefix": "fileheader",
     "body": [
       "/**",
+      " * Mô tả: ${1:Chức năng của file}",
       " * Người tạo: DungBT",
       " * Ngày tạo: $CURRENT_DATE/$CURRENT_MONTH/$CURRENT_YEAR",
-      " * Mô tả: ${1:Chức năng của file}",
       " */",
       "$0"
     ],
@@ -41,9 +41,9 @@
     "prefix": "blockcomment",
     "body": [
       "/**",
+      " * ${1:Nội dung ghi chú}",
       " * Người tạo: DungBT",
       " * Ngày tạo: $CURRENT_DATE/$CURRENT_MONTH/$CURRENT_YEAR",
-      " * ${1:Nội dung ghi chú}",
       " */",
       "$0"
     ],
@@ -55,8 +55,9 @@
     "scope": "typescript,typescriptreact",
     "prefix": "inlinecomment",
     "body": [
-      "// Ngày tạo: $CURRENT_DATE/$CURRENT_MONTH/$CURRENT_YEAR",
       "// ${1:Dùng để ...}",
+      "// Người tạo: DungBT",
+      "// Ngày tạo: $CURRENT_DATE/$CURRENT_MONTH/$CURRENT_YEAR",
       "$0"
     ],
     "description": "Tạo Inline Comment kèm ngày tháng tự động"
@@ -67,8 +68,9 @@
     "scope": "typescript,typescriptreact",
     "prefix": "propcomment",
     "body": [
-      "// Ngày tạo: $CURRENT_DATE/$CURRENT_MONTH/$CURRENT_YEAR",
       "// ${1:Mô tả property}",
+      "// Người tạo: DungBT",
+      "// Ngày tạo: $CURRENT_DATE/$CURRENT_MONTH/$CURRENT_YEAR",
       "$0"
     ],
     "description": "Tạo block comment ngắn cho property"

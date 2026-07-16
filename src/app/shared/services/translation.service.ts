@@ -4,28 +4,28 @@ import { catchError, of } from 'rxjs';
 import { TranslationKey } from '../enums/translation-key.enum';
 
 /**
- * Người tạo: DungBT
- * Ngày tạo: 28/05/2026
  * Mô tả: Service quản lý đa ngôn ngữ — load file JSON theo ngôn ngữ,
  *         lưu trữ lang hiện tại vào localStorage, hỗ trợ VI và EN.
+ * Người tạo: DungBT
+ * Ngày tạo: 28/05/2026
  */
 @Injectable({ providedIn: 'root' })
 export class TranslationService {
-  // Key lưu ngôn ngữ vào localStorage.
+  /** Key lưu ngôn ngữ vào localStorage. */
   private readonly STORAGE_KEY = 'app_lang';
-  // Ngôn ngữ mặc định khi không có lang lưu trước đó.
+  /** Ngôn ngữ mặc định khi không có lang lưu trước đó. */
   private readonly DEFAULT_LANG = 'vi';
 
-  // Tín hiệu chứa toàn bộ translations đã load — thay đổi trigger re-render.
+  /** Tín hiệu chứa toàn bộ translations đã load — thay đổi trigger re-render. */
   translations = signal<Record<string, any>>({});
-  // Ngôn ngữ hiện tại — thay đổi trigger computed trong các component.
+  /** Ngôn ngữ hiện tại — thay đổi trigger computed trong các component. */
   currentLang = signal<string>(this.DEFAULT_LANG);
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 28/05/2026
    * @param http: HttpClient để tải file JSON translation.
    * Khởi tạo: ưu tiên localStorage > browser language > DEFAULT_LANG.
+   * Người tạo: DungBT
+   * Ngày tạo: 28/05/2026
    */
   constructor(private http: HttpClient) {
     const saved = localStorage.getItem(this.STORAGE_KEY);
@@ -35,9 +35,9 @@ export class TranslationService {
   }
 
   /**
+   * Lấy ngôn ngữ từ browser. Trả về 'en' nếu browser là tiếng Anh, null nếu không.
    * Người tạo: DungBT
    * Ngày tạo: 28/05/2026
-   * Lấy ngôn ngữ từ browser. Trả về 'en' nếu browser là tiếng Anh, null nếu không.
    */
   private getBrowserLang(): string | null {
     const browserLang = navigator.language || (navigator as any).userLanguage;
@@ -46,11 +46,11 @@ export class TranslationService {
   }
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 28/05/2026
    * @param lang: ngôn ngữ chọn
    * Load file JSON translation theo ngôn ngữ từ thư mục /assets/i18n/.
    * catchError trả về {} nếu load thất bại — tránh crash ứng dụng.
+   * Người tạo: DungBT
+   * Ngày tạo: 28/05/2026
    */
   loadLanguage(lang: string): void {
     this.http
@@ -60,10 +60,10 @@ export class TranslationService {
   }
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 28/05/2026
    * @param lang: ngôn ngữ chọn
    * Thay đổi ngôn ngữ: lưu vào localStorage, cập nhật signal, load file mới.
+   * Người tạo: DungBT
+   * Ngày tạo: 28/05/2026
    */
   changeLanguage(lang: string): void {
     localStorage.setItem(this.STORAGE_KEY, lang);
@@ -72,12 +72,12 @@ export class TranslationService {
   }
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 28/05/2026
    * @param key: key dịch thuật
    * Resolve translation key thành chuỗi hiển thị.
    * Ví dụ: 'nav.home' -> đọc translations()['nav']['home'].
    * Trả về key gốc nếu không tìm thấy (fallback).
+   * Người tạo: DungBT
+   * Ngày tạo: 28/05/2026
    */
   translate(key: string | TranslationKey): string {
     const keys = key.split('.');

@@ -1,13 +1,13 @@
 /**
+ * Mô tả: Các interface/type dùng cho Dashboard theo dõi trạng thái xe chở hàng.
  * Người tạo: DungBT
  * Ngày tạo: 01/06/2026
- * Mô tả: Các interface/type dùng cho Dashboard theo dõi trạng thái xe chở hàng.
  */
 
 /**
+ * Kích thước widget 1: Tự động , 2 nhỏ, 3 trung bình, 4 lớn
  * Người tạo: DungBT
  * Ngày tạo: 22/06/2026
- * Kích thước widget 1: Tự động , 2 nhỏ, 3 trung bình, 4 lớn
  */
 export enum WidgetSize {
   Auto = 1,
@@ -17,9 +17,9 @@ export enum WidgetSize {
 }
 
 /**
+ * Loại điểm đến 1: Cửa khẩu, 2: Bãi cảng, 3: Nhà máy, 4: Trên đường
  * Người tạo: DungBT
  * Ngày tạo: 22/06/2026
- * Loại điểm đến 1: Cửa khẩu, 2: Bãi cảng, 3: Nhà máy, 4: Trên đường
  */
 export enum DestinationType {
   Border = 1,
@@ -29,44 +29,45 @@ export enum DestinationType {
 }
 
 /**
+ * Thông tin phương tiện
  * Người tạo: DungBT
  * Ngày tạo: 18/06/2026
- * Thông tin phương tiện
  */
 export interface Vehicle {
   id: number;
-  // Biển số xe
+  /** Biển số xe */
   licensePlate: string;
-  // Tên lái xe
+  /** Tên lái xe */
   driverName: string;
-  // Có hàng: true, Không hàng: false
+  /** Có hàng: true, Không hàng: false */
   hasLoad: boolean;
-  // Loại vị trí hiện tại
+  /** Loại vị trí hiện tại */
   locationType: DestinationType;
-  // ID điểm đến (nếu có)
+  /** ID điểm đến (nếu có) */
   destinationId?: number;
-  // Tên điểm đến hiển thị
+  /** Tên điểm đến hiển thị */
   destinationName?: string;
 }
 
 /**
+ * Điểm đến (cửa khẩu, nhà máy, bãi cảng)
  * Người tạo: DungBT
  * Ngày tạo: 18/06/2026
- * Điểm đến (cửa khẩu, nhà máy, bãi cảng)
  */
 export interface Destination {
   id: number;
+  /** Tên điểm đến */
   name: string;
-  // Loại điểm đến
+  /** Loại điểm đến */
   type: DestinationType;
-  // Số xe hiện tại tại điểm
+  /** Số xe hiện tại tại điểm */
   vehicleCount: number;
 }
 
 /**
+ * Thống kê tổng quan dashboard
  * Người tạo: DungBT
  * Ngày tạo: 18/06/2026
- * Thống kê tổng quan dashboard
  */
 export interface DashboardStats {
   totalVehicles: number;
@@ -79,9 +80,9 @@ export interface DashboardStats {
 }
 
 /**
+ * Cấu hình từng widget
  * Người tạo: DungBT
  * Ngày tạo: 18/06/2026
- * Cấu hình từng widget
  */
 export interface WidgetConfig {
   widgetId: string;
@@ -90,9 +91,9 @@ export interface WidgetConfig {
 }
 
 /**
+ * Cấu hình layout toàn dashboard (lưu localStorage)
  * Người tạo: DungBT
  * Ngày tạo: 18/06/2026
- * Cấu hình layout toàn dashboard (lưu localStorage)
  */
 export interface DashboardLayoutConfig {
   userId: string;
@@ -101,9 +102,9 @@ export interface DashboardLayoutConfig {
 }
 
 /**
+ * Dữ liệu điểm đến dạng biểu đồ (bar chart)
  * Người tạo: DungBT
  * Ngày tạo: 18/06/2026
- * Dữ liệu điểm đến dạng biểu đồ (bar chart)
  */
 export interface DestinationChartItem {
   name: string;
@@ -112,9 +113,9 @@ export interface DestinationChartItem {
 }
 
 /**
+ * Option item dùng cho bộ lọc ng-select (multi-select)
  * Người tạo: DungBT
  * Ngày tạo: 18/06/2026
- * Option item dùng cho bộ lọc ng-select (multi-select)
  */
 export interface VehicleOption {
   value: number;

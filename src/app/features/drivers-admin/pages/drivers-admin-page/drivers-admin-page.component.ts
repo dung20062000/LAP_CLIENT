@@ -25,14 +25,14 @@ import { NumbersOnlyDirective, VarcharOnlyDirective, NoAngleBracketsDirective } 
 import { PAGE_DEFAULT, PAGE_SIZE_DEFAULT, PAGE_SIZE_OPTIONS } from '../../../../shared/utils/constants';
 
 /**
- * Người tạo: DungBT
- * Ngày tạo: 29/06/2026
  * Mô tả: Trang Quản Lý Thông Tin Lái Xe.
  *        - Bộ lọc: Keyword (tìm theo tên/GPLX), ng-select chọn lái xe, chọn loại bằng.
  *        - Lưới inline-edit dùng FormArray với validation per-row.
  *        - Batch update có transaction, soft delete có xác nhận.
  *        - Xuất Excel qua blob.
  *        - Phân trang p-paginator.
+ * Người tạo: DungBT
+ * Ngày tạo: 29/06/2026
  */
 @Component({
   selector: 'app-drivers-admin-page',
@@ -59,32 +59,33 @@ export class DriversAdminPageComponent implements OnInit {
   licenseTypeLookup: LicenseTypeLookupDto[] = [];
 
   // Filter state
-  // Từ khoá tìm kiếm
+
+  /** Từ khoá tìm kiếm */
   keyword = '';
-  // Loại tìm kiếm
+  /** Loại tìm kiếm */
   searchType: DriverSearchType = DriverSearchType.Name;
   searchTypeOptions = [
     { label: 'Tên lái xe', value: DriverSearchType.Name },
     { label: 'Số GPLX', value: DriverSearchType.DriverLicense },
   ];
 
-  // Lái xe được chọn trong ng-select
+  /** Lái xe được chọn trong ng-select */
   selectedDriverIds: number[] = [];
-  // Loại bằng được chọn trong ng-select
+  /** Loại bằng được chọn trong ng-select */
   selectedLicenseTypeIds: number[] = [];
 
-  // Grid / FormArray
+  /** Grid / FormArray */
   form!: FormGroup;
 
-  // driversArray dùng để gán dữ liệu và nhận biết thay đổi
+  /** driversArray dùng để gán dữ liệu và nhận biết thay đổi */
   get driversArray(): FormArray {
     return this.form.get('drivers') as FormArray;
   }
 
-  // Raw data để so sánh khi cần reset
+  /** Raw data để so sánh khi cần reset */
   originalData: DriverDto[] = [];
 
-  // Loading / flags
+  /** Loading / flags */
   isLoading = false;
   isSaving = false;
   isExporting = false;
@@ -95,19 +96,19 @@ export class DriversAdminPageComponent implements OnInit {
   pageSize = PAGE_SIZE_DEFAULT;
   pageSizeOptions = PAGE_SIZE_OPTIONS;
 
-  // Placeholder cho ô tìm kiếm
+  /** Placeholder cho ô tìm kiếm */
   get placeholder(): string {
     return this.searchType === DriverSearchType.Name
       ? 'Tìm theo tên lái xe...'
       : 'Tìm theo số GPLX...';
   }
 
-  // Kiểm tra form có thay đổi
+  /** Kiểm tra form có thay đổi */
   get isFormDirty(): boolean {
     return this.driversArray.dirty;
   }
 
-  // Kiểm tra có data
+  /** Kiểm tra có data */
   get hasData(): boolean {
     return this.driversArray.length > 0;
   }
@@ -119,12 +120,12 @@ export class DriversAdminPageComponent implements OnInit {
 
   // Data loading
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 29/06/2026
    * forkJoin để gọi 2 API cùng lúc
    * Dùng takeUntilDestroyed để hủy observable khi component bị hủy
    * Dùng zone.run để đảm bảo component được update
    * Sau đó load lưới.
+   * Người tạo: DungBT
+   * Ngày tạo: 29/06/2026
    */
   private loadDropdowns(): void {
     forkJoin({
@@ -160,10 +161,10 @@ export class DriversAdminPageComponent implements OnInit {
   }
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 29/06/2026
    * Load danh sách lái xe từ API theo filter hiện tại.
    * @param page Số trang cần load (default = currentPage)
+   * Người tạo: DungBT
+   * Ngày tạo: 29/06/2026
    */
   loadGrid(page = this.currentPage): void {
     this.isLoading = true;
@@ -196,9 +197,9 @@ export class DriversAdminPageComponent implements OnInit {
   }
 
   /**
+   * Tạo request object từ filter state hiện tại
    * Người tạo: DungBT
    * Ngày tạo: 29/06/2026
-   * Tạo request object từ filter state hiện tại
    */
   private buildRequest(): DriverListRequest {
     return {
@@ -212,10 +213,10 @@ export class DriversAdminPageComponent implements OnInit {
   }
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 29/06/2026
    * Xây lại FormArray từ danh sách DriverDto.
    * Mỗi row là một FormGroup với validators.
+   * Người tạo: DungBT
+   * Ngày tạo: 29/06/2026
    */
   private rebuildFormArray(items: DriverDto[]): void {
     const arr = this.fb.array(items.map((d) => this.createDriverRow(d)));
@@ -224,10 +225,10 @@ export class DriversAdminPageComponent implements OnInit {
   }
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 29/06/2026
    * Tạo FormGroup cho một dòng lái xe với đầy đủ validators.
    * Dùng date-fns để parse ISO string thành value cho input type="date" (yyyy-MM-dd).
+   * Người tạo: DungBT
+   * Ngày tạo: 29/06/2026
    */
   private createDriverRow(driver: DriverDto): FormGroup {
     const toDateInputValue = (iso: string | null): Date | null => {
@@ -241,7 +242,12 @@ export class DriversAdminPageComponent implements OnInit {
         Id: [driver.Id],
         DisplayName: [
           driver.DisplayName,
-          [Validators.required, Validators.maxLength(100), this.noAngleBrackets(), this.noWhitespaceValidator()],
+          [
+            Validators.required,
+            Validators.maxLength(100),
+            this.noAngleBrackets(),
+            this.noWhitespaceValidator(),
+          ],
         ],
         Mobile: [driver.Mobile, [Validators.pattern(/^[0-9]{9,25}$/), Validators.maxLength(25)]],
         DriverLicense: [
@@ -258,7 +264,12 @@ export class DriversAdminPageComponent implements OnInit {
         ExpireLicenseDate: [toDateInputValue(driver.ExpireLicenseDate), [Validators.required]],
         IssueLicensePlace: [
           driver.IssueLicensePlace,
-          [Validators.required, Validators.maxLength(150), this.noAngleBrackets(), this.noWhitespaceValidator()],
+          [
+            Validators.required,
+            Validators.maxLength(150),
+            this.noAngleBrackets(),
+            this.noWhitespaceValidator(),
+          ],
         ],
         LicenseType: [driver.LicenseType, [Validators.required]],
         UpdatedDate: [driver.UpdatedDate],
@@ -270,9 +281,9 @@ export class DriversAdminPageComponent implements OnInit {
   // Custom Validators
 
   /**
+   * Không chứa ký tự < hoặc > (chống XSS)
    * Người tạo: DungBT
    * Ngày tạo: 29/06/2026
-   * Không chứa ký tự < hoặc > (chống XSS)
    */
   private noAngleBrackets() {
     return (control: AbstractControl): ValidationErrors | null => {
@@ -285,9 +296,9 @@ export class DriversAdminPageComponent implements OnInit {
   }
 
   /**
+   * Không cho phép chỉ nhập khoảng trắng (chống nhập chuỗi toàn dấu cách cho các trường bắt buộc)
    * Người tạo: DungBT
    * Ngày tạo: 03/07/2026
-   * Không cho phép chỉ nhập khoảng trắng (chống nhập chuỗi toàn dấu cách cho các trường bắt buộc)
    */
   private noWhitespaceValidator() {
     return (control: AbstractControl): ValidationErrors | null => {
@@ -300,9 +311,9 @@ export class DriversAdminPageComponent implements OnInit {
   }
 
   /**
+   * Ngày cấp <= hôm nay và Ngày hết hạn > Ngày cấp
    * Người tạo: DungBT
    * Ngày tạo: 29/06/2026
-   * Ngày cấp <= hôm nay và Ngày hết hạn > Ngày cấp
    */
   private dateRangeValidator() {
     return (group: AbstractControl): ValidationErrors | null => {
@@ -329,9 +340,9 @@ export class DriversAdminPageComponent implements OnInit {
   // Validation helpers cho template
 
   /**
+   * Lấy thông báo lỗi của một control trong một row
    * Người tạo: DungBT
    * Ngày tạo: 29/06/2026
-   * Lấy thông báo lỗi của một control trong một row
    */
   getFieldError(rowGroup: AbstractControl, field: string): string {
     const ctrl = rowGroup.get(field);
@@ -349,9 +360,9 @@ export class DriversAdminPageComponent implements OnInit {
   }
 
   /**
+   * Lấy thông báo lỗi cấp row (date range)
    * Người tạo: DungBT
    * Ngày tạo: 29/06/2026
-   * Lấy thông báo lỗi cấp row (date range)
    */
   getRowError(rowGroup: AbstractControl): string {
     if (!rowGroup.errors) return '';
@@ -360,6 +371,11 @@ export class DriversAdminPageComponent implements OnInit {
     return '';
   }
 
+  /**
+   * Lấy class CSS động cho input ngày tháng để hiển thị trạng thái validate (valid/invalid/dirty)
+   * Người tạo: DungBT
+   * Ngày tạo: 29/06/2026
+   */
   getDateInputClass(
     rowCtrl: AbstractControl,
     field: 'IssueLicenseDate' | 'ExpireLicenseDate',
@@ -388,18 +404,18 @@ export class DriversAdminPageComponent implements OnInit {
   // Actions
 
   /**
+   * Tìm kiếm: reset về trang 1
    * Người tạo: DungBT
    * Ngày tạo: 29/06/2026
-   * Tìm kiếm: reset về trang 1
    */
   onSearch(): void {
     this.loadGrid(1);
   }
 
   /**
+   * Xóa keyword
    * Người tạo: DungBT
    * Ngày tạo: 29/06/2026
-   * Xóa keyword
    */
   clearKeyword(): void {
     this.keyword = '';
@@ -407,9 +423,9 @@ export class DriversAdminPageComponent implements OnInit {
   }
 
   /**
+   * Thay đổi trang hoặc pageSize từ p-paginator
    * Người tạo: DungBT
    * Ngày tạo: 29/06/2026
-   * Thay đổi trang hoặc pageSize từ p-paginator
    */
   onPageChange(event: PaginatorState): void {
     const newPage = (event.page ?? 0) + 1;
@@ -419,10 +435,10 @@ export class DriversAdminPageComponent implements OnInit {
   }
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 29/06/2026
    * Lưu: Lấy các row dirty, validate, gửi batch update lên API.
    * Dùng date-fns format() để convert date input value thành ISO string.
+   * Người tạo: DungBT
+   * Ngày tạo: 29/06/2026
    */
   onSave(): void {
     // Lấy các row đã chỉnh sửa
@@ -495,9 +511,9 @@ export class DriversAdminPageComponent implements OnInit {
   }
 
   /**
+   * Hủy: Mở p-confirmDialog, nếu đồng ý reload lại dữ liệu gốc từ API.
    * Người tạo: DungBT
    * Ngày tạo: 29/06/2026
-   * Hủy: Mở p-confirmDialog, nếu đồng ý reload lại dữ liệu gốc từ API.
    */
   onCancel(): void {
     if (!this.isFormDirty) return;
@@ -513,11 +529,11 @@ export class DriversAdminPageComponent implements OnInit {
   }
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 29/06/2026
    * Xóa mềm một dòng: mở xác nhận trước khi gọi API.
    * @param id ID lái xe
    * @param index Vị trí trong FormArray (để xóa khỏi giao diện)
+   * Người tạo: DungBT
+   * Ngày tạo: 29/06/2026
    */
   onDelete(id: number, index: number, name?: string): void {
     this.confirmationService.confirm({
@@ -553,9 +569,9 @@ export class DriversAdminPageComponent implements OnInit {
   }
 
   /**
+   * Xuất Excel: gọi API nhận Blob, kích hoạt tải xuống bằng thẻ <a> ẩn.
    * Người tạo: DungBT
    * Ngày tạo: 29/06/2026
-   * Xuất Excel: gọi API nhận Blob, kích hoạt tải xuống bằng thẻ <a> ẩn.
    */
   onExport(): void {
     this.isExporting = true;
@@ -588,9 +604,9 @@ export class DriversAdminPageComponent implements OnInit {
   // ng-select helpers
 
   /**
+   * Toggle chọn tất cả lái xe
    * Người tạo: DungBT
    * Ngày tạo: 29/06/2026
-   * Toggle chọn tất cả lái xe
    */
   toggleAllDrivers(): void {
     if (this.isAllDriversSelected()) {
@@ -601,9 +617,9 @@ export class DriversAdminPageComponent implements OnInit {
   }
 
   /**
+   * Kiểm tra tất cả lái xe đã được chọn
    * Người tạo: DungBT
    * Ngày tạo: 29/06/2026
-   * Kiểm tra tất cả lái xe đã được chọn
    */
   isAllDriversSelected(): boolean {
     return (
@@ -612,9 +628,9 @@ export class DriversAdminPageComponent implements OnInit {
   }
 
   /**
+   * Toggle chọn tất cả loại bằng
    * Người tạo: DungBT
    * Ngày tạo: 29/06/2026
-   * Toggle chọn tất cả loại bằng
    */
   toggleAllLicenseTypes(): void {
     if (this.isAllLicenseTypesSelected()) {
@@ -625,9 +641,9 @@ export class DriversAdminPageComponent implements OnInit {
   }
 
   /**
+   * Kiểm tra tất cả loại bằng đã được chọn
    * Người tạo: DungBT
    * Ngày tạo: 29/06/2026
-   * Kiểm tra tất cả loại bằng đã được chọn
    */
   isAllLicenseTypesSelected(): boolean {
     return (
@@ -639,12 +655,12 @@ export class DriversAdminPageComponent implements OnInit {
   // Display helpers
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 29/06/2026
    * Hiển thị ngày tháng từ ISO string dùng date-fns format.
    * Nếu UpdatedDate null → dùng UpdatedDate từ row gốc.
    * @param iso ISO date string
    * @param pattern format pattern của date-fns
+   * Người tạo: DungBT
+   * Ngày tạo: 29/06/2026
    */
   formatDate(iso: string | null | undefined, pattern = 'dd/MM/yyyy'): string {
     if (!iso) return '';
@@ -653,10 +669,10 @@ export class DriversAdminPageComponent implements OnInit {
   }
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 29/06/2026
    * Ngày cập nhật hiển thị: ưu tiên UpdatedDate, fallback về không hiển thị gì
    * Lưu ý: form chỉ chứa UpdatedDate
+   * Người tạo: DungBT
+   * Ngày tạo: 29/06/2026
    */
   getUpdatedDateDisplay(rowGroup: AbstractControl): string {
     const updatedDate = rowGroup.get('UpdatedDate')?.value as string | null;
@@ -664,9 +680,9 @@ export class DriversAdminPageComponent implements OnInit {
   }
 
   /**
+   * Helper: hiển thị toast lỗi
    * Người tạo: DungBT
    * Ngày tạo: 29/06/2026
-   * Helper: hiển thị toast lỗi
    */
   private showError(detail: string): void {
     this.messageService.add({ severity: 'error', summary: 'Lỗi', detail });

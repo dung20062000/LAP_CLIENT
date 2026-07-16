@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from 
 import { CommonModule, DatePipe } from '@angular/common';
 import { MediaImageItem } from '../../../../models/media';
 
-// Địa chỉ fake luân phiên – sẽ thay bằng reverse geocode khi có API
+/** Địa chỉ fake luân phiên – sẽ thay bằng reverse geocode khi có API */
 const FAKE_ADDRESSES = [
   'Bãi đỗ 49 Đức Giang',
   'Điểm kẹp chí - KV3',
@@ -12,13 +12,13 @@ const FAKE_ADDRESSES = [
 ];
 
 /**
- * Người tạo: DungBT
- * Ngày tạo: 04/06/2026
  * Mô tả: Card hiển thị 1 bức ảnh phương tiện trong grid.
  * @Input() image: MediaImageItem  – dữ liệu ảnh
  * @Input() index: number          – index trong danh sách
  * @Output() imageClick: EventEmitter<number> – emit index khi click ảnh
  * @Thumbnail với object-fit: cover, aspect-ratio 4:3.
+ * Người tạo: DungBT
+ * Ngày tạo: 04/06/2026
  */
 @Component({
   selector: 'app-media-image-card',
@@ -34,29 +34,29 @@ export class MediaImageCardComponent {
   @Output() imageClick = new EventEmitter<number>();
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 04/06/2026
    * Lấy địa chỉ fake từ index để hiển thị trong metadata.
    * Xóa hàm này sau khi có reverse geocode hoặc địa chỉ từ API.
+   * Người tạo: DungBT
+   * Ngày tạo: 04/06/2026
    */
   get fakeAddress(): string {
     return FAKE_ADDRESSES[this.index % FAKE_ADDRESSES.length];
   }
 
   /**
+   * Xử lý khi người dùng click vào ảnh → emit index ra ngoài.
    * Người tạo: DungBT
    * Ngày tạo: 04/06/2026
-   * Xử lý khi người dùng click vào ảnh → emit index ra ngoài.
    */
   onCardClick(): void {
     this.imageClick.emit(this.index);
   }
 
   /**
-   * Người tạo: DungBT
-   * Ngày tạo: 04/06/2026
    * Tải ảnh về máy
    * @param event MouseEvent để ngăn bubble lên card click
+   * Người tạo: DungBT
+   * Ngày tạo: 04/06/2026
    */
   onDownload(event: MouseEvent): void {
     event.stopPropagation();

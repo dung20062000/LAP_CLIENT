@@ -85,6 +85,60 @@
   }
 }
 
+// ─── DROPDOWN (Desktop only) ────────────────────────────────────────────────
+.nav-dropdown-wrapper {
+  position: relative;
+  
+  .nav-dropdown-trigger {
+    cursor: pointer;
+    
+    .dropdown-trigger-link {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      min-width: 200px;
+      
+      .dropdown-trigger-content {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      
+      .arrow-icon {
+        font-size: 12px;
+        margin-left: 8px;
+      }
+    }
+  }
+
+  .nav-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    padding: 8px 0;
+    min-width: 100%;
+    flex-direction: column;
+    z-index: 100;
+    margin-top: 4px;
+
+    .nav-item {
+      width: 100%;
+      
+      .nav-link {
+        border-radius: 0;
+        padding: 10px 14px;
+      }
+    }
+  }
+}
+
+.mobile-nav-only {
+  display: none !important;
+}
+
 // Nút Xem ảnh PT trên header-right (desktop)
 .media-gallery-btn {
   display: flex;
@@ -466,7 +520,16 @@
     justify-content: space-between;
   }
 }
+
 @media (max-width: 1366px) {
+  .desktop-nav-only {
+    display: none !important;
+  }
+
+  .mobile-nav-only {
+    display: flex !important;
+  }
+
   .header-container {
     padding: 0 16px;
     gap: 12px;

@@ -1,6 +1,6 @@
 import { Component, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { ClickOutsideDirective } from './click-outside.directive';
 import { TranslationService } from '../../services/translation.service';
 import { AuthService } from '../../../services/auth';
@@ -31,6 +31,7 @@ interface MenuItem {
 export class HeaderComponent {
   private translationService = inject(TranslationService);
   private authService = inject(AuthService);
+  private router = inject(Router);
 
   /** Trạng thái đăng nhập — lấy từ AuthService.  */
   readonly isLoggedIn = this.authService.isLoggedIn;
@@ -43,6 +44,33 @@ export class HeaderComponent {
   zaloUrl = 'https://zalo.me/1958838581480438876';
 
   readonly TranslationKey = TranslationKey;
+
+  internalMenuItems = [
+    { label: 'Dashboard', icon: 'fas fa-tachometer-alt', link: '/public/dashboard' },
+    { label: 'Xem ảnh phương tiện', icon: 'fas fa-camera', link: '/public/media' },
+    {
+      label: 'Quản trị nhóm xe',
+      icon: 'fas fa-users-cog',
+      link: '/public/administration/vehicle-groups',
+    },
+    { label: 'Quản trị lái xe', icon: 'fas fa-user', link: '/public/administration/drivers' },
+    {
+      label: 'Quản trị lái xe v2',
+      icon: 'fas fa-user',
+      link: '/public/administration/drivers-new',
+    },
+  ];
+
+  navOpen = false;
+
+  get activeInternalMenu(): { label: string; icon: string; link: string } {
+    const currentUrl = this.router.url;
+    // Tìm menu match nhất (dài nhất) để tránh nhầm route con, hoặc đơn giản là dùng startsWith
+    return (
+      this.internalMenuItems.find((item) => currentUrl.startsWith(item.link)) ||
+      this.internalMenuItems[0]
+    );
+  }
 
   /**
    * Menu gốc chứa translation key — chưa resolve ngôn ngữ.

@@ -251,7 +251,6 @@
                   formControlName="Mobile"
                   placeholder="Nhập SĐT"
                   [title]="getFieldError(rowCtrl, 'Mobile')"
-                  [maxLength]="10"
                   [ngClass]="{
                     'da-input-valid': rowCtrl.get('Mobile')?.valid && rowCtrl.get('Mobile')?.touched && rowCtrl.get('Mobile')?.value,
                     'da-input-invalid': rowCtrl.get('Mobile')?.invalid && rowCtrl.get('Mobile')?.touched && rowCtrl.get('Mobile')?.value,

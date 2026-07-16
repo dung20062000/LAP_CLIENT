@@ -122,7 +122,6 @@
               class="dpm-input"
               formControlName="Mobile"
               placeholder="Nhập số điện thoại"
-              [maxLength]="10"
               [class.dpm-input--invalid]="f['Mobile']?.invalid && f['Mobile']?.touched"
             />
             @if (f['Mobile']?.invalid && f['Mobile']?.touched) {

@@ -20,7 +20,7 @@ import { getHttpErrorMessage } from '../../../../shared/utils/http-error';
 // prettier-ignore
 import { DriverLookupDto, LicenseTypeLookupDto, DriverDto, UpdateDriverRequest, DriverListRequest, DriverSearchType } from '../../../../models/drivers-admin';
 // prettier-ignore
-import { NumbersOnlyDirective, VarcharOnlyDirective, NoAngleBracketsDirective } from '../../../../shared/directives/input-filters.directive';
+import { VarcharOnlyDirective, NoAngleBracketsDirective } from '../../../../shared/directives/input-filters.directive';
 // prettier-ignore
 import { PAGE_DEFAULT, PAGE_SIZE_DEFAULT, PAGE_SIZE_OPTIONS } from '../../../../shared/utils/constants';
 
@@ -38,7 +38,7 @@ import { PAGE_DEFAULT, PAGE_SIZE_DEFAULT, PAGE_SIZE_OPTIONS } from '../../../../
   selector: 'app-drivers-admin-page',
   standalone: true,
   // prettier-ignore
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgSelectModule, ButtonModule, ConfirmDialogModule, ToastModule, DatePickerModule, PaginatorModule, TableModule, NumbersOnlyDirective, VarcharOnlyDirective, NoAngleBracketsDirective],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgSelectModule, ButtonModule, ConfirmDialogModule, ToastModule, DatePickerModule, PaginatorModule, TableModule, VarcharOnlyDirective, NoAngleBracketsDirective],
   providers: [ConfirmationService],
   templateUrl: './drivers-admin-page.component.html',
   styleUrls: ['./drivers-admin-page.component.scss'],
@@ -249,7 +249,7 @@ export class DriversAdminPageComponent implements OnInit {
             this.noWhitespaceValidator(),
           ],
         ],
-        Mobile: [driver.Mobile, [Validators.pattern(/^[0-9]{9,25}$/), Validators.maxLength(25)]],
+        Mobile: [driver.Mobile, [Validators.pattern(/^0[35789]\d{8}$/), Validators.maxLength(10)]],
         DriverLicense: [
           driver.DriverLicense,
           [

@@ -56,6 +56,7 @@
           bindValue="Value"
           placeholder="Chọn lái xe"
           notFoundText="Không tìm thấy"
+          appendTo="body"
           class="filter-ng-select custom-ng-select-checkbox"
           [items]="driverLookup"
           [multiple]="true"
@@ -105,6 +106,7 @@
           bindValue="Value"
           placeholder="Chọn loại bằng"
           notFoundText="Không tìm thấy"
+          appendTo="body"
           class="filter-ng-select custom-ng-select-checkbox"
           [items]="licenseTypeLookup"
           [multiple]="true"
@@ -243,19 +245,19 @@
               <!-- Số điện thoại -->
               <td class="da-col-phone">
                 <input
-                  type="text"
+                  type="tel"
+                  inputmode="numeric"
                   class="da-input"
                   formControlName="Mobile"
-                  appNumbersOnly
                   placeholder="Nhập SĐT"
                   [title]="getFieldError(rowCtrl, 'Mobile')"
-                  [maxLength]="25"
-                />
-                  <!-- /* [ngClass]="{
-                    'da-input-valid': rowCtrl.get('Mobile')?.valid && rowCtrl.get('Mobile')?.touched,
-                    'da-input-invalid': rowCtrl.get('Mobile')?.invalid && rowCtrl.get('Mobile')?.touched,
+                  [maxLength]="10"
+                  [ngClass]="{
+                    'da-input-valid': rowCtrl.get('Mobile')?.valid && rowCtrl.get('Mobile')?.touched && rowCtrl.get('Mobile')?.value,
+                    'da-input-invalid': rowCtrl.get('Mobile')?.invalid && rowCtrl.get('Mobile')?.touched && rowCtrl.get('Mobile')?.value,
                     'da-input-dirty': rowCtrl.get('Mobile')?.dirty
-                  }" */ -->
+                  }"
+                />
               </td>
 
               <!-- Số GPLX -->

@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges, ChangeDetectionStrategy } from '@angular/core';
 
-import { DashboardStats } from '../../../../models';
+import { DashboardStats } from '../../../../../models';
 
 /**
  * Widget hiển thị thống kê tổng quan dạng 3 card màu.

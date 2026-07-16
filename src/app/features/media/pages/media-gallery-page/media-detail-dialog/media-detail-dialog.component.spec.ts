@@ -6,7 +6,7 @@
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { MediaDetailDialogComponent } from './media-detail-dialog.component';
 import { SimpleChange } from '@angular/core';
-import { MediaImageItem } from '../../../../models/media';
+import { MediaImageItem } from '../../../../../models/media';
 import { describe, expect, it, beforeEach, afterEach, vi } from 'vitest';
 
 describe('MediaDetailDialogComponent', () => {
@@ -165,7 +165,7 @@ describe('MediaDetailDialogComponent', () => {
       expect(fetchSpy).toHaveBeenCalledWith(mockImages[0].url);
 
       // Resolve promises
-      await new Promise(resolve => setTimeout(resolve, 0));
+      await new Promise((resolve) => setTimeout(resolve, 0));
       expect(createObjectURLMock).toHaveBeenCalledWith(mockBlob);
       expect(revokeObjectURLMock).toHaveBeenCalledWith('blob:http://localhost/123');
 
@@ -177,7 +177,7 @@ describe('MediaDetailDialogComponent', () => {
       const openSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
 
       component.onDownload(mockImages[0]);
-      await new Promise(resolve => setTimeout(resolve, 0));
+      await new Promise((resolve) => setTimeout(resolve, 0));
 
       expect(fetchSpy).toHaveBeenCalled();
       expect(openSpy).toHaveBeenCalledWith(mockImages[0].url, '_blank');

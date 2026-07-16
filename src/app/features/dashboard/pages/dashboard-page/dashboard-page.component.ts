@@ -9,12 +9,12 @@ import { AuthService, DashboardService } from '../../../../services';
 // prettier-ignore
 import { WidgetConfig, WidgetSize, VehicleOption, Vehicle, Destination, DashboardStats } from '../../../../models';
 
-import { WidgetContainerComponent } from '../../components/widget-container/widget-container.component';
-import { DashboardFilterComponent } from '../../components/dashboard-filter/dashboard-filter.component';
-import { WidgetOverviewComponent } from '../../components/widget-overview/widget-overview.component';
-import { WidgetDonutBorderComponent } from '../../components/widget-donut-border/widget-donut-border.component';
-import { WidgetDonutRoadComponent } from '../../components/widget-donut-road/widget-donut-road.component';
-import { WidgetBarPortComponent } from '../../components/widget-bar-port/widget-bar-port.component';
+import { WidgetContainerComponent } from './widget-container/widget-container.component';
+import { DashboardFilterComponent } from './dashboard-filter/dashboard-filter.component';
+import { WidgetOverviewComponent } from './widget-overview/widget-overview.component';
+import { WidgetDonutBorderComponent } from './widget-donut-border/widget-donut-border.component';
+import { WidgetDonutRoadComponent } from './widget-donut-road/widget-donut-road.component';
+import { WidgetBarPortComponent } from './widget-bar-port/widget-bar-port.component';
 
 /**
  * Mô tả: Dashboard Page – Màn hình chính theo dõi trạng thái xe chở hàng.

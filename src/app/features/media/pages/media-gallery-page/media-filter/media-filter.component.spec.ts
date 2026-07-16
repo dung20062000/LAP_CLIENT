@@ -5,7 +5,7 @@
  */
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { MediaFilterComponent } from './media-filter.component';
-import { MediaService } from '../../../../services/media';
+import { MediaService } from '../../../../../services/media';
 import { MessageService, TreeNode } from 'primeng/api';
 import { of, throwError } from 'rxjs';
 import { describe, expect, it, beforeEach, vi } from 'vitest';
@@ -33,8 +33,20 @@ describe('MediaFilterComponent', () => {
   ];
 
   const mockVehicles = [
-    { id: 1, vehiclePlate: '29C-11111', privateCode: 'V1', XNCode: 100, displayName: 'V1 (29C-11111)' },
-    { id: 2, vehiclePlate: '29C-22222', privateCode: 'V2', XNCode: 100, displayName: 'V2 (29C-22222)' },
+    {
+      id: 1,
+      vehiclePlate: '29C-11111',
+      privateCode: 'V1',
+      XNCode: 100,
+      displayName: 'V1 (29C-11111)',
+    },
+    {
+      id: 2,
+      vehiclePlate: '29C-22222',
+      privateCode: 'V2',
+      XNCode: 100,
+      displayName: 'V2 (29C-22222)',
+    },
   ];
 
   beforeEach(async () => {
@@ -80,7 +92,7 @@ describe('MediaFilterComponent', () => {
         expect.objectContaining({
           severity: 'error',
           summary: 'Lỗi',
-        })
+        }),
       );
     });
   });
@@ -263,7 +275,7 @@ describe('MediaFilterComponent', () => {
           vehiclePlate: '29C-11111',
           customerId: 100,
           channels: [1, 2],
-        })
+        }),
       );
     });
 
@@ -274,7 +286,7 @@ describe('MediaFilterComponent', () => {
         expect.objectContaining({
           severity: 'error',
           detail: 'Vui lòng chọn xe',
-        })
+        }),
       );
     });
 
@@ -285,7 +297,7 @@ describe('MediaFilterComponent', () => {
         expect.objectContaining({
           severity: 'error',
           detail: 'Vui lòng chọn ngày',
-        })
+        }),
       );
     });
 
@@ -296,7 +308,7 @@ describe('MediaFilterComponent', () => {
         expect.objectContaining({
           severity: 'error',
           detail: 'Vui lòng chọn giờ bắt đầu',
-        })
+        }),
       );
     });
 
@@ -307,7 +319,7 @@ describe('MediaFilterComponent', () => {
         expect.objectContaining({
           severity: 'error',
           detail: 'Vui lòng chọn giờ kết thúc',
-        })
+        }),
       );
     });
 
@@ -319,7 +331,7 @@ describe('MediaFilterComponent', () => {
         expect.objectContaining({
           severity: 'error',
           detail: 'Giờ bắt đầu không được lớn hơn giờ kết thúc',
-        })
+        }),
       );
     });
   });

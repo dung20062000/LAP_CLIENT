@@ -5,7 +5,7 @@
  */
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { MediaImageCardComponent } from './media-image-card.component';
-import { MediaImageItem } from '../../../../models/media';
+import { MediaImageItem } from '../../../../../models/media';
 import { describe, expect, it, beforeEach, vi } from 'vitest';
 
 describe('MediaImageCardComponent', () => {
@@ -73,7 +73,7 @@ describe('MediaImageCardComponent', () => {
       expect(mockEvent.stopPropagation).toHaveBeenCalled();
       expect(fetchSpy).toHaveBeenCalledWith(mockImage.url);
 
-      await new Promise(resolve => setTimeout(resolve, 0));
+      await new Promise((resolve) => setTimeout(resolve, 0));
       expect(createObjectURLMock).toHaveBeenCalledWith(mockBlob);
       expect(revokeObjectURLMock).toHaveBeenCalledWith('blob:http://localhost/abc');
 
@@ -86,7 +86,7 @@ describe('MediaImageCardComponent', () => {
       const openSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
 
       component.onDownload(mockEvent);
-      await new Promise(resolve => setTimeout(resolve, 0));
+      await new Promise((resolve) => setTimeout(resolve, 0));
 
       expect(fetchSpy).toHaveBeenCalled();
       expect(openSpy).toHaveBeenCalledWith(mockImage.url, '_blank');

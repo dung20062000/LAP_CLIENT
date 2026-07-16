@@ -1,7 +1,7 @@
 // prettier-ignore
 import { Component, Input, Output, EventEmitter, HostListener, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { WidgetSize } from '../../../../models';
+import { WidgetSize } from '../../../../../models';
 
 const WIDGET_OPTIONS_OPEN_EVENT = 'widget-options-open';
 

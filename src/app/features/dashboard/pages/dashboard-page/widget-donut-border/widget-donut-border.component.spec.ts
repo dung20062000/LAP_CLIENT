@@ -5,7 +5,7 @@
  */
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { WidgetDonutBorderComponent } from './widget-donut-border.component';
-import { Vehicle, Destination } from '../../../../models/dashboard';
+import { Vehicle, Destination, DestinationType } from '../../../../../models/dashboard';
 
 describe('WidgetDonutBorderComponent', () => {
   let fixture: ComponentFixture<WidgetDonutBorderComponent>;
@@ -90,7 +90,9 @@ describe('WidgetDonutBorderComponent', () => {
 
   describe('buildChart() – hasData', () => {
     it('should set hasData to true when vehicles has border vehicles', () => {
-      component.vehicles = [makeVehicle({ id: 1, locationType: DestinationType.Border, hasLoad: true })];
+      component.vehicles = [
+        makeVehicle({ id: 1, locationType: DestinationType.Border, hasLoad: true }),
+      ];
       component.ngOnChanges({ vehicles: { currentValue: component.vehicles } } as any);
       expect(component.hasData).toBe(true);
     });
@@ -147,7 +149,9 @@ describe('WidgetDonutBorderComponent', () => {
     });
 
     it('should use green color for loaded vehicles', () => {
-      component.vehicles = [makeVehicle({ id: 1, hasLoad: true, locationType: DestinationType.Border })];
+      component.vehicles = [
+        makeVehicle({ id: 1, hasLoad: true, locationType: DestinationType.Border }),
+      ];
       component.ngOnChanges({ vehicles: { currentValue: component.vehicles } } as any);
       const opts = component.chartOption as any;
       const loadedItem = opts.series[0].data[0];
@@ -155,7 +159,9 @@ describe('WidgetDonutBorderComponent', () => {
     });
 
     it('should use orange color for empty vehicles', () => {
-      component.vehicles = [makeVehicle({ id: 1, hasLoad: false, locationType: DestinationType.Border })];
+      component.vehicles = [
+        makeVehicle({ id: 1, hasLoad: false, locationType: DestinationType.Border }),
+      ];
       component.ngOnChanges({ vehicles: { currentValue: component.vehicles } } as any);
       const opts = component.chartOption as any;
       const emptyItem = opts.series[0].data.find((d: any) => d.name === 'Phương tiện không hàng');

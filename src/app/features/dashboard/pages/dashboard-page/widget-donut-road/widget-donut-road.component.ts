@@ -3,34 +3,29 @@ import { Component, Input, OnChanges, OnDestroy, SimpleChanges, ChangeDetectionS
 
 import { NgxEchartsDirective } from 'ngx-echarts';
 import type { EChartsOption } from 'echarts';
-import { Vehicle, Destination, DestinationType } from '../../../../models';
+import { DestinationType, Vehicle } from '../../../../../models';
 
 const MOBILE_BREAKPOINT = 576;
 
 /**
- * Mô tả: Widget Donut Chart – Phương tiện tại Cửa khẩu.
- *        Hiển thị phân bổ xe tại các cửa khẩu dạng hình vành khăn (Donut).
- *        Số tổng hiển thị ở giữa biểu đồ bằng graphic text.
+ * Mô tả: Widget Donut Chart – Phương tiện đang trên đường.
+ *        Hiển thị phân bổ xe đang di chuyển phân loại theo trạng thái có/không hàng.
+ *        Số tổng hiển thị ở giữa biểu đồ.
  * Người tạo: DungBT
  * Ngày tạo: 01/06/2026
  */
 @Component({
-  selector: 'app-widget-donut-border',
+  selector: 'app-widget-donut-road',
   standalone: true,
   imports: [NgxEchartsDirective],
-  templateUrl: './widget-donut-border.component.html',
-  styleUrl: './widget-donut-border.component.scss',
+  templateUrl: './widget-donut-road.component.html',
+  styleUrl: './widget-donut-road.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class WidgetDonutBorderComponent implements OnChanges, OnDestroy {
-  /** Danh sách xe (đã lọc từ dashboard) */
+export class WidgetDonutRoadComponent implements OnChanges, OnDestroy {
   @Input() vehicles: Vehicle[] = [];
-  /** Danh sách điểm đến để lấy tên */
-  @Input() destinations: Destination[] = [];
 
-  /** ECharts option */
   chartOption: EChartsOption = {};
-  /** Flag kiểm tra xem có dữ liệu hay không */
   hasData = false;
 
   private isMobile = false;
@@ -42,6 +37,12 @@ export class WidgetDonutBorderComponent implements OnChanges, OnDestroy {
       this.updateMobile();
     };
     window.addEventListener('resize', this.resizeHandler);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['vehicles']) {
+      this.buildChart();
+    }
   }
 
   ngOnDestroy(): void {
@@ -57,37 +58,27 @@ export class WidgetDonutBorderComponent implements OnChanges, OnDestroy {
    */
   private updateMobile(): void {
     const isNowMobile = window.innerWidth <= MOBILE_BREAKPOINT;
+    // Chỉ build lại chart khi thay đổi trạng thái giữa mobile và desktop
     if (this.isMobile !== isNowMobile) {
       this.isMobile = isNowMobile;
-      if (this.vehicles.length > 0 || this.destinations.length > 0) {
+      if (this.vehicles.length > 0) {
         this.buildChart();
       }
-    }
-  } /**
-   * Xử lý thay đổi input
-   * Người tạo: DungBT
-   * Ngày tạo: 02/06/2026
-   */
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['vehicles'] || changes['destinations']) {
-      this.buildChart();
     }
   }
 
   /**
-   * Mô tả: Xây dựng cấu hình ECharts Donut cho xe tại cửa khẩu.
+   * Xây dựng biểu đồ donut
    * Người tạo: DungBT
-   * Ngày tạo: 15/07/2026
+   * Ngày tạo: 01/06/2026
    */
-
   private buildChart(): void {
-    // Lọc xe đang ở cửa khẩu
-    const borderVehicles = this.vehicles.filter((v) => v.locationType === DestinationType.Border);
+    const roadVehicles = this.vehicles.filter((v) => v.locationType === DestinationType.Road);
 
     let loadedCount = 0;
     let emptyCount = 0;
 
-    borderVehicles.forEach((v) => {
+    roadVehicles.forEach((v) => {
       if (v.hasLoad) loadedCount++;
       else emptyCount++;
     });
@@ -134,8 +125,8 @@ export class WidgetDonutBorderComponent implements OnChanges, OnDestroy {
           left: 'center',
           top: '50%',
           style: {
-            text: 'tổng xe',
-            fontSize: 12,
+            text: 'đang di chuyển',
+            fontSize: 11,
             fill: '#6c757d',
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
           } as any,
@@ -158,7 +149,7 @@ export class WidgetDonutBorderComponent implements OnChanges, OnDestroy {
       },
       series: [
         {
-          name: 'Phương tiện tại cửa khẩu',
+          name: 'Phương tiện đang trên đường',
           type: 'pie',
           radius: ['40%', '55%'], // tăng/giảm kích thước đường kính vòng tròn (lùi ra, tiến vào)
           center: ['50%', '45%'], // căn chỉnh vị trí tâm vòng tròn (trục ngang, trục dọc)

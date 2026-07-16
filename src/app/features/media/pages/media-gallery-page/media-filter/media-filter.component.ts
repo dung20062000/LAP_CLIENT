@@ -9,8 +9,8 @@ import { ButtonModule } from 'primeng/button';
 import { Checkbox } from 'primeng/checkbox';
 import { TreeNode, MessageService } from 'primeng/api';
 
-import { getHttpErrorMessage } from '../../../../shared/utils/http-error';
-import { MediaService } from '../../../../services/media';
+import { getHttpErrorMessage } from '../../../../../shared/utils/http-error';
+import { MediaService } from '../../../../../services/media';
 import {
   VehicleItem,
   MediaChannel,
@@ -18,7 +18,7 @@ import {
   SortOption,
   GalleryLayoutCols,
   GALLERY_LAYOUTS,
-} from '../../../../models/media';
+} from '../../../../../models/media';
 
 /**
  * Mô tả: Bộ lọc màn hình Xem Ảnh Phương Tiện.

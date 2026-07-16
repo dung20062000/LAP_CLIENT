@@ -2,7 +2,7 @@ import { Component, Input, OnChanges, SimpleChanges, ChangeDetectionStrategy } f
 
 import { NgxEchartsDirective } from 'ngx-echarts';
 import type { EChartsOption } from 'echarts';
-import { Vehicle } from '../../../../models';
+import { Vehicle } from '../../../../../models';
 
 /**
  * Mô tả: Widget Bar Chart – Phương tiện tại Cảng / Nhà máy.

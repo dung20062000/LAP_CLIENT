@@ -10,9 +10,9 @@ import { PAGE_SIZE_OPTIONS } from '../../../../shared/utils/constants';
 import { MediaService } from '../../../../services/media';
 // prettier-ignore
 import { MediaSearchParams, MediaImageItem, GalleryLayoutCols, LAYOUT_CLASS_MAP } from '../../../../models/media';
-import { MediaFilterComponent } from '../../components/media-filter/media-filter.component';
-import { MediaImageCardComponent } from '../../components/media-image-card/media-image-card.component';
-import { MediaDetailDialogComponent } from '../../components/media-detail-dialog/media-detail-dialog.component';
+import { MediaFilterComponent } from './media-filter/media-filter.component';
+import { MediaImageCardComponent } from './media-image-card/media-image-card.component';
+import { MediaDetailDialogComponent } from './media-detail-dialog/media-detail-dialog.component';
 
 /**
  * Mô tả: Trang chính Xem Ảnh Phương Tiện.

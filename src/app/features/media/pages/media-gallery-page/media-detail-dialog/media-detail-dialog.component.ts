@@ -3,7 +3,7 @@ import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, Change
 import { CommonModule, DatePipe } from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
-import { MediaImageItem } from '../../../../models/media';
+import { MediaImageItem } from '../../../../../models/media';
 
 /** Địa chỉ fake cho caption – xóa sau khi có API */
 const FAKE_ADDRESSES = [

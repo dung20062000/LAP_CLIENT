@@ -8,13 +8,20 @@ import { Subject } from 'rxjs';
 import { DashboardPageComponent } from './dashboard-page.component';
 import { DashboardService } from '../../../../services/dashboard';
 import { AuthService } from '../../../../services/auth';
-import { WidgetContainerComponent } from '../../components/widget-container/widget-container.component';
-import { DashboardFilterComponent } from '../../components/dashboard-filter/dashboard-filter.component';
-import { WidgetOverviewComponent } from '../../components/widget-overview/widget-overview.component';
-import { WidgetDonutBorderComponent } from '../../components/widget-donut-border/widget-donut-border.component';
-import { WidgetDonutRoadComponent } from '../../components/widget-donut-road/widget-donut-road.component';
-import { WidgetBarPortComponent } from '../../components/widget-bar-port/widget-bar-port.component';
-import { DashboardStats, WidgetConfig, Vehicle, Destination, VehicleOption, WidgetSize } from '../../../../models/dashboard';
+import { WidgetContainerComponent } from './widget-container/widget-container.component';
+import { DashboardFilterComponent } from './dashboard-filter/dashboard-filter.component';
+import { WidgetOverviewComponent } from './widget-overview/widget-overview.component';
+import { WidgetDonutBorderComponent } from './widget-donut-border/widget-donut-border.component';
+import { WidgetDonutRoadComponent } from './widget-donut-road/widget-donut-road.component';
+import { WidgetBarPortComponent } from './widget-bar-port/widget-bar-port.component';
+import {
+  DashboardStats,
+  WidgetConfig,
+  Vehicle,
+  Destination,
+  VehicleOption,
+  WidgetSize,
+} from '../../../../models/dashboard';
 
 const mockStats: DashboardStats = {
   totalVehicles: 44,
@@ -32,11 +39,11 @@ const mockVehicleOptions: VehicleOption[] = [
 ];
 
 const defaultWidgets: WidgetConfig[] = [
-  { widgetId: 'overview',     size: WidgetSize.Large, collapsed: false },
+  { widgetId: 'overview', size: WidgetSize.Large, collapsed: false },
   { widgetId: 'donut-border', size: WidgetSize.Small, collapsed: false },
-  { widgetId: 'donut-road',   size: WidgetSize.Small, collapsed: false },
-  { widgetId: 'bar-factory',  size: WidgetSize.Small, collapsed: false },
-  { widgetId: 'bar-port',     size: WidgetSize.Large, collapsed: false },
+  { widgetId: 'donut-road', size: WidgetSize.Small, collapsed: false },
+  { widgetId: 'bar-factory', size: WidgetSize.Small, collapsed: false },
+  { widgetId: 'bar-port', size: WidgetSize.Large, collapsed: false },
 ];
 
 interface MockDashboardService {
@@ -57,8 +64,18 @@ interface MockDashboardService {
   refreshWidget: (id?: string) => ReturnType<Subject<DashboardStats | null>['asObservable']>;
   setFilter: (ids: number[]) => void;
   getLayoutConfig: () => WidgetConfig[];
-  updateWidgetSize: (uid: string, wid: string, size: WidgetSize, current: WidgetConfig[]) => WidgetConfig[];
-  updateWidgetCollapsed: (uid: string, wid: string, collapsed: boolean, current: WidgetConfig[]) => WidgetConfig[];
+  updateWidgetSize: (
+    uid: string,
+    wid: string,
+    size: WidgetSize,
+    current: WidgetConfig[],
+  ) => WidgetConfig[];
+  updateWidgetCollapsed: (
+    uid: string,
+    wid: string,
+    collapsed: boolean,
+    current: WidgetConfig[],
+  ) => WidgetConfig[];
   getVehicleOptions: () => VehicleOption[];
   emitMockData: () => void;
 }
@@ -92,9 +109,13 @@ function createMockDashboardService(): MockDashboardService {
     setFilter: () => {},
     getLayoutConfig: () => [...defaultWidgets],
     updateWidgetSize: (_uid: string, _wid: string, size: WidgetSize, current: WidgetConfig[]) =>
-      current.map(w => ({ ...w, size })),
-    updateWidgetCollapsed: (_uid: string, _wid: string, collapsed: boolean, current: WidgetConfig[]) =>
-      current.map(w => ({ ...w, collapsed })),
+      current.map((w) => ({ ...w, size })),
+    updateWidgetCollapsed: (
+      _uid: string,
+      _wid: string,
+      collapsed: boolean,
+      current: WidgetConfig[],
+    ) => current.map((w) => ({ ...w, collapsed })),
     getVehicleOptions: () => [...mockVehicleOptions],
 
     emitMockData() {
@@ -134,15 +155,14 @@ describe('DashboardPageComponent', () => {
         WidgetDonutRoadComponent,
         WidgetBarPortComponent,
       ],
-    })
-      .overrideComponent(DashboardPageComponent, {
-        set: {
-          providers: [
-            { provide: DashboardService, useValue: mockDash },
-            { provide: AuthService, useValue: mockAuth },
-          ],
-        },
-      });
+    }).overrideComponent(DashboardPageComponent, {
+      set: {
+        providers: [
+          { provide: DashboardService, useValue: mockDash },
+          { provide: AuthService, useValue: mockAuth },
+        ],
+      },
+    });
 
     fixture = TestBed.createComponent(DashboardPageComponent);
     component = fixture.componentInstance;
@@ -224,7 +244,7 @@ describe('DashboardPageComponent', () => {
     component.ngOnInit();
     fixture.detectChanges();
 
-    ['overview', 'donut-border', 'donut-road', 'bar-factory', 'bar-port'].forEach(id => {
+    ['overview', 'donut-border', 'donut-road', 'bar-factory', 'bar-port'].forEach((id) => {
       component.onWidgetReload(id);
       expect(calledWith).toBe(id);
     });
@@ -239,15 +259,15 @@ describe('DashboardPageComponent', () => {
   });
 
   it('should return col-12 col-md-4 for overview at small size', () => {
-    component.widgetConfigs = defaultWidgets.map(w =>
-      w.widgetId === 'overview' ? { ...w, size: WidgetSize.Small } : w
+    component.widgetConfigs = defaultWidgets.map((w) =>
+      w.widgetId === 'overview' ? { ...w, size: WidgetSize.Small } : w,
     );
     expect(component.getWidgetColClass('overview')).toBe('col-12 col-md-4');
   });
 
   it('should return col-12 col-md-8 for overview at medium size', () => {
-    component.widgetConfigs = defaultWidgets.map(w =>
-      w.widgetId === 'overview' ? { ...w, size: WidgetSize.Medium } : w
+    component.widgetConfigs = defaultWidgets.map((w) =>
+      w.widgetId === 'overview' ? { ...w, size: WidgetSize.Medium } : w,
     );
     expect(component.getWidgetColClass('overview')).toBe('col-12 col-md-8');
   });
@@ -273,6 +293,4 @@ describe('DashboardPageComponent', () => {
     const userId = component.getCurrentUserId();
     expect(typeof userId).toBe('string');
   });
-
-
 });

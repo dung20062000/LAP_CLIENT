@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
-import { MediaImageItem } from '../../../../models/media';
+import { MediaImageItem } from '../../../../../models/media';
 
 /** Địa chỉ fake luân phiên – sẽ thay bằng reverse geocode khi có API */
 const FAKE_ADDRESSES = [

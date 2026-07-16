@@ -1,11 +1,13 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
+import { MessageService } from 'primeng/api';
 import { environment } from '../../../environments/environment';
 import { ApiResponse } from '../../models/auth/auth.model';
 // prettier-ignore
 import { DriverLookupDto, LicenseTypeLookupDto, DriverListResponse, DriverListRequest, UpdateDriverRequest, CreateDriverRequest, DriverDto, } from '../../models/drivers-admin';
+import { getHttpErrorMessage } from '../../shared/utils/http-error';
 
 /**
  * Mô tả: Service kết nối API quản lý lái xe.
@@ -21,6 +23,7 @@ import { DriverLookupDto, LicenseTypeLookupDto, DriverListResponse, DriverListRe
 @Injectable({ providedIn: 'root' })
 export class DriversAdminService {
   private http = inject(HttpClient);
+  private messageService = inject(MessageService);
   private apiUrl = environment.apiUrl;
 
   /**
@@ -32,7 +35,17 @@ export class DriversAdminService {
   getDriverLookup(): Observable<DriverLookupDto[]> {
     return this.http
       .get<ApiResponse<DriverLookupDto[]>>(`${this.apiUrl}/drivers/driver-lookup`)
-      .pipe(map((res) => res.data ?? []));
+      .pipe(
+        map((res) => res.data ?? []),
+        catchError((err) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Lỗi',
+            detail: getHttpErrorMessage(err, 'Có lỗi khi tải danh sách lái xe.'),
+          });
+          return of([]);
+        }),
+      );
   }
 
   /**
@@ -44,7 +57,17 @@ export class DriversAdminService {
   getLicenseTypeLookup(): Observable<LicenseTypeLookupDto[]> {
     return this.http
       .get<ApiResponse<LicenseTypeLookupDto[]>>(`${this.apiUrl}/drivers/license-types-lookup`)
-      .pipe(map((res) => res.data ?? []));
+      .pipe(
+        map((res) => res.data ?? []),
+        catchError((err) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Lỗi',
+            detail: getHttpErrorMessage(err, 'Có lỗi khi tải danh sách loại bằng lái.'),
+          });
+          return of([]);
+        }),
+      );
   }
 
   /**
@@ -57,7 +80,17 @@ export class DriversAdminService {
   getDriverList(request: DriverListRequest): Observable<DriverListResponse> {
     return this.http
       .get<ApiResponse<DriverListResponse>>(`${this.apiUrl}/drivers`, { params: request as any })
-      .pipe(map((res) => res.data ?? { TotalRecord: 0, Items: [] }));
+      .pipe(
+        map((res) => res.data ?? { TotalRecord: 0, Items: [] }),
+        catchError((err) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Lỗi',
+            detail: getHttpErrorMessage(err, 'Có lỗi khi tải danh sách lái xe.'),
+          });
+          return of({ TotalRecord: 0, Items: [] });
+        }),
+      );
   }
   /**
    * GET /api/drivers/{id}
@@ -65,10 +98,18 @@ export class DriversAdminService {
    * Người tạo: DungBT
    * Ngày tạo: 06/07/2026
    */
-  getById(id: number): Observable<DriverDto> {
-    return this.http
-      .get<ApiResponse<DriverDto>>(`${this.apiUrl}/drivers/${id}`)
-      .pipe(map((res) => res.data!));
+  getById(id: number): Observable<DriverDto | null> {
+    return this.http.get<ApiResponse<DriverDto>>(`${this.apiUrl}/drivers/${id}`).pipe(
+      map((res) => res.data ?? null),
+      catchError((err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Lỗi',
+          detail: getHttpErrorMessage(err, 'Không thể tải thông tin lái xe.'),
+        });
+        return of(null);
+      }),
+    );
   }
 
   /**
@@ -78,10 +119,18 @@ export class DriversAdminService {
    * Người tạo: DungBT
    * Ngày tạo: 25/06/2026
    */
-  batchUpdate(items: UpdateDriverRequest[]): Observable<void> {
-    return this.http
-      .put<ApiResponse<void>>(`${this.apiUrl}/drivers`, items)
-      .pipe(map(() => void 0));
+  batchUpdate(items: UpdateDriverRequest[]): Observable<boolean> {
+    return this.http.put<ApiResponse<void>>(`${this.apiUrl}/drivers`, items).pipe(
+      map(() => true),
+      catchError((err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Lỗi',
+          detail: getHttpErrorMessage(err, 'Có lỗi khi lưu dữ liệu.'),
+        });
+        return of(false);
+      }),
+    );
   }
   /**
    * Tạo mới lái xe.
@@ -89,10 +138,18 @@ export class DriversAdminService {
    * Người tạo: DungBT
    * Ngày tạo: 06/07/2026
    */
-  create(request: CreateDriverRequest): Observable<void> {
-    return this.http
-      .post<ApiResponse<void>>(`${this.apiUrl}/drivers`, request)
-      .pipe(map(() => void 0));
+  create(request: CreateDriverRequest): Observable<boolean> {
+    return this.http.post<ApiResponse<void>>(`${this.apiUrl}/drivers`, request).pipe(
+      map(() => true),
+      catchError((err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Lỗi',
+          detail: getHttpErrorMessage(err, 'Có lỗi khi tạo lái xe.'),
+        });
+        return of(false);
+      }),
+    );
   }
 
   /**
@@ -103,9 +160,17 @@ export class DriversAdminService {
    * Ngày tạo: 25/06/2026
    */
   softDelete(id: number): Observable<void> {
-    return this.http
-      .delete<ApiResponse<void>>(`${this.apiUrl}/drivers/${id}`)
-      .pipe(map(() => void 0));
+    return this.http.delete<ApiResponse<void>>(`${this.apiUrl}/drivers/${id}`).pipe(
+      map(() => void 0),
+      catchError((err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Lỗi',
+          detail: getHttpErrorMessage(err, 'Có lỗi khi xóa lái xe.'),
+        });
+        return of(void 0);
+      }),
+    );
   }
 
   /**
@@ -116,9 +181,20 @@ export class DriversAdminService {
    * Ngày tạo: 25/06/2026
    */
   exportExcel(request: DriverListRequest): Observable<Blob> {
-    return this.http.get(`${this.apiUrl}/drivers/export`, {
-      params: request as any,
-      responseType: 'blob',
-    });
+    return this.http
+      .get(`${this.apiUrl}/drivers/export`, {
+        params: request as any,
+        responseType: 'blob',
+      })
+      .pipe(
+        catchError((err) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Lỗi',
+            detail: getHttpErrorMessage(err, 'Có lỗi khi xuất file Excel.'),
+          });
+          return of(new Blob());
+        }),
+      );
   }
 }

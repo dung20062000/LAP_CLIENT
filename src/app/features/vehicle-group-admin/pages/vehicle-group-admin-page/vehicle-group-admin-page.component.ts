@@ -10,7 +10,6 @@ import { ButtonModule } from 'primeng/button';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
 
-import { getHttpErrorMessage } from '../../../../shared/utils/http-error';
 import { VehicleGroupAdminService } from '../../../../services/vehicle-group-admin';
 import { UserDto, VehicleGroupNode } from '../../../../models/vehicle-group-admin';
 
@@ -120,12 +119,6 @@ export class VehicleGroupAdminPageComponent implements OnInit {
           this.usersLoading = false;
           this.cdr.markForCheck();
         },
-        error: (err) => {
-          console.error('[VehicleGroupAdmin] Lỗi tải user:', err);
-          this.usersLoading = false;
-          this.showError(getHttpErrorMessage(err, 'Không thể tải danh sách người dùng.'));
-          this.cdr.markForCheck();
-        },
       });
   }
 
@@ -195,14 +188,6 @@ export class VehicleGroupAdminPageComponent implements OnInit {
             this.unassignedLoading = false;
             this.assignedLoading = false;
             this.checkDirtyState();
-            this.cdr.markForCheck();
-          });
-        },
-        error: (err) => {
-          this.zone.run(() => {
-            this.unassignedLoading = false;
-            this.assignedLoading = false;
-            this.showError(getHttpErrorMessage(err, 'Không thể tải thông tin nhóm xe.'));
             this.cdr.markForCheck();
           });
         },
@@ -425,11 +410,6 @@ export class VehicleGroupAdminPageComponent implements OnInit {
             summary: 'Thành công',
             detail: 'Gán nhóm xe thành công.',
           });
-          this.cdr.markForCheck();
-        },
-        error: (err) => {
-          this.isSaving = false;
-          this.showError(getHttpErrorMessage(err, 'Lỗi khi lưu gán nhóm xe.'));
           this.cdr.markForCheck();
         },
       });

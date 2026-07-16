@@ -5,7 +5,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
 import { MessageService } from 'primeng/api';
 
-import { getHttpErrorMessage } from '../../../../shared/utils/http-error';
 import { PAGE_SIZE_OPTIONS } from '../../../../shared/utils/constants';
 import { MediaService } from '../../../../services/media';
 // prettier-ignore
@@ -116,16 +115,6 @@ export class MediaGalleryPageComponent {
             severity: 'success',
             summary: 'Thành công',
             detail: 'Tìm kiếm thành công.',
-          });
-          this.cdr.markForCheck();
-        },
-        error: (err) => {
-          console.error('[Media] Lỗi khi tìm kiếm ảnh:', err);
-          this.loading = false;
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Lỗi',
-            detail: getHttpErrorMessage(err, 'Lỗi khi tìm kiếm ảnh. Vui lòng thử lại.'),
           });
           this.cdr.markForCheck();
         },

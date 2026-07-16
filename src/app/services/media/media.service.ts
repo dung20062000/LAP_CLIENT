@@ -1,12 +1,14 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
 // prettier-ignore
 import { VehicleGroupTreeNode, VehicleItem, MediaSearchParams, MediaSearchResult } from '../../models/media';
 import { ApiResponse } from '../../models/auth/auth.model';
 import { environment } from '../../../environments/environment';
+import { getHttpErrorMessage } from '../../shared/utils/http-error';
+import { MessageService } from 'primeng/api';
 
 /**
  * Mô tả: Service quản lý dữ liệu màn hình Xem Ảnh Phương Tiện.
@@ -22,6 +24,8 @@ import { environment } from '../../../environments/environment';
 })
 export class MediaService {
   private http = inject(HttpClient);
+  private messageService = inject(MessageService);
+
   /** Base URL lấy từ environment */
   private apiUrl = `${environment.apiUrl}/Vehicles`;
 
@@ -32,9 +36,17 @@ export class MediaService {
    * Ngày tạo: 04/06/2026
    */
   getVehicleGroups(): Observable<VehicleGroupTreeNode[]> {
-    return this.http
-      .get<ApiResponse<VehicleGroupTreeNode[]>>(`${this.apiUrl}/groups`)
-      .pipe(map((res) => res.data ?? []));
+    return this.http.get<ApiResponse<VehicleGroupTreeNode[]>>(`${this.apiUrl}/groups`).pipe(
+      map((res) => res.data ?? []),
+      catchError((err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Lỗi',
+          detail: getHttpErrorMessage(err, 'Có lỗi khi tải danh sách nhóm xe.'),
+        });
+        return of([]);
+      }),
+    );
   }
 
   /**
@@ -52,9 +64,17 @@ export class MediaService {
         params = params.append('groupIds', numId.toString());
       }
     });
-    return this.http
-      .get<ApiResponse<VehicleItem[]>>(this.apiUrl, { params })
-      .pipe(map((res) => res.data ?? []));
+    return this.http.get<ApiResponse<VehicleItem[]>>(this.apiUrl, { params }).pipe(
+      map((res) => res.data ?? []),
+      catchError((err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Lỗi',
+          detail: getHttpErrorMessage(err, 'Có lỗi khi tải danh sách xe.'),
+        });
+        return of([]);
+      }),
+    );
   }
 
   /**
@@ -67,6 +87,16 @@ export class MediaService {
   searchImages(params: MediaSearchParams): Observable<MediaSearchResult> {
     return this.http
       .post<ApiResponse<MediaSearchResult>>(`${this.apiUrl}/images/search`, params)
-      .pipe(map((res) => res.data ?? { totalCount: 0, items: [] }));
+      .pipe(
+        map((res) => res.data ?? { totalCount: 0, items: [] }),
+        catchError((err) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Lỗi',
+            detail: getHttpErrorMessage(err, 'Có lỗi khi tải danh sách ảnh.'),
+          });
+          return of({ totalCount: 0, items: [] });
+        }),
+      );
   }
 }

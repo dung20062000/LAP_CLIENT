@@ -11,7 +11,6 @@ import { DatePickerModule } from 'primeng/datepicker';
 import { MessageService } from 'primeng/api';
 
 import { DriversAdminService } from '../../../../../services/drivers-admin';
-import { getHttpErrorMessage } from '../../../../../shared/utils/http-error';
 // prettier-ignore
 import { DriverDto, LicenseTypeLookupDto, UpdateDriverRequest, CreateDriverRequest } from '../../../../../models/drivers-admin';
 // prettier-ignore
@@ -176,14 +175,11 @@ export class DriverFormModalComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (data) => {
-          this.driver = data;
           this.isLoading = false;
-          if (this.isEditMode) this.buildForm(data);
-          this.cdr.markForCheck();
-        },
-        error: (err) => {
-          this.isLoading = false;
-          this.showError(getHttpErrorMessage(err, 'Không thể tải thông tin lái xe.'));
+          if (data) {
+            this.driver = data;
+            if (this.isEditMode) this.buildForm(data);
+          }
           this.cdr.markForCheck();
         },
       });
@@ -402,19 +398,17 @@ export class DriverFormModalComponent implements OnInit {
       .create(payload)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: () => {
+        next: (success) => {
           this.isSaving = false;
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Thành công',
-            detail: 'Tạo mới lái xe thành công.',
-          });
-          this.saved.emit();
-          this.onClose();
-        },
-        error: (err) => {
-          this.isSaving = false;
-          this.showError(getHttpErrorMessage(err, 'Có lỗi khi tạo lái xe.'));
+          if (success) {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Thành công',
+              detail: 'Tạo mới lái xe thành công.',
+            });
+            this.saved.emit();
+            this.onClose();
+          }
           this.cdr.markForCheck();
         },
       });
@@ -433,19 +427,17 @@ export class DriverFormModalComponent implements OnInit {
       .batchUpdate([payload])
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: () => {
+        next: (success) => {
           this.isSaving = false;
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Thành công',
-            detail: 'Cập nhật lái xe thành công.',
-          });
-          this.saved.emit();
-          this.onClose();
-        },
-        error: (err) => {
-          this.isSaving = false;
-          this.showError(getHttpErrorMessage(err, 'Có lỗi khi lưu dữ liệu.'));
+          if (success) {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Thành công',
+              detail: 'Cập nhật lái xe thành công.',
+            });
+            this.saved.emit();
+            this.onClose();
+          }
           this.cdr.markForCheck();
         },
       });

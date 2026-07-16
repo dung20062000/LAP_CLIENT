@@ -1,11 +1,10 @@
 import { HttpInterceptorFn, HttpParams } from '@angular/common/http';
 
 /**
- * cleanParamsInterceptor: Xoá các params có giá trị null/undefined
+ * Mô tả: Interceptor để xoá các params có giá trị null/undefined
  * Người tạo: DungBT
  * Ngày tạo: 16/07/2026
  */
-
 export const cleanParamsInterceptor: HttpInterceptorFn = (req, next) => {
   let cleanedParams = new HttpParams();
 

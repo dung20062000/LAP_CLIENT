@@ -3,7 +3,7 @@ import { Component, ChangeDetectionStrategy, ChangeDetectorRef, NgZone, inject, 
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { catchError, forkJoin, of } from 'rxjs';
+import { forkJoin } from 'rxjs';
 import { format, parseISO, isValid } from 'date-fns';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { ButtonModule } from 'primeng/button';
@@ -115,18 +115,8 @@ export class DriversAdminNewPageComponent implements OnInit {
   private loadDropdowns(): void {
     forkJoin({
       // Nếu lỗi, trả về mảng rỗng [] để dropdown không bị crash và các API khác vẫn chạy
-      drivers: this.service.getDriverLookup().pipe(
-        catchError((err) => {
-          this.showError(getHttpErrorMessage(err, 'Không thể tải danh sách tài xế.'));
-          return of([]);
-        }),
-      ),
-      licenseTypes: this.service.getLicenseTypeLookup().pipe(
-        catchError((err) => {
-          this.showError(getHttpErrorMessage(err, 'Không thể tải loại giấy phép.'));
-          return of([]);
-        }),
-      ),
+      drivers: this.service.getDriverLookup(),
+      licenseTypes: this.service.getLicenseTypeLookup(),
     })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
@@ -137,10 +127,6 @@ export class DriversAdminNewPageComponent implements OnInit {
             this.cdr.markForCheck();
             this.loadGrid(1);
           });
-        },
-        error: (err) => {
-          this.showError(getHttpErrorMessage(err, 'Không thể tải dữ liệu dropdown.'));
-          this.cdr.markForCheck();
         },
       });
   }
@@ -167,13 +153,6 @@ export class DriversAdminNewPageComponent implements OnInit {
             this.totalRecord = res.TotalRecord;
             this.drivers = res.Items;
             this.isLoading = false;
-            this.cdr.markForCheck();
-          });
-        },
-        error: (err) => {
-          this.zone.run(() => {
-            this.isLoading = false;
-            this.showError(getHttpErrorMessage(err, 'Không thể tải danh sách lái xe.'));
             this.cdr.markForCheck();
           });
         },
@@ -286,9 +265,6 @@ export class DriversAdminNewPageComponent implements OnInit {
               });
               this.cdr.markForCheck();
             },
-            error: (err) => {
-              this.showError(getHttpErrorMessage(err, 'Không thể xóa lái xe.'));
-            },
           });
       },
     });
@@ -317,11 +293,6 @@ export class DriversAdminNewPageComponent implements OnInit {
           a.click();
           URL.revokeObjectURL(url);
           this.isExporting = false;
-          this.cdr.markForCheck();
-        },
-        error: (err) => {
-          this.isExporting = false;
-          this.showError(getHttpErrorMessage(err, 'Không thể xuất Excel.'));
           this.cdr.markForCheck();
         },
       });

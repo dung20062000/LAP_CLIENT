@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 // prettier-ignore
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, FormArray, Validators, AbstractControl, ValidationErrors, } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { catchError, forkJoin, of } from 'rxjs';
+import { forkJoin } from 'rxjs';
 import { format, parseISO, isValid, isAfter, startOfDay } from 'date-fns';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { ButtonModule } from 'primeng/button';
@@ -16,7 +16,6 @@ import { TableModule } from 'primeng/table';
 import { ConfirmationService, MessageService } from 'primeng/api';
 
 import { DriversAdminService } from '../../../../services/drivers-admin';
-import { getHttpErrorMessage } from '../../../../shared/utils/http-error';
 // prettier-ignore
 import { DriverLookupDto, LicenseTypeLookupDto, DriverDto, UpdateDriverRequest, DriverListRequest, DriverSearchType } from '../../../../models/drivers-admin';
 // prettier-ignore
@@ -130,18 +129,8 @@ export class DriversAdminPageComponent implements OnInit {
   private loadDropdowns(): void {
     forkJoin({
       // Nếu lỗi, trả về mảng rỗng [] để dropdown không bị crash và các API khác vẫn chạy
-      drivers: this.service.getDriverLookup().pipe(
-        catchError((err) => {
-          this.showError(getHttpErrorMessage(err, 'Không thể tải danh sách tài xế.'));
-          return of([]);
-        }),
-      ),
-      licenseTypes: this.service.getLicenseTypeLookup().pipe(
-        catchError((err) => {
-          this.showError(getHttpErrorMessage(err, 'Không thể tải loại giấy phép.'));
-          return of([]);
-        }),
-      ),
+      drivers: this.service.getDriverLookup(),
+      licenseTypes: this.service.getLicenseTypeLookup(),
     })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
@@ -152,10 +141,6 @@ export class DriversAdminPageComponent implements OnInit {
             this.cdr.markForCheck();
             this.loadGrid(1);
           });
-        },
-        error: (err) => {
-          this.showError(getHttpErrorMessage(err, 'Không thể tải dữ liệu dropdown.'));
-          this.cdr.markForCheck();
         },
       });
   }
@@ -183,13 +168,6 @@ export class DriversAdminPageComponent implements OnInit {
             this.originalData = res.Items;
             this.rebuildFormArray(res.Items);
             this.isLoading = false;
-            this.cdr.markForCheck();
-          });
-        },
-        error: (err) => {
-          this.zone.run(() => {
-            this.isLoading = false;
-            this.showError(getHttpErrorMessage(err, 'Không thể tải danh sách lái xe.'));
             this.cdr.markForCheck();
           });
         },
@@ -493,18 +471,16 @@ export class DriversAdminPageComponent implements OnInit {
       .batchUpdate(payload)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: () => {
+        next: (success) => {
           this.isSaving = false;
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Thành công',
-            detail: 'Lưu thông tin lái xe thành công.',
-          });
-          this.loadGrid();
-        },
-        error: (err) => {
-          this.isSaving = false;
-          this.showError(getHttpErrorMessage(err, 'Lỗi khi lưu dữ liệu.'));
+          if (success) {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Thành công',
+              detail: 'Lưu thông tin lái xe thành công.',
+            });
+            this.loadGrid();
+          }
           this.cdr.markForCheck();
         },
       });
@@ -560,9 +536,6 @@ export class DriversAdminPageComponent implements OnInit {
               });
               this.cdr.markForCheck();
             },
-            error: (err) => {
-              this.showError(getHttpErrorMessage(err, 'Không thể xóa lái xe.'));
-            },
           });
       },
     });
@@ -591,11 +564,6 @@ export class DriversAdminPageComponent implements OnInit {
           a.click();
           URL.revokeObjectURL(url);
           this.isExporting = false;
-          this.cdr.markForCheck();
-        },
-        error: (err) => {
-          this.isExporting = false;
-          this.showError(getHttpErrorMessage(err, 'Không thể xuất Excel.'));
           this.cdr.markForCheck();
         },
       });

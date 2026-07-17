@@ -715,6 +715,7 @@ export class VehicleGroupAdminPageComponent implements OnInit {
 
       return {
         ...node,
+        partialSelected: false,
         styleClass: isDirtyNode ? 'node-dirty' : undefined,
         children: node.children?.length ? this.updateNodeStyles(node.children, isAssignedTree) : [],
       };

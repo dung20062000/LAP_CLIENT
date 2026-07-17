@@ -10,8 +10,10 @@
   <div class="card-thumbnail">
     <img
       loading="lazy"
-      [src]="image.url"
+      referrerpolicy="no-referrer"
+      [src]="imageUrl"
       [alt]="'Kênh ' + image.channel + ' – ' + (image.imageTime | date:'dd/MM/yyyy HH:mm:ss')"
+      (error)="onImageError()"
     />
   </div>
 

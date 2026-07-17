@@ -30,8 +30,10 @@
           }
           <img
             class="galleria-image"
-            [src]="currentImage.url"
+            referrerpolicy="no-referrer"
+            [src]="currentImageUrl"
             [alt]="'Kênh ' + currentImage.channel"
+            (error)="onImageError()"
           />
         </div>
 

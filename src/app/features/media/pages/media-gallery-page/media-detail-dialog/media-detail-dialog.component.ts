@@ -72,6 +72,37 @@ export class MediaDetailDialogComponent implements OnChanges, OnDestroy {
     return this.images[this.currentIndex];
   }
 
+  /** URL ảnh hiện tại với cơ chế retry */
+  currentImageUrl: string = '';
+  private retryCount = 0;
+  private readonly MAX_RETRIES = 4;
+
+  private updateCurrentImageUrl(): void {
+    if (this.images.length > 0 && this.images[this.currentIndex]) {
+      this.currentImageUrl = this.images[this.currentIndex].url || '';
+      this.retryCount = 0;
+    } else {
+      this.currentImageUrl = '';
+      this.retryCount = 0;
+    }
+  }
+
+  onImageError(): void {
+    if (!this.currentImageUrl) return;
+
+    if (this.retryCount < this.MAX_RETRIES) {
+      this.retryCount++;
+      setTimeout(() => {
+        const originalUrl = this.currentImage?.url;
+        if (!originalUrl) return;
+
+        const separator = originalUrl.includes('?') ? '&' : '?';
+        this.currentImageUrl = `${originalUrl}${separator}retry=${Date.now()}`;
+        this.cdr.markForCheck();
+      }, 3000);
+    }
+  }
+
   /**
    * Kiểm tra xem có trang tiếp theo không
    * Người tạo: DungBT
@@ -108,6 +139,7 @@ export class MediaDetailDialogComponent implements OnChanges, OnDestroy {
     // Khi mở dialog hoặc activeIndex thay đổi, đồng bộ lại
     if (changes['activeIndex'] || changes['visible']) {
       this.currentIndex = this.activeIndex;
+      this.updateCurrentImageUrl();
       this.cdr.markForCheck();
     }
 
@@ -119,6 +151,7 @@ export class MediaDetailDialogComponent implements OnChanges, OnDestroy {
         this.currentIndex = this.images.length > 0 ? this.images.length - 1 : 0;
       }
       this.pendingDirection = null;
+      this.updateCurrentImageUrl();
       this.cdr.markForCheck();
     }
   }
@@ -136,11 +169,13 @@ export class MediaDetailDialogComponent implements OnChanges, OnDestroy {
     if (this.images.length === 0 || this.loading) return;
     if (this.currentIndex > 0) {
       this.currentIndex--;
+      this.updateCurrentImageUrl();
     } else if (this.hasPrevPage) {
       this.pendingDirection = 'prev';
       this.loadPrevPage.emit();
     } else if (this.circular) {
       this.currentIndex = this.images.length - 1;
+      this.updateCurrentImageUrl();
     }
     this.cdr.detectChanges();
   }
@@ -154,11 +189,13 @@ export class MediaDetailDialogComponent implements OnChanges, OnDestroy {
     if (this.images.length === 0 || this.loading) return;
     if (this.currentIndex < this.images.length - 1) {
       this.currentIndex++;
+      this.updateCurrentImageUrl();
     } else if (this.hasNextPage) {
       this.pendingDirection = 'next';
       this.loadNextPage.emit();
     } else if (this.circular) {
       this.currentIndex = 0;
+      this.updateCurrentImageUrl();
     }
     this.cdr.detectChanges();
   }

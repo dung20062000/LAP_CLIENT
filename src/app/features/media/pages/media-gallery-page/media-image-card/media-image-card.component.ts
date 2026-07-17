@@ -1,4 +1,15 @@
-import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  ChangeDetectionStrategy,
+  OnInit,
+  OnChanges,
+  SimpleChanges,
+  ChangeDetectorRef,
+  inject,
+} from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { MediaImageItem } from '../../../../../models/media';
 
@@ -28,10 +39,43 @@ const FAKE_ADDRESSES = [
   styleUrl: './media-image-card.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MediaImageCardComponent {
+export class MediaImageCardComponent implements OnInit, OnChanges {
   @Input() image!: MediaImageItem;
   @Input() index: number = 0;
   @Output() imageClick = new EventEmitter<number>();
+
+  imageUrl: string = '';
+  private retryCount = 0;
+  private readonly MAX_RETRIES = 4;
+  private cdr = inject(ChangeDetectorRef);
+
+  ngOnInit(): void {
+    this.initImage();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['image'] && !changes['image'].isFirstChange()) {
+      this.initImage();
+    }
+  }
+
+  private initImage(): void {
+    this.imageUrl = this.image?.url || '';
+    this.retryCount = 0;
+  }
+
+  onImageError(): void {
+    if (!this.imageUrl) return;
+
+    if (this.retryCount < this.MAX_RETRIES) {
+      this.retryCount++;
+      setTimeout(() => {
+        const separator = this.image.url.includes('?') ? '&' : '?';
+        this.imageUrl = `${this.image.url}${separator}retry=${Date.now()}`;
+        this.cdr.markForCheck();
+      }, 3000);
+    }
+  }
 
   /**
    * Lấy địa chỉ fake từ index để hiển thị trong metadata.

@@ -22,6 +22,8 @@ import { DriverLookupDto, LicenseTypeLookupDto, DriverDto, UpdateDriverRequest, 
 import { VarcharOnlyDirective, NoAngleBracketsDirective } from '../../../../shared/directives/input-filters.directive';
 // prettier-ignore
 import { PAGE_DEFAULT, PAGE_SIZE_DEFAULT, PAGE_SIZE_OPTIONS } from '../../../../shared/utils/constants';
+// prettier-ignore
+import { FieldErrorPipe, RowErrorPipe, FieldInputClassPipe, DateInputClassPipe, UpdatedDatePipe } from './drivers-admin-page.pipes';
 
 /**
  * Mô tả: Trang Quản Lý Thông Tin Lái Xe.
@@ -37,7 +39,7 @@ import { PAGE_DEFAULT, PAGE_SIZE_DEFAULT, PAGE_SIZE_OPTIONS } from '../../../../
   selector: 'app-drivers-admin-page',
   standalone: true,
   // prettier-ignore
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgSelectModule, ButtonModule, ConfirmDialogModule, ToastModule, DatePickerModule, PaginatorModule, TableModule, VarcharOnlyDirective, NoAngleBracketsDirective],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgSelectModule, ButtonModule, ConfirmDialogModule, ToastModule, DatePickerModule, PaginatorModule, TableModule, VarcharOnlyDirective, NoAngleBracketsDirective, FieldErrorPipe, RowErrorPipe, FieldInputClassPipe, DateInputClassPipe, UpdatedDatePipe],
   providers: [ConfirmationService],
   templateUrl: './drivers-admin-page.component.html',
   styleUrls: ['./drivers-admin-page.component.scss'],
@@ -315,69 +317,12 @@ export class DriversAdminPageComponent implements OnInit {
     };
   }
 
-  // Validation helpers cho template
-
-  /**
-   * Lấy thông báo lỗi của một control trong một row
-   * Người tạo: DungBT
-   * Ngày tạo: 29/06/2026
-   */
-  getFieldError(rowGroup: AbstractControl, field: string): string {
-    const ctrl = rowGroup.get(field);
-    if (!ctrl || !ctrl.invalid || !ctrl.touched) return '';
-
-    if (ctrl.errors?.['required']) return 'Giá trị không được để trống';
-    if (ctrl.errors?.['maxlength'])
-      return `Tối đa ${ctrl.errors['maxlength'].requiredLength} ký tự`;
-    if (ctrl.errors?.['pattern']) {
-      if (field === 'DriverLicense') return 'Chỉ được nhập ký tự không dấu (varchar)';
-      return 'SĐT chỉ nhập số, 9-25 ký tự';
-    }
-    if (ctrl.errors?.['noAngleBrackets']) return ctrl.errors['noAngleBrackets'] as string;
-    return 'Giá trị không hợp lệ';
-  }
-
-  /**
-   * Lấy thông báo lỗi cấp row (date range)
-   * Người tạo: DungBT
-   * Ngày tạo: 29/06/2026
-   */
-  getRowError(rowGroup: AbstractControl): string {
-    if (!rowGroup.errors) return '';
-    if (rowGroup.errors['issueFuture']) return rowGroup.errors['issueFuture'] as string;
-    if (rowGroup.errors['expireBeforeIssue']) return rowGroup.errors['expireBeforeIssue'] as string;
-    return '';
-  }
-
-  /**
-   * Lấy class CSS động cho input ngày tháng để hiển thị trạng thái validate (valid/invalid/dirty)
-   * Người tạo: DungBT
-   * Ngày tạo: 29/06/2026
-   */
-  getDateInputClass(
-    rowCtrl: AbstractControl,
-    field: 'IssueLicenseDate' | 'ExpireLicenseDate',
-  ): string {
-    let classes = 'da-input ';
-    const ctrl = rowCtrl.get(field);
-    const valid = ctrl?.valid && ctrl?.touched;
-    const invalid = ctrl?.invalid && ctrl?.touched;
-    const dirty = ctrl?.dirty;
-
-    const issueFuture = rowCtrl.errors?.['issueFuture'] && rowCtrl.touched;
-    const expireBeforeIssue = rowCtrl.errors?.['expireBeforeIssue'] && rowCtrl.touched;
-
-    if (field === 'IssueLicenseDate') {
-      if (valid && !issueFuture && !expireBeforeIssue) classes += 'da-input-valid ';
-      if (invalid || issueFuture || expireBeforeIssue) classes += 'da-input-invalid ';
-    } else {
-      if (valid && !expireBeforeIssue) classes += 'da-input-valid ';
-      if (invalid || expireBeforeIssue) classes += 'da-input-invalid ';
-    }
-
-    if (dirty) classes += 'da-input-dirty ';
-    return classes.trim();
-  }
+  // Validation helpers đã được chuyển thành Pipes (xem drivers-admin-page.pipes.ts):
+  // - getFieldError  → FieldErrorPipe    (daFieldError)
+  // - getRowError    → RowErrorPipe      (daRowError)
+  // - getDateInputClass → DateInputClassPipe (daDateInputClass)
+  // - getUpdatedDateDisplay → UpdatedDatePipe (daUpdatedDate)
+  // - [ngClass] inline → FieldInputClassPipe (daFieldInputClass)
 
   // Actions
 
@@ -620,32 +565,8 @@ export class DriversAdminPageComponent implements OnInit {
     );
   }
 
-  // Display helpers
-
-  /**
-   * Hiển thị ngày tháng từ ISO string dùng date-fns format.
-   * Nếu UpdatedDate null → dùng UpdatedDate từ row gốc.
-   * @param iso ISO date string
-   * @param pattern format pattern của date-fns
-   * Người tạo: DungBT
-   * Ngày tạo: 29/06/2026
-   */
-  formatDate(iso: string | null | undefined, pattern = 'dd/MM/yyyy'): string {
-    if (!iso) return '';
-    const d = parseISO(iso);
-    return isValid(d) ? format(d, pattern) : '';
-  }
-
-  /**
-   * Ngày cập nhật hiển thị: ưu tiên UpdatedDate, fallback về không hiển thị gì
-   * Lưu ý: form chỉ chứa UpdatedDate
-   * Người tạo: DungBT
-   * Ngày tạo: 29/06/2026
-   */
-  getUpdatedDateDisplay(rowGroup: AbstractControl): string {
-    const updatedDate = rowGroup.get('UpdatedDate')?.value as string | null;
-    return this.formatDate(updatedDate, 'HH:mm dd/MM/yyyy');
-  }
+  // Display helpers đã được chuyển thành Pipes (xem drivers-admin-page.pipes.ts):
+  // - formatDate + getUpdatedDateDisplay → UpdatedDatePipe (daUpdatedDate)
 
   /**
    * Helper: hiển thị toast lỗi

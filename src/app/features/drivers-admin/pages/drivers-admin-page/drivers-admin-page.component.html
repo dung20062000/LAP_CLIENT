@@ -218,6 +218,15 @@
           </ng-template>
 
           <ng-template let-rowCtrl let-i="rowIndex" pTemplate="body">
+            <!-- Trích xuất từng control một lần → truyền primitive vào pure pipes, tránh gọi rowCtrl.get() nhiều lần -->
+            @let nameCtrl    = rowCtrl.get('DisplayName');
+            @let mobileCtrl  = rowCtrl.get('Mobile');
+            @let licCtrl     = rowCtrl.get('DriverLicense');
+            @let issueCtrl   = rowCtrl.get('IssueLicenseDate');
+            @let expireCtrl  = rowCtrl.get('ExpireLicenseDate');
+            @let placeCtrl   = rowCtrl.get('IssueLicensePlace');
+            @let typeCtrl    = rowCtrl.get('LicenseType');
+
             <tr [formGroup]="rowCtrl" [class.da-row-invalid]="rowCtrl.invalid && rowCtrl.touched">
               <!-- STT -->
               <td class="da-col-stt text-center">
@@ -232,13 +241,9 @@
                   formControlName="DisplayName"
                   appNoAngleBrackets
                   placeholder="Nhập họ và tên"
-                  [title]="getFieldError(rowCtrl, 'DisplayName')"
                   [maxLength]="100"
-                  [ngClass]="{
-                    'da-input-valid': rowCtrl.get('DisplayName')?.valid && rowCtrl.get('DisplayName')?.touched,
-                    'da-input-invalid': rowCtrl.get('DisplayName')?.invalid && rowCtrl.get('DisplayName')?.touched,
-                    'da-input-dirty': rowCtrl.get('DisplayName')?.dirty
-                  }"
+                  [title]="nameCtrl?.errors | daFieldError:'DisplayName':(nameCtrl?.touched ?? false)"
+                  [ngClass]="nameCtrl?.status | daFieldInputClass:(nameCtrl?.dirty ?? false):(nameCtrl?.touched ?? false)"
                 />
               </td>
 
@@ -250,12 +255,8 @@
                   class="da-input"
                   formControlName="Mobile"
                   placeholder="Nhập SĐT"
-                  [title]="getFieldError(rowCtrl, 'Mobile')"
-                  [ngClass]="{
-                    'da-input-valid': rowCtrl.get('Mobile')?.valid && rowCtrl.get('Mobile')?.touched && rowCtrl.get('Mobile')?.value,
-                    'da-input-invalid': rowCtrl.get('Mobile')?.invalid && rowCtrl.get('Mobile')?.touched && rowCtrl.get('Mobile')?.value,
-                    'da-input-dirty': rowCtrl.get('Mobile')?.dirty
-                  }"
+                  [title]="mobileCtrl?.errors | daFieldError:'Mobile':(mobileCtrl?.touched ?? false)"
+                  [ngClass]="mobileCtrl?.status | daFieldInputClass:(mobileCtrl?.dirty ?? false):(mobileCtrl?.touched ?? false):true:(!!mobileCtrl?.value)"
                 />
               </td>
 
@@ -268,12 +269,8 @@
                   appVarcharOnly
                   placeholder="Số GPLX"
                   [maxLength]="32"
-                  [title]="getFieldError(rowCtrl, 'DriverLicense')"
-                  [ngClass]="{
-                    'da-input-valid': rowCtrl.get('DriverLicense')?.valid && rowCtrl.get('DriverLicense')?.touched,
-                    'da-input-invalid': rowCtrl.get('DriverLicense')?.invalid && rowCtrl.get('DriverLicense')?.touched,
-                    'da-input-dirty': rowCtrl.get('DriverLicense')?.dirty
-                  }"
+                  [title]="licCtrl?.errors | daFieldError:'DriverLicense':(licCtrl?.touched ?? false)"
+                  [ngClass]="licCtrl?.status | daFieldInputClass:(licCtrl?.dirty ?? false):(licCtrl?.touched ?? false)"
                 />
               </td>
 
@@ -289,8 +286,8 @@
                   iconDisplay="input"
                   [maxDate]="todayDate"
                   [showIcon]="true"
-                  [title]="getFieldError(rowCtrl, 'IssueLicenseDate') || getRowError(rowCtrl)"
-                  [inputStyleClass]="getDateInputClass(rowCtrl, 'IssueLicenseDate')"
+                  [title]="(issueCtrl?.errors | daFieldError:'IssueLicenseDate':(issueCtrl?.touched ?? false)) || (rowCtrl.errors | daRowError:rowCtrl.touched)"
+                  [inputStyleClass]="issueCtrl?.status | daDateInputClass:'IssueLicenseDate':(issueCtrl?.dirty ?? false):(issueCtrl?.touched ?? false):(rowCtrl.errors | json):rowCtrl.touched"
                 >
                   <ng-template #inputicon let-clickCallBack="clickCallBack">
                     <span
@@ -315,8 +312,8 @@
                   panelStyleClass="da-datepicker-panel"
                   iconDisplay="input"
                   [showIcon]="true"
-                  [title]="getFieldError(rowCtrl, 'ExpireLicenseDate') || getRowError(rowCtrl)"
-                  [inputStyleClass]="getDateInputClass(rowCtrl, 'ExpireLicenseDate')"
+                  [title]="(expireCtrl?.errors | daFieldError:'ExpireLicenseDate':(expireCtrl?.touched ?? false)) || (rowCtrl.errors | daRowError:rowCtrl.touched)"
+                  [inputStyleClass]="expireCtrl?.status | daDateInputClass:'ExpireLicenseDate':(expireCtrl?.dirty ?? false):(expireCtrl?.touched ?? false):(rowCtrl.errors | json):rowCtrl.touched"
                 >
                 <ng-template #inputicon let-clickCallBack="clickCallBack">
                     <span
@@ -339,12 +336,8 @@
                   appNoAngleBrackets
                   placeholder="Nơi cấp"
                   [maxLength]="150"
-                  [title]="getFieldError(rowCtrl, 'IssueLicensePlace')"
-                  [ngClass]="{
-                    'da-input-valid': rowCtrl.get('IssueLicensePlace')?.valid && rowCtrl.get('IssueLicensePlace')?.touched,
-                    'da-input-invalid': rowCtrl.get('IssueLicensePlace')?.invalid && rowCtrl.get('IssueLicensePlace')?.touched,
-                    'da-input-dirty': rowCtrl.get('IssueLicensePlace')?.dirty
-                  }"
+                  [title]="placeCtrl?.errors | daFieldError:'IssueLicensePlace':(placeCtrl?.touched ?? false)"
+                  [ngClass]="placeCtrl?.status | daFieldInputClass:(placeCtrl?.dirty ?? false):(placeCtrl?.touched ?? false)"
                 />
               </td>
 
@@ -360,19 +353,15 @@
                   notFoundText="Không tìm thấy"
                   [items]="licenseTypeLookup"
                   [clearable]="false"
-                  [title]="getFieldError(rowCtrl, 'LicenseType')"
-                  [ngClass]="{
-                    'da-input-valid': rowCtrl.get('LicenseType')?.valid && rowCtrl.get('LicenseType')?.touched,
-                    'da-input-invalid': rowCtrl.get('LicenseType')?.invalid && rowCtrl.get('LicenseType')?.touched,
-                    'da-input-dirty': rowCtrl.get('LicenseType')?.dirty
-                  }"
+                  [title]="typeCtrl?.errors | daFieldError:'LicenseType':(typeCtrl?.touched ?? false)"
+                  [ngClass]="typeCtrl?.status | daFieldInputClass:(typeCtrl?.dirty ?? false):(typeCtrl?.touched ?? false)"
                 />
               </td>
 
               <!-- Ngày cập nhật (chỉ xem) -->
               <td class="da-col-updated text-center">
                 <div class="da-updated-date">
-                  {{ getUpdatedDateDisplay(rowCtrl) }}
+                  {{ rowCtrl.get('UpdatedDate')?.value | daUpdatedDate }}
                 </div>
               </td>
 

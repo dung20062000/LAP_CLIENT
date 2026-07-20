@@ -27,6 +27,8 @@ export class WidgetDonutBorderComponent implements OnChanges, OnDestroy {
   @Input() vehicles: Vehicle[] = [];
   /** Danh sách điểm đến để lấy tên */
   @Input() destinations: Destination[] = [];
+  /** True khi widget ở chế độ Small – dùng layout khác cho label */
+  @Input() isSmall = false;
 
   /** ECharts option */
   chartOption: EChartsOption = {};
@@ -69,7 +71,7 @@ export class WidgetDonutBorderComponent implements OnChanges, OnDestroy {
    * Ngày tạo: 02/06/2026
    */
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['vehicles'] || changes['destinations']) {
+    if (changes['vehicles'] || changes['destinations'] || changes['isSmall']) {
       this.buildChart();
     }
   }
@@ -162,7 +164,7 @@ export class WidgetDonutBorderComponent implements OnChanges, OnDestroy {
           type: 'pie',
           radius: ['40%', '55%'], // tăng/giảm kích thước đường kính vòng tròn (lùi ra, tiến vào)
           center: ['50%', '45%'], // căn chỉnh vị trí tâm vòng tròn (trục ngang, trục dọc)
-          avoidLabelOverlap: true, // tránh overlap label
+          avoidLabelOverlap: false, // tắt để labelLayout kiểm soát hoàn toàn vị trí
           label: {
             show: true,
             position: 'outside',
@@ -181,12 +183,37 @@ export class WidgetDonutBorderComponent implements OnChanges, OnDestroy {
           labelLayout: (params: any) => {
             const is100Percent = loadedCount === 0 || emptyCount === 0;
             if (is100Percent) {
-              return { y: '82%' };
+              // 1 label duy nhất: đặt chính giữa bên dưới biểu đồ
+              return { x: '50%', y: '82%', align: 'center', verticalAlign: 'top' };
             }
-            const isLeft = params.labelRect.x < params.rect.x;
+
+            if (this.isSmall) {
+              // Small: container hẹp, dùng x% cố định để label không bị tràn ra mép
+              const isRight = params.dataIndex === 0;
+              return {
+                x: isRight ? '75%' : '25%',
+                y: '82%',
+                align: 'center',
+                verticalAlign: 'top',
+              };
+            }
+
+            // Không phải Small: dùng pixel x của điểm cuối đường line (ổn định, khớp với bất kỳ kích thước nào)
+            if (params.labelLinePoints && params.labelLinePoints[2]) {
+              return {
+                x: params.labelLinePoints[2][0],
+                y: '82%',
+                align: 'center',
+                verticalAlign: 'top',
+              };
+            }
+            // Fallback
+            const isRight = params.dataIndex === 0;
             return {
+              x: isRight ? '75%' : '25%',
               y: '82%',
-              dx: isLeft ? 40 : -40, // Đẩy nhãn bên trái sang phải 40px, nhãn bên phải sang trái 40px
+              align: 'center',
+              verticalAlign: 'top',
             };
           },
           data: data,

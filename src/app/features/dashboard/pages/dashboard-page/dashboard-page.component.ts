@@ -174,6 +174,16 @@ export class DashboardPageComponent implements OnInit {
   }
 
   /**
+   * Kiểm tra widget có đang ở chế độ Small không
+   * @param widgetId ID của widget
+   * Người tạo: DungBT
+   * Ngày tạo: 20/07/2026
+   */
+  isWidgetSmall(widgetId: string): boolean {
+    return this.getWidgetConfig(widgetId).size === WidgetSize.Small;
+  }
+
+  /**
    * Tính toán động class Bootstrap col cho các widget dựa trên kích thước cấu hình
    * @param widgetId ID của widget cần lấy cấu hình
    * Người tạo: DungBT

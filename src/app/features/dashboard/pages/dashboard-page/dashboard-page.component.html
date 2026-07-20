@@ -55,7 +55,7 @@
       (sizeChange)="onWidgetSizeChange('donut-border', $event)"
       (collapsedChange)="onWidgetCollapsedChange('donut-border', $event)"
       (reload)="onWidgetReload('donut-border')">
-      <app-widget-donut-border [vehicles]="borderVehiclesData" />
+      <app-widget-donut-border [vehicles]="borderVehiclesData" [isSmall]="isWidgetSmall('donut-border')" />
     </app-widget-container>
 
     <!-- Donut: Trên đường -->
@@ -69,7 +69,7 @@
       (sizeChange)="onWidgetSizeChange('donut-road', $event)"
       (collapsedChange)="onWidgetCollapsedChange('donut-road', $event)"
       (reload)="onWidgetReload('donut-road')">
-      <app-widget-donut-road [vehicles]="roadVehiclesData" />
+      <app-widget-donut-road [vehicles]="roadVehiclesData" [isSmall]="isWidgetSmall('donut-road')" />
     </app-widget-container>
 
     <!-- Bar Chart: Nhà máy -->

@@ -6,7 +6,7 @@
 import { afterEach, describe, expect, it, beforeEach, vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { WidgetBarPortComponent } from './widget-bar-port.component';
-import { Vehicle } from '../../../../models/dashboard';
+import { Vehicle } from '../../../../../models/dashboard';
 
 describe('WidgetBarPortComponent', () => {
   let fixture: ComponentFixture<WidgetBarPortComponent>;
@@ -87,9 +87,7 @@ describe('WidgetBarPortComponent', () => {
 
   describe('buildChart() với vehicles có dữ liệu', () => {
     it('should set hasData to true when vehicles have destinationName', () => {
-      component.vehicles = [
-        makeVehicle({ id: 1, destinationName: 'Cảng Tân Cảng Cát Lái' }),
-      ];
+      component.vehicles = [makeVehicle({ id: 1, destinationName: 'Cảng Tân Cảng Cát Lái' })];
       component.ngOnChanges({ vehicles: { currentValue: component.vehicles } } as any);
       expect(component.hasData).toBe(true);
     });
@@ -119,9 +117,7 @@ describe('WidgetBarPortComponent', () => {
 
     it('should set series bar color from barColor input', () => {
       component.barColor = '#ff0000';
-      component.vehicles = [
-        makeVehicle({ id: 1, destinationName: 'Cảng Tân Cảng Cát Lái' }),
-      ];
+      component.vehicles = [makeVehicle({ id: 1, destinationName: 'Cảng Tân Cảng Cát Lái' })];
       component.ngOnChanges({ vehicles: { currentValue: component.vehicles } } as any);
       const opts = component.chartOption as any;
       expect(opts.series[0].itemStyle.color).toBe('#ff0000');
@@ -165,7 +161,7 @@ describe('WidgetBarPortComponent', () => {
 
     it('should calculate dynamic width when many categories', () => {
       const manyVehicles = Array.from({ length: 30 }, (_, i) =>
-        makeVehicle({ id: i, destinationName: `Cảng ${i}` })
+        makeVehicle({ id: i, destinationName: `Cảng ${i}` }),
       );
       component.vehicles = manyVehicles;
       component.ngOnChanges({ vehicles: { currentValue: component.vehicles } } as any);
@@ -197,18 +193,14 @@ describe('WidgetBarPortComponent', () => {
 
   describe('ngOnChanges()', () => {
     it('should rebuild chart when vehicles input changes', () => {
-      component.vehicles = [
-        makeVehicle({ id: 1, destinationName: 'Cảng Tân Cảng Cát Lái' }),
-      ];
+      component.vehicles = [makeVehicle({ id: 1, destinationName: 'Cảng Tân Cảng Cát Lái' })];
       component.ngOnChanges({ vehicles: { currentValue: component.vehicles } } as any);
       const opts = component.chartOption as any;
       expect(opts.series[0].data).toEqual([1]);
     });
 
     it('should not rebuild chart when vehicles did not change', () => {
-      component.vehicles = [
-        makeVehicle({ id: 1, destinationName: 'Cảng Tân Cảng Cát Lái' }),
-      ];
+      component.vehicles = [makeVehicle({ id: 1, destinationName: 'Cảng Tân Cảng Cát Lái' })];
       component.ngOnChanges({});
       expect(component.chartOption).toEqual({});
     });
@@ -220,7 +212,7 @@ describe('WidgetBarPortComponent', () => {
     it('should disable dataZoom when showZoom is false', () => {
       component.showZoom = false;
       component.vehicles = Array.from({ length: 15 }, (_, i) =>
-        makeVehicle({ id: i, destinationName: `Cảng ${i}` })
+        makeVehicle({ id: i, destinationName: `Cảng ${i}` }),
       );
       component.ngOnChanges({ vehicles: { currentValue: component.vehicles } } as any);
       const opts = component.chartOption as any;
@@ -230,7 +222,7 @@ describe('WidgetBarPortComponent', () => {
     it('should enable dataZoom when showZoom is true and categories > 8', () => {
       component.showZoom = true;
       component.vehicles = Array.from({ length: 12 }, (_, i) =>
-        makeVehicle({ id: i, destinationName: `Cảng ${i}` })
+        makeVehicle({ id: i, destinationName: `Cảng ${i}` }),
       );
       component.ngOnChanges({ vehicles: { currentValue: component.vehicles } } as any);
       const opts = component.chartOption as any;
@@ -240,7 +232,7 @@ describe('WidgetBarPortComponent', () => {
     it('should set dataZoom end based on ratio (8/categories)', () => {
       component.showZoom = true;
       component.vehicles = Array.from({ length: 16 }, (_, i) =>
-        makeVehicle({ id: i, destinationName: `Cảng ${i}` })
+        makeVehicle({ id: i, destinationName: `Cảng ${i}` }),
       );
       component.ngOnChanges({ vehicles: { currentValue: component.vehicles } } as any);
       const opts = component.chartOption as any;

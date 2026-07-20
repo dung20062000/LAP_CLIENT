@@ -6,7 +6,7 @@
 import { afterEach, describe, expect, it, beforeEach } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { WidgetOverviewComponent } from './widget-overview.component';
-import { DashboardStats } from '../../../../models/dashboard';
+import { DashboardStats } from '../../../../../models/dashboard';
 
 describe('WidgetOverviewComponent', () => {
   let fixture: ComponentFixture<WidgetOverviewComponent>;

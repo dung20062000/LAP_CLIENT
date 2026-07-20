@@ -5,7 +5,7 @@
  */
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { WidgetContainerComponent } from './widget-container.component';
-import { WidgetSize } from '../../../../models/dashboard';
+import { WidgetSize } from '../../../../../models/dashboard';
 import { vi } from 'vitest';
 
 describe('WidgetContainerComponent', () => {
@@ -64,7 +64,12 @@ describe('WidgetContainerComponent', () => {
 
     it('should expose 4 size options', () => {
       expect(component.sizeOptions.length).toBe(4);
-      expect(component.sizeOptions.map(o => o.value)).toEqual([WidgetSize.Auto, WidgetSize.Small, WidgetSize.Medium, WidgetSize.Large]);
+      expect(component.sizeOptions.map((o) => o.value)).toEqual([
+        WidgetSize.Auto,
+        WidgetSize.Small,
+        WidgetSize.Medium,
+        WidgetSize.Large,
+      ]);
     });
   });
 
@@ -102,7 +107,9 @@ describe('WidgetContainerComponent', () => {
     it('should toggle collapsed from false to true', () => {
       component.collapsed = false;
       let emitted: boolean | null = null;
-      component.collapsedChange.subscribe(v => { emitted = v; });
+      component.collapsedChange.subscribe((v) => {
+        emitted = v;
+      });
 
       component.toggleCollapse();
       expect(component.collapsed).toBe(true);
@@ -112,7 +119,9 @@ describe('WidgetContainerComponent', () => {
     it('should toggle collapsed from true to false', () => {
       component.collapsed = true;
       let emitted: boolean | null = null;
-      component.collapsedChange.subscribe(v => { emitted = v; });
+      component.collapsedChange.subscribe((v) => {
+        emitted = v;
+      });
 
       component.toggleCollapse();
       expect(component.collapsed).toBe(false);
@@ -122,7 +131,7 @@ describe('WidgetContainerComponent', () => {
     it('should emit collapsedChange with new collapsed state', () => {
       component.collapsed = false;
       const emitSpy = { called: false, value: false as boolean };
-      component.collapsedChange.subscribe(v => {
+      component.collapsedChange.subscribe((v) => {
         emitSpy.called = true;
         emitSpy.value = v;
       });
@@ -138,7 +147,9 @@ describe('WidgetContainerComponent', () => {
   describe('onReload()', () => {
     it('should emit reload event', () => {
       let emitted = false;
-      component.reload.subscribe(() => { emitted = true; });
+      component.reload.subscribe(() => {
+        emitted = true;
+      });
 
       component.onReload();
       expect(emitted).toBe(true);
@@ -146,7 +157,9 @@ describe('WidgetContainerComponent', () => {
 
     it('should set _internalReloading to true immediately', () => {
       component.onReload();
-      expect((component as unknown as { _internalReloading: boolean })._internalReloading).toBe(true);
+      expect((component as unknown as { _internalReloading: boolean })._internalReloading).toBe(
+        true,
+      );
     });
   });
 
@@ -160,7 +173,9 @@ describe('WidgetContainerComponent', () => {
 
     it('should emit sizeChange with the new size', () => {
       let emitted: WidgetSize | null = null;
-      component.sizeChange.subscribe(v => { emitted = v; });
+      component.sizeChange.subscribe((v) => {
+        emitted = v;
+      });
 
       component.onSelectSize(WidgetSize.Medium);
       expect(emitted).toBe(WidgetSize.Medium);
@@ -174,7 +189,9 @@ describe('WidgetContainerComponent', () => {
 
     it('should accept auto size', () => {
       let emitted: WidgetSize | null = null;
-      component.sizeChange.subscribe(v => { emitted = v; });
+      component.sizeChange.subscribe((v) => {
+        emitted = v;
+      });
       component.onSelectSize(WidgetSize.Auto);
       expect(emitted).toBe(WidgetSize.Auto);
     });

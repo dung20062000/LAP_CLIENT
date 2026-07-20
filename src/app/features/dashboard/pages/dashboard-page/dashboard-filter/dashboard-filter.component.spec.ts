@@ -6,7 +6,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SimpleChanges } from '@angular/core';
 import { DashboardFilterComponent } from './dashboard-filter.component';
-import { VehicleOption } from '../../../../models/dashboard';
+import { VehicleOption } from '../../../../../models/dashboard';
 
 const mockOptions: VehicleOption[] = [
   { value: 1, label: '43C01338_C' },
@@ -159,7 +159,9 @@ describe('DashboardFilterComponent', () => {
 
     it('should emit updated selectedIds', () => {
       let emitted: number[] = [];
-      component.filterChange.emit = (ids: number[]) => { emitted = ids; };
+      component.filterChange.emit = (ids: number[]) => {
+        emitted = ids;
+      };
 
       component.selectedIds = [];
       component.toggleItem(1);
@@ -177,16 +179,18 @@ describe('DashboardFilterComponent', () => {
     });
 
     it('should deselect all when isAllSelected is true', () => {
-      component.selectedIds = mockOptions.map(o => o.value);
+      component.selectedIds = mockOptions.map((o) => o.value);
       component.toggleAllSelection();
       expect(component.selectedIds).toEqual([]);
     });
 
     it('should emit empty array when deselecting all', () => {
       let emitted: number[] = [];
-      component.filterChange.emit = (ids: number[]) => { emitted = ids; };
+      component.filterChange.emit = (ids: number[]) => {
+        emitted = ids;
+      };
 
-      component.selectedIds = mockOptions.map(o => o.value);
+      component.selectedIds = mockOptions.map((o) => o.value);
       component.toggleAllSelection();
       expect(emitted).toEqual([]);
     });
@@ -206,7 +210,11 @@ describe('DashboardFilterComponent', () => {
 
     it('should stop event propagation', () => {
       let stopped = false;
-      const event = { stopPropagation: () => { stopped = true; } } as Event;
+      const event = {
+        stopPropagation: () => {
+          stopped = true;
+        },
+      } as Event;
 
       component.removeItem(1, event);
       expect(stopped).toBe(true);
@@ -214,7 +222,9 @@ describe('DashboardFilterComponent', () => {
 
     it('should emit updated ids', () => {
       let emitted: number[] = [];
-      component.filterChange.emit = (ids: number[]) => { emitted = ids; };
+      component.filterChange.emit = (ids: number[]) => {
+        emitted = ids;
+      };
       const event = { stopPropagation: () => {} } as Event;
 
       component.selectedIds = [1, 2];
@@ -244,7 +254,9 @@ describe('DashboardFilterComponent', () => {
 
     it('should emit empty array', () => {
       let emitted: number[] = [];
-      component.filterChange.emit = (ids: number[]) => { emitted = ids; };
+      component.filterChange.emit = (ids: number[]) => {
+        emitted = ids;
+      };
       const event = { stopPropagation: () => {} } as Event;
 
       component.onClear(event);
@@ -256,7 +268,7 @@ describe('DashboardFilterComponent', () => {
 
   describe('isAllSelected', () => {
     it('should return true when all vehicleOptions are selected', () => {
-      component.selectedIds = mockOptions.map(o => o.value);
+      component.selectedIds = mockOptions.map((o) => o.value);
       expect(component.isAllSelected).toBe(true);
     });
 
@@ -286,7 +298,9 @@ describe('DashboardFilterComponent', () => {
         { value: 1, label: '43C01338_C' },
         { value: 2, label: '43C01339_C' },
       ];
-      component.ngOnChanges({ vehicleOptions: { currentValue: newOptions } } as unknown as SimpleChanges);
+      component.ngOnChanges({
+        vehicleOptions: { currentValue: newOptions },
+      } as unknown as SimpleChanges);
       expect(component.selectedIds).not.toContain(3);
     });
 
@@ -297,7 +311,9 @@ describe('DashboardFilterComponent', () => {
         { value: 2, label: '43C01339_C' },
         { value: 3, label: '43C01340_C' },
       ];
-      component.ngOnChanges({ vehicleOptions: { currentValue: newOptions } } as unknown as SimpleChanges);
+      component.ngOnChanges({
+        vehicleOptions: { currentValue: newOptions },
+      } as unknown as SimpleChanges);
       expect(component.selectedIds).toContain(1);
       expect(component.selectedIds).toContain(2);
     });

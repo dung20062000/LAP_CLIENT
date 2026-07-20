@@ -6,7 +6,7 @@
 import { afterEach, describe, expect, it, beforeEach, vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { WidgetDonutRoadComponent } from './widget-donut-road.component';
-import { Vehicle } from '../../../../models/dashboard';
+import { Vehicle } from '../../../../../models/dashboard';
 
 describe('WidgetDonutRoadComponent', () => {
   let fixture: ComponentFixture<WidgetDonutRoadComponent>;
@@ -25,7 +25,9 @@ describe('WidgetDonutRoadComponent', () => {
     let currentWidth = 1200;
     Object.defineProperty(window, 'innerWidth', {
       get: () => currentWidth,
-      set: (v) => { currentWidth = v; },
+      set: (v) => {
+        currentWidth = v;
+      },
       configurable: true,
     });
     vi.spyOn(window, 'addEventListener');
@@ -69,7 +71,9 @@ describe('WidgetDonutRoadComponent', () => {
 
   describe('buildChart() – labelLine responsive (desktop vs mobile)', () => {
     it('should show labelLine on desktop (innerWidth > 576)', () => {
-      component.vehicles = [makeVehicle({ id: 1, hasLoad: true, locationType: DestinationType.Road })];
+      component.vehicles = [
+        makeVehicle({ id: 1, hasLoad: true, locationType: DestinationType.Road }),
+      ];
       component.ngOnChanges({ vehicles: { currentValue: component.vehicles } } as any);
       const opts = component.chartOption as any;
       expect(opts.series[0].labelLine.show).toBe(true);
@@ -81,7 +85,9 @@ describe('WidgetDonutRoadComponent', () => {
     it('should hide labelLine on mobile (innerWidth <= 576)', () => {
       window.innerWidth = 375;
       window.dispatchEvent(new Event('resize'));
-      component.vehicles = [makeVehicle({ id: 1, hasLoad: true, locationType: DestinationType.Road })];
+      component.vehicles = [
+        makeVehicle({ id: 1, hasLoad: true, locationType: DestinationType.Road }),
+      ];
       component.ngOnChanges({ vehicles: { currentValue: component.vehicles } } as any);
       const opts = component.chartOption as any;
       expect(opts.series[0].labelLine.show).toBe(false);
@@ -137,13 +143,17 @@ describe('WidgetDonutRoadComponent', () => {
 
   describe('buildChart() – hasData', () => {
     it('should set hasData to true when vehicles has road vehicles', () => {
-      component.vehicles = [makeVehicle({ id: 1, hasLoad: true, locationType: DestinationType.Road })];
+      component.vehicles = [
+        makeVehicle({ id: 1, hasLoad: true, locationType: DestinationType.Road }),
+      ];
       component.ngOnChanges({ vehicles: { currentValue: component.vehicles } } as any);
       expect(component.hasData).toBe(true);
     });
 
     it('should set hasData to false when no road vehicles', () => {
-      component.vehicles = [makeVehicle({ id: 1, hasLoad: true, locationType: DestinationType.Border })];
+      component.vehicles = [
+        makeVehicle({ id: 1, hasLoad: true, locationType: DestinationType.Border }),
+      ];
       component.ngOnChanges({ vehicles: { currentValue: component.vehicles } } as any);
       expect(component.hasData).toBe(false);
     });
@@ -173,7 +183,9 @@ describe('WidgetDonutRoadComponent', () => {
     });
 
     it('should use green color for loaded vehicles', () => {
-      component.vehicles = [makeVehicle({ id: 1, hasLoad: true, locationType: DestinationType.Road })];
+      component.vehicles = [
+        makeVehicle({ id: 1, hasLoad: true, locationType: DestinationType.Road }),
+      ];
       component.ngOnChanges({ vehicles: { currentValue: component.vehicles } } as any);
       const opts = component.chartOption as any;
       const loadedItem = opts.series[0].data[0];
@@ -181,7 +193,9 @@ describe('WidgetDonutRoadComponent', () => {
     });
 
     it('should use orange color for empty vehicles', () => {
-      component.vehicles = [makeVehicle({ id: 1, hasLoad: false, locationType: DestinationType.Road })];
+      component.vehicles = [
+        makeVehicle({ id: 1, hasLoad: false, locationType: DestinationType.Road }),
+      ];
       component.ngOnChanges({ vehicles: { currentValue: component.vehicles } } as any);
       const opts = component.chartOption as any;
       const emptyItem = opts.series[0].data.find((d: any) => d.name === 'Phương tiện không hàng');
